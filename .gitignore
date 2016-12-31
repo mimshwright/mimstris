@@ -1,3 +1,7 @@
+# Project-specific
+dist/**/*.js
+dist/**/*.js.map
+
 # Logs
 logs
 *.log
