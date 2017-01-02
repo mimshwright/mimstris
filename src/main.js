@@ -1,5 +1,5 @@
 import config from './config.js'
-import pieces from './pieces.js'
+import {getRandomPiece} from './pieces.js'
 
 const canvas = document.getElementById('game')
 const context = canvas.getContext('2d')
@@ -9,6 +9,7 @@ const H = canvas.height
 const BACKGROUND_COLOR = '#FF20CC' // pink
 const PIECE_COLOR = '#FFFF00' // yellow
 
+let nextPiece = null
 let fallRate = null
 let gameTime = null
 let stepTime = null
@@ -28,7 +29,8 @@ function onFrame (currentTime) {
 function reset () {
   gameTime = null
   stepTime = null
-  matrix = pieces.T
+  nextPiece = getRandomPiece()
+  matrix = nextPiece.pattern
   fallRate = config.initialFallRate
 
   context.scale(20, 20)
@@ -66,7 +68,7 @@ function drawMatrix (matrix, context) {
 }
 
 function drawBlock (context, row, column) {
-  context.fillStyle = PIECE_COLOR
+  context.fillStyle = nextPiece.color // PIECE_COLOR
   context.fillRect(row, column, 1, 1)
 }
 
