@@ -10,6 +10,7 @@
   "author": "Mims H. Wright",
   "license": "MIT",
   "dependencies": {
+    "keycode": "^2.1.8",
     "lodash": "^4.17.4",
     "webpack": "^1.14.0"
   },
