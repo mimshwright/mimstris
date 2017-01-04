@@ -87,7 +87,7 @@ function detectCollision (board, piece) {
   // const right = piece.x + getMatrixWidth(piece.matrix)
   // const top = piece.y
   const bottom = piece.y + getMatrixHeight(piece.matrix)
-  return bottom >= H
+  return bottom >= (H - 1)
 }
 
 function resolveCollision (board, piece) {
@@ -125,8 +125,14 @@ document.addEventListener('keydown', event => {
 })
 
 function draw () {
-  drawMatrix(context, board)
+  clearCanvas(context)
+  drawMatrix(context, board, 0, 0)
   drawPiece(context, currentPiece)
+}
+
+function clearCanvas (context) {
+  context.fillStyle = BACKGROUND_COLOR
+  context.fillRect(0, 0, W, H)
 }
 
 function drawMatrix (context, matrix, offsetX = 0, offsetY = 0) {
@@ -135,7 +141,7 @@ function drawMatrix (context, matrix, offsetX = 0, offsetY = 0) {
       if (value) {
         drawBlock(context, rowIndex + offsetX, columnIndex + offsetY, getColorForID(value))
       } else {
-        drawBlock(context, rowIndex + offsetX, columnIndex + offsetY, BACKGROUND_COLOR)
+        // drawBlock(context, rowIndex + offsetX, columnIndex + offsetY, BACKGROUND_COLOR)
       }
     })
   })

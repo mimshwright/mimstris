@@ -27,8 +27,8 @@ export const combineMatrices = (destinationMatrix, sourceMatrix, offsetX, offset
     throw new Error('\'sourceMatrix\' and \'destinationMatrix\' must be arrays with length > 0 containing arrays with length > 0.')
   }
 
-  const lastYPosition = getMatrixHeight(sourceMatrix) - 1 + offsetY
-  const lastXPosition = getMatrixWidth(sourceMatrix) - 1 + offsetX
+  const lastYPosition = getMatrixHeight(sourceMatrix) + offsetY
+  const lastXPosition = getMatrixWidth(sourceMatrix) + offsetX
 
   if (_inRange(lastYPosition, 0, getMatrixHeight(destinationMatrix)) === false ||
       _inRange(lastXPosition, 0, getMatrixWidth(destinationMatrix)) === false) {
