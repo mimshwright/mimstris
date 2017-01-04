@@ -9,7 +9,7 @@ const context = canvas.getContext('2d')
 const W = 12
 const H = 20
 
-const BACKGROUND_COLOR = '#FF20CC' // pink
+const BACKGROUND_COLOR = '#362047' // dark purple
 // const PIECE_COLOR = '#FFFF00' // yellow
 
 let nextPiece = null

@@ -13,7 +13,7 @@ const S = 6
 const Z = 7
 
 export function getColorForID (id) {
-  return _find(pieces, {id:id}).color
+  return _find(pieces, {id: id}).color
 }
 
 export const pieces = [
@@ -79,7 +79,7 @@ export const pieces = [
   {
     name: 'Z',
     id: Z,
-    color: '#999999',
+    color: '#FF20CC',
     matrix: [
     [Z, Z, 0],
     [0, Z, Z]
