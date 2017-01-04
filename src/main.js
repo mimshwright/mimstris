@@ -33,13 +33,15 @@ function onFrame (currentTime) {
 function reset () {
   gameTime = null
   stepTime = null
-  nextPiece = getRandomPiece()
-  currentPiece = clonePiece(nextPiece)
-  console.log(nextPiece.name)
-  board = createEmptyMatrix(W, H)
-  // console.table(board)
-
   fallRate = config.initialFallRate
+
+  nextPiece = getRandomPiece()
+  console.log(nextPiece.name)
+
+  currentPiece = clonePiece(nextPiece)
+  currentPiece.x = Math.floor((W - currentPiece.matrix[0].length) / 2)
+
+  board = createEmptyMatrix(W, H)
 
   context.scale(20, 20)
   context.fillStyle = 0
