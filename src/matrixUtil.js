@@ -3,6 +3,10 @@ import _times from 'lodash/times'
 import _constant from 'lodash/constant'
 import _partial from 'lodash/partial'
 
+export const getMatrixHeight = (matrix) => { return matrix.length }
+
+export const getMatrixWidth = (matrix) => { return matrix[0].length }
+
 export const createEmptyArray = (length) => {
   return _times(length, _constant(0))
 }
@@ -13,7 +17,7 @@ export const createEmptyMatrix = (width, height) => {
   return columns.map(createRow)
 }
 
-export const combineMatrices = (sourceMatrix, destinationMatrix, offsetX, offsetY, overwrite = true) => {
+export const combineMatrices = (destinationMatrix, sourceMatrix, offsetX, offsetY, overwrite = true) => {
   if (offsetX < 0 || offsetY < 0) {
     throw new Error('Offset position is out of bounds.')
   }
@@ -23,11 +27,11 @@ export const combineMatrices = (sourceMatrix, destinationMatrix, offsetX, offset
     throw new Error('\'sourceMatrix\' and \'destinationMatrix\' must be arrays with length > 0 containing arrays with length > 0.')
   }
 
-  const lastYPosition = sourceMatrix.length + offsetY
-  const lastXPosition = sourceMatrix[0].length + offsetX
+  const lastYPosition = getMatrixHeight(sourceMatrix) - 1 + offsetY
+  const lastXPosition = getMatrixWidth(sourceMatrix) - 1 + offsetX
 
-  if (_inRange(lastYPosition, 0, destinationMatrix.length) === false ||
-      _inRange(lastXPosition, 0, destinationMatrix[0].length) === false) {
+  if (_inRange(lastYPosition, 0, getMatrixHeight(destinationMatrix)) === false ||
+      _inRange(lastXPosition, 0, getMatrixWidth(destinationMatrix)) === false) {
     throw new Error('\'pattern\' is out of bounds.')
   }
 

@@ -1,5 +1,6 @@
 import _cloneDeep from 'lodash/cloneDeep'
-import _random from 'lodash/fp/random'
+import _find from 'lodash/find'
+import _random from 'lodash/random'
 
 import {rotateRight, rotateLeft} from './matrixUtil.js' // combineMatrices
 
@@ -11,9 +12,14 @@ const I = 5
 const S = 6
 const Z = 7
 
+export function getColorForID (id) {
+  return _find(pieces, {id:id}).color
+}
+
 export const pieces = [
   {
     name: 'T',
+    id: T,
     color: '#FFFF00',
     matrix: [
     [0, 0, 0],
@@ -23,6 +29,7 @@ export const pieces = [
   },
   {
     name: 'O',
+    id: O,
     color: '#00FFFF',
     matrix: [
     [O, O],
@@ -31,6 +38,7 @@ export const pieces = [
   },
   {
     name: 'J',
+    id: J,
     color: '#FFFFCC',
     matrix: [
     [0, J, 0],
@@ -40,6 +48,7 @@ export const pieces = [
   },
   {
     name: 'L',
+    id: L,
     color: '#00FF00',
     matrix: [
     [0, L, 0],
@@ -49,6 +58,7 @@ export const pieces = [
   },
   {
     name: 'I',
+    id: I,
     color: '#FF6600',
     matrix: [
     [0, 0, I, 0, 0],
@@ -59,6 +69,7 @@ export const pieces = [
   },
   {
     name: 'S',
+    id: S,
     color: '#6600FF',
     matrix: [
     [0, S, S],
@@ -67,6 +78,7 @@ export const pieces = [
   },
   {
     name: 'Z',
+    id: Z,
     color: '#999999',
     matrix: [
     [Z, Z, 0],
@@ -92,7 +104,7 @@ export function movePiece (piece, x = 0, y = 0) {
   piece.y += y
 }
 
-export const getRandomPiece = () => {
+export function getRandomPiece () {
   const l = pieces.length
   const i = _random(0, l - 1)
   return pieces[i]

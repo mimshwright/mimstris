@@ -1,8 +1,8 @@
 import keycode from 'keycode'
 
 import config from './config.js'
-import {getRandomPiece, clonePiece, rotatePieceLeft, rotatePieceRight} from './pieces.js'
-import {createEmptyMatrix} from './matrixUtil.js' // combineMatrices
+import {getRandomPiece, clonePiece, getColorForID, rotatePieceLeft, rotatePieceRight} from './pieces.js'
+import {createEmptyMatrix, combineMatrices, getMatrixHeight, getMatrixWidth} from './matrixUtil.js'
 
 const canvas = document.getElementById('game')
 const context = canvas.getContext('2d')
@@ -36,11 +36,6 @@ function reset () {
   fallRate = config.initialFallRate
 
   nextPiece = getRandomPiece()
-  console.log(nextPiece.name)
-
-  currentPiece = clonePiece(nextPiece)
-  currentPiece.x = Math.floor((W - currentPiece.matrix[0].length) / 2)
-
   board = createEmptyMatrix(W, H)
 
   context.scale(20, 20)
@@ -49,12 +44,19 @@ function reset () {
 }
 
 function update (currentTime) {
-  if (!gameTime) {
-    gameTime = currentTime
+  gameTime = gameTime || currentTime
+  stepTime = stepTime || currentTime
+
+  if (!currentPiece) {
+    spawnNextPiece()
   }
-  if (!stepTime) {
-    stepTime = currentTime
+
+  if (detectCollision(board, currentPiece)) {
+    console.log('Collision detected!')
+    board = resolveCollision(board, currentPiece)
+    spawnNextPiece()
   }
+
   const currentStep = currentTime - stepTime
   const stepSize = Math.ceil(1000 / fallRate)
   if (currentStep > stepSize) {
@@ -62,6 +64,34 @@ function update (currentTime) {
     currentPiece.y += 1
     console.log('tick')
   }
+}
+
+function spawnNextPiece () {
+  currentPiece = clonePiece(nextPiece)
+  currentPiece.x = Math.floor((W - currentPiece.matrix[0].length) / 2)
+
+  nextPiece = getRandomPiece()
+  console.log(currentPiece.name, '(', nextPiece.name, 'next )')
+}
+
+function movePieceLeft (piece) {
+  piece.x = Math.max(piece.x - 1, 0)
+}
+
+function movePieceRight (piece) {
+  piece.x = Math.min(piece.x + 1, W - getMatrixWidth(piece.matrix))
+}
+
+function detectCollision (board, piece) {
+  // const left = piece.x
+  // const right = piece.x + getMatrixWidth(piece.matrix)
+  // const top = piece.y
+  const bottom = piece.y + getMatrixHeight(piece.matrix)
+  return bottom >= H
+}
+
+function resolveCollision (board, piece) {
+  return combineMatrices(board, piece.matrix, piece.x, piece.y, false)
 }
 
 document.addEventListener('keydown', event => {
@@ -76,11 +106,11 @@ document.addEventListener('keydown', event => {
       break
     case keycode('left'):
     case keycode('a'):
-      currentPiece.x -= 1
+      movePieceLeft(currentPiece)
       break
     case keycode('right'):
     case keycode('d'):
-      currentPiece.x += 1
+      movePieceRight(currentPiece)
       break
     case keycode('shift'):
       rotatePieceRight(currentPiece)
@@ -103,7 +133,7 @@ function drawMatrix (context, matrix, offsetX = 0, offsetY = 0) {
   matrix.map((column, columnIndex) => {
     column.map((value, rowIndex) => {
       if (value) {
-        drawBlock(context, rowIndex + offsetX, columnIndex + offsetY, currentPiece.color)
+        drawBlock(context, rowIndex + offsetX, columnIndex + offsetY, getColorForID(value))
       } else {
         drawBlock(context, rowIndex + offsetX, columnIndex + offsetY, BACKGROUND_COLOR)
       }
