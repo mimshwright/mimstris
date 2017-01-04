@@ -18,27 +18,23 @@ export const createEmptyMatrix = (width, height) => {
 }
 
 export const combineMatrices = (destinationMatrix, sourceMatrix, offsetX, offsetY, overwrite = true) => {
-  if (offsetX < 0 || offsetY < 0) {
-    throw new Error('Offset position is out of bounds.')
-  }
-
-  if (!sourceMatrix.length || !sourceMatrix[0].length ||
-      !destinationMatrix.length || !destinationMatrix[0].length) {
+  if (!getMatrixHeight(sourceMatrix) || !getMatrixWidth(sourceMatrix) ||
+      !getMatrixHeight(destinationMatrix) || !getMatrixWidth(destinationMatrix)) {
     throw new Error('\'sourceMatrix\' and \'destinationMatrix\' must be arrays with length > 0 containing arrays with length > 0.')
   }
 
-  const lastYPosition = getMatrixHeight(sourceMatrix) + offsetY
-  const lastXPosition = getMatrixWidth(sourceMatrix) + offsetX
+  const lastYIndex = getMatrixHeight(sourceMatrix) + offsetY - 1
+  const lastXIndex = getMatrixWidth(sourceMatrix) + offsetX - 1
 
-  if (_inRange(lastYPosition, 0, getMatrixHeight(destinationMatrix)) === false ||
-      _inRange(lastXPosition, 0, getMatrixWidth(destinationMatrix)) === false) {
+  if (_inRange(lastYIndex, 0, getMatrixHeight(destinationMatrix)) === false ||
+      _inRange(lastXIndex, 0, getMatrixWidth(destinationMatrix)) === false) {
     throw new Error('\'pattern\' is out of bounds.')
   }
 
   const newMatrix = destinationMatrix.map((rows, y) => {
     return rows.map((value, x) => {
-      if (_inRange(x, offsetX, lastXPosition) &&
-          _inRange(y, offsetY, lastYPosition)) {
+      if (_inRange(x, offsetX, lastXIndex + 1) &&
+          _inRange(y, offsetY, lastYIndex + 1)) {
         if (overwrite || !value) {
           return sourceMatrix[y - offsetY][x - offsetX]
         }

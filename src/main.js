@@ -86,7 +86,7 @@ function detectCollision (board, piece) {
   // const left = piece.x
   // const right = piece.x + getMatrixWidth(piece.matrix)
   // const top = piece.y
-  const bottom = piece.y + getMatrixHeight(piece.matrix)
+  const bottom = piece.y + getMatrixHeight(piece.matrix) - 1
   return bottom >= (H - 1)
 }
 
@@ -133,6 +133,14 @@ function draw () {
 function clearCanvas (context) {
   context.fillStyle = BACKGROUND_COLOR
   context.fillRect(0, 0, W, H)
+
+  context.fillStyle = '#452062'
+  let x = 0
+  while (x < W) {
+    x++
+    if (x % 2 == 0) { continue }
+    context.fillRect(x, 0, 1, H)
+  }
 }
 
 function drawMatrix (context, matrix, offsetX = 0, offsetY = 0) {
