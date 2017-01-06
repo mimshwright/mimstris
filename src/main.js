@@ -9,7 +9,7 @@ const context = canvas.getContext('2d')
 const W = 12
 const H = 20
 
-const BACKGROUND_COLOR = '#362047' // dark purple
+const BACKGROUND_COLOR = '#00263F'
 // const PIECE_COLOR = '#FFFF00' // yellow
 
 let nextPiece = null
@@ -134,11 +134,11 @@ function clearCanvas (context) {
   context.fillStyle = BACKGROUND_COLOR
   context.fillRect(0, 0, W, H)
 
-  context.fillStyle = '#452062'
+  context.fillStyle = '#001320'
   let x = 0
   while (x < W) {
     x++
-    if (x % 2 == 0) { continue }
+    if (x % 2 === 0) { continue }
     context.fillRect(x, 0, 1, H)
   }
 }
