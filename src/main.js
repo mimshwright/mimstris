@@ -1,8 +1,10 @@
 import keycode from 'keycode'
+import _every from 'lodash/fp/every'
+import _lt from 'lodash/fp/lt'
 
 import config from './config.js'
 import {getRandomPiece, clonePiece, getColorForID, rotatePieceLeft, rotatePieceRight} from './pieces.js'
-import {createEmptyMatrix, combineMatrices, getMatrixHeight, getMatrixWidth} from './matrixUtil.js'
+import {removeRowAndShiftRemaining, createEmptyMatrix, combineMatrices, getMatrixHeight, getMatrixWidth} from './matrixUtil.js'
 
 const canvas = document.getElementById('game')
 const context = canvas.getContext('2d')
@@ -64,6 +66,8 @@ function update (currentTime) {
     currentPiece.y += 1
     console.log('tick')
   }
+
+  board = clearCompletedLines(board)
 }
 
 function spawnNextPiece () {
@@ -92,6 +96,16 @@ function detectCollision (board, piece) {
 
 function resolveCollision (board, piece) {
   return combineMatrices(board, piece.matrix, piece.x, piece.y, false)
+}
+
+function clearCompletedLines (board) {
+  let fullRows = board.reduce((fullRows, row, rowIndex, board) => {
+    if (_every(_lt(0))(row)) {
+      fullRows.push(rowIndex)
+    }
+    return fullRows
+  }, [])
+  return fullRows.reduce((board, rowIndex) => removeRowAndShiftRemaining(board, rowIndex), board)
 }
 
 document.addEventListener('keydown', event => {

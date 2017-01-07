@@ -1,14 +1,25 @@
+import _cloneDeep from 'lodash/cloneDeep'
 import _inRange from 'lodash/inRange'
 import _times from 'lodash/times'
 import _constant from 'lodash/constant'
 import _partial from 'lodash/partial'
 
-export const getMatrixHeight = (matrix) => { return matrix.length }
+export const getMatrixHeight = matrix => matrix.length
 
-export const getMatrixWidth = (matrix) => { return matrix[0].length }
+export const getMatrixWidth = matrix => matrix[0].length
 
-export const createEmptyArray = (length) => {
-  return _times(length, _constant(0))
+export const createEmptyArray = length => _times(length, _constant(0))
+
+export const removeRow = (matrix, rowIndex) => {
+  matrix = _cloneDeep(matrix)
+  matrix.splice(rowIndex, 1)
+  return matrix
+}
+
+export const removeRowAndShiftRemaining = (matrix, rowIndex) => {
+  let W = getMatrixWidth(matrix)
+  let emptyRowMatrix = [createEmptyArray(W)]
+  return emptyRowMatrix.concat(removeRow(matrix, rowIndex))
 }
 
 export const createEmptyMatrix = (width, height) => {
