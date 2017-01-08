@@ -915,6 +915,10 @@ decamelize@^1.0.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/decamelize/-/decamelize-1.2.0.tgz#f6534d15148269b20352e7bee26f501f9a191290"
 
+deep-equal@~0.1.0:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-0.1.2.tgz#b246c2b80a570a47c11be1d9bd1070ec878b87ce"
+
 deep-equal@~1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-1.0.1.tgz#f5d260292b660e084eff4cdbc9f08ad3247448b5"
@@ -933,6 +937,10 @@ define-properties@^1.1.2:
   dependencies:
     foreach "^2.0.5"
     object-keys "^1.0.8"
+
+defined@~0.0.0, defined@0.0.0:
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/defined/-/defined-0.0.0.tgz#f35eea7d705e933baf13b2f03b3f83d921403b3e"
 
 defined@~1.0.0:
   version "1.0.0"
@@ -986,7 +994,7 @@ domain-browser@^1.1.1:
   version "1.1.7"
   resolved "https://registry.yarnpkg.com/domain-browser/-/domain-browser-1.1.7.tgz#867aa4b093faa05f1de08c06f4d7b21fdf8698bc"
 
-duplexer@^0.1.1:
+duplexer@^0.1.1, duplexer@~0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/duplexer/-/duplexer-0.1.1.tgz#ace6ff808c1ce66b57d1ebf97977acb02334cfc1"
 
@@ -1232,6 +1240,18 @@ extsprintf@1.0.2:
 fast-levenshtein@~2.0.4:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
+
+faucet:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/faucet/-/faucet-0.0.1.tgz#597dcf1d2189a2c062321b591e8f151ed2039d9c"
+  dependencies:
+    defined "0.0.0"
+    duplexer "~0.1.1"
+    minimist "0.0.5"
+    sprintf "~0.1.3"
+    tap-parser "~0.4.0"
+    tape "~2.3.2"
+    through2 "~0.2.3"
 
 figures@^1.3.5, figures@^1.4.0:
   version "1.7.0"
@@ -1699,6 +1719,10 @@ isarray@^1.0.0, isarray@~1.0.0, isarray@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/isarray/-/isarray-1.0.0.tgz#bb935d48582cba168c06834957a54a3e07124f11"
 
+isarray@0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/isarray/-/isarray-0.0.1.tgz#8a18acfca9a8f4177e09abfc6038939b05d1eedf"
+
 isobject@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-2.1.0.tgz#f065561096a3f1da2ef46272f815c840d87e0c89"
@@ -1880,6 +1904,10 @@ minimist@~0.0.1:
   version "0.0.10"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-0.0.10.tgz#de3f98543dbf96082be48ad1a0c7cda836301dcf"
 
+minimist@0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/minimist/-/minimist-0.0.5.tgz#d7aa327bcecf518f9106ac6b8f003fa3bcea8566"
+
 minimist@0.0.8:
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-0.0.8.tgz#857fcabfc3397d2625b8228262e86aa7a011b05d"
@@ -1990,6 +2018,10 @@ object-inspect@~1.2.1:
 object-keys@^1.0.8:
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/object-keys/-/object-keys-1.0.11.tgz#c54601778ad560f1142ce0e01bcca8b56d13426d"
+
+object-keys@~0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/object-keys/-/object-keys-0.4.0.tgz#28a6aae7428dd2c3a92f3d95f21335dd204e0336"
 
 object.omit@^2.0.0:
   version "2.0.1"
@@ -2206,6 +2238,15 @@ readable-stream@^2.0.0, "readable-stream@^2.0.0 || ^1.1.13", readable-stream@^2.
     process-nextick-args "~1.0.6"
     string_decoder "~0.10.x"
     util-deprecate "~1.0.1"
+
+readable-stream@~1.1.11, readable-stream@~1.1.9:
+  version "1.1.14"
+  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-1.1.14.tgz#7cf4c54ef648e3813084c636dd2079e166c081d9"
+  dependencies:
+    core-util-is "~1.0.0"
+    inherits "~2.0.1"
+    isarray "0.0.1"
+    string_decoder "~0.10.x"
 
 readable-stream@~2.1.4:
   version "2.1.5"
@@ -2460,6 +2501,10 @@ sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
 
+sprintf@~0.1.3:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/sprintf/-/sprintf-0.1.5.tgz#8f83e39a9317c1a502cb7db8050e51c679f6edcf"
+
 sshpk@^1.7.0:
   version "1.10.1"
   resolved "https://registry.yarnpkg.com/sshpk/-/sshpk-1.10.1.tgz#30e1a5d329244974a1af61511339d595af6638b0"
@@ -2594,6 +2639,13 @@ tap-out@^1.4.1:
     split "^1.0.0"
     trim "0.0.1"
 
+tap-parser@~0.4.0:
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/tap-parser/-/tap-parser-0.4.3.tgz#a4eae190c10d76c7a111921ff38bbe4d58f09eea"
+  dependencies:
+    inherits "~2.0.1"
+    readable-stream "~1.1.11"
+
 tap-spec@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/tap-spec/-/tap-spec-4.1.1.tgz#e2e9f26f5208232b1f562288c97624d58a88f05a"
@@ -2628,6 +2680,17 @@ tape@^4.6.3:
     resumer "~0.0.0"
     string.prototype.trim "~1.1.2"
     through "~2.3.8"
+
+tape@~2.3.2:
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/tape/-/tape-2.3.3.tgz#2e7ce0a31df09f8d6851664a71842e0ca5057af7"
+  dependencies:
+    deep-equal "~0.1.0"
+    defined "~0.0.0"
+    inherits "~2.0.1"
+    jsonify "~0.0.0"
+    resumer "~0.0.0"
+    through "~2.3.4"
 
 tar-pack@~3.3.0:
   version "3.3.0"
@@ -2664,6 +2727,13 @@ through2@^2.0.0:
   dependencies:
     readable-stream "^2.1.5"
     xtend "~4.0.1"
+
+through2@~0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/through2/-/through2-0.2.3.tgz#eb3284da4ea311b6cc8ace3653748a52abf25a3f"
+  dependencies:
+    readable-stream "~1.1.9"
+    xtend "~2.1.1"
 
 timers-browserify@^2.0.2:
   version "2.0.2"
@@ -2845,6 +2915,12 @@ write@^0.2.1:
 xtend@^4.0.0, xtend@^4.0.1, xtend@~4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.1.tgz#a5c6d532be656e23db820efb943a1f04998d63af"
+
+xtend@~2.1.1:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/xtend/-/xtend-2.1.2.tgz#6efecc2a4dad8e6962c4901b337ce7ba87b5d28b"
+  dependencies:
+    object-keys "~0.4.0"
 
 yargs@~3.10.0:
   version "3.10.0"
