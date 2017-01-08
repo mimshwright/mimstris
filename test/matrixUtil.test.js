@@ -61,5 +61,120 @@ test('matrixUtil', (t) => {
     assert.end()
   })
 
+  test('removeRowAndShiftRemaining()', (assert) => {
+    assert.equal(matrixUtil.getMatrixHeight(mockMatrix), 3, 'mockMatrix has 3 rows')
+    let testMatrix = matrixUtil.removeRowAndShiftRemaining(mockMatrix, 1)
+    assert.comment('Removing row at index 1 from a 3x3 matrix and shifting')
+    assert.equal(matrixUtil.getMatrixHeight(testMatrix), 3, 'Removed 1 row but height is same')
+    assert.ok(testMatrix[0].every(val => val === 0), 'Row 0 is a new empty row of 0s')
+    assert.ok(testMatrix[1].every(val => val === 0), 'Row 0 unchanged but now in position 1')
+    assert.ok(testMatrix[2].every(el => el === 1), 'Row 2 is unchanged.')
+    assert.equal(matrixUtil.getMatrixHeight(mockMatrix), 3, 'mockMatrix is unmodified')
+
+    assert.end()
+  })
+
+  test('combineMatrices()', (assert) => {
+    let a = [
+      [1, 1, 0],
+      [1, 1, 0],
+      [0, 0, 0]
+    ]
+    let b = [
+      [2, 2],
+      [2, 2]
+    ]
+
+    let combined = matrixUtil.combineMatrices(a, b, 1, 1)
+    let expected = [
+      [1, 1, 0],
+      [1, 2, 2],
+      [0, 2, 2]
+    ]
+    assert.deepEqual(combined, expected, 'Combines correctly.')
+
+    combined = matrixUtil.combineMatrices(a, b, 1, 1, false)
+    expected = [
+      [1, 1, 0],
+      [1, 1, 2],
+      [0, 2, 2]
+    ]
+    assert.deepEqual(combined, expected, "Combines correctly. If 5th param is false, doesn't overwrite non-zero values")
+
+    assert.end()
+  })
+
+  test('detectCollision', (assert) => {
+    let destinationMatrix = [
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 2, 0, 0, 0],
+      [2, 0, 2, 2, 0, 0, 0]
+    ]
+    let sourceMatrix = [
+      [1, 1, 1],
+      [0, 1, 0],
+      [0, 0, 0]
+    ]
+
+    assert.ok(matrixUtil.detectCollision(destinationMatrix, sourceMatrix) === false, "Doesn't detect collision with values set to 0. By default, offsets are 0")
+    assert.ok(matrixUtil.detectCollision(destinationMatrix, sourceMatrix, 1, 1), 'Detect collision with values set to non-zero.')
+    assert.ok(matrixUtil.detectCollision(destinationMatrix, sourceMatrix, -1, 0), 'Going outside of x boundaries is considered collision.')
+    assert.ok(matrixUtil.detectCollision(destinationMatrix, sourceMatrix, 4, 3), 'Going outside of y boundaries is considered collision.')
+    assert.ok(matrixUtil.detectCollision(destinationMatrix, sourceMatrix, 1, 0) === false, '0 values going outside of y boundaries is NOT considered collision.')
+
+    assert.end()
+  })
+
+  test('flip()', (assert) => {
+    let flipped = matrixUtil.flip([
+      [0, 0, 0],
+      [0, 1, 0],
+      [1, 1, 0]
+    ])
+    let expected = [
+      [0, 0, 1],
+      [0, 1, 1],
+      [0, 0, 0]
+    ]
+    let msg = 'Values flipped as expected'
+    assert.deepEqual(flipped, expected, msg)
+
+    assert.end()
+  })
+
+  test('rotateLeft()', (assert) => {
+    let rotated = matrixUtil.rotateLeft([
+      [0, 0, 0],
+      [0, 1, 0],
+      [1, 1, 0]
+    ])
+    let expected = [
+      [0, 0, 0],
+      [0, 1, 1],
+      [0, 0, 1]
+    ]
+    let msg = 'Values rotated as expected'
+    assert.deepEqual(rotated, expected, msg)
+
+    assert.end()
+  })
+
+  test('rotateRight()', (assert) => {
+    let rotated = matrixUtil.rotateRight([
+      [0, 0, 0],
+      [0, 1, 0],
+      [1, 1, 0]
+    ])
+    let expected = [
+      [1, 0, 0],
+      [1, 1, 0],
+      [0, 0, 0]
+    ]
+    let msg = 'Values rotated as expected'
+    assert.deepEqual(rotated, expected, msg)
+
+    assert.end()
+  })
+
   t.end()
 })

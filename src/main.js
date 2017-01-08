@@ -4,7 +4,7 @@ import _lt from 'lodash/fp/lt'
 
 import config from './config.js'
 import {getRandomPiece, clonePiece, getColorForID, rotatePieceLeft, rotatePieceRight} from './pieces.js'
-import {removeRowAndShiftRemaining, createEmptyMatrix, combineMatrices, getMatrixHeight, getMatrixWidth} from './matrixUtil.js'
+import {detectCollision as detectMatrixCollision, removeRowAndShiftRemaining, createEmptyMatrix, combineMatrices, getMatrixHeight, getMatrixWidth} from './matrixUtil.js'
 
 const canvas = document.getElementById('game')
 const context = canvas.getContext('2d')
@@ -86,16 +86,19 @@ function movePieceRight (piece) {
   piece.x = Math.min(piece.x + 1, W - getMatrixWidth(piece.matrix))
 }
 
-function detectCollision (board, piece) {
+function detectCollision (board, {x, y, matrix: pieceMatrix}) {
   // const left = piece.x
   // const right = piece.x + getMatrixWidth(piece.matrix)
   // const top = piece.y
-  const bottom = piece.y + getMatrixHeight(piece.matrix) - 1
+  if (detectMatrixCollision(board, pieceMatrix, x, y + 1)) {
+    return true
+  }
+  const bottom = y + getMatrixHeight(pieceMatrix) - 1
   return bottom >= (H - 1)
 }
 
-function resolveCollision (board, piece) {
-  return combineMatrices(board, piece.matrix, piece.x, piece.y, false)
+function resolveCollision (board, {matrix: pieceMatrix, x, y}) {
+  return combineMatrices(board, pieceMatrix, x, y, false)
 }
 
 function clearCompletedLines (board) {

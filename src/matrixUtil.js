@@ -36,14 +36,35 @@ export const createEmptyMatrix = (width, height) => {
   return columns.map(createRow)
 }
 
-export const combineMatrices = (destinationMatrix, sourceMatrix, offsetX, offsetY, overwrite = true) => {
+export const detectCollision = (destinationMatrix, sourceMatrix, offsetX = 0, offsetY = 0) => {
+  const lastXIndex = getMatrixWidth(sourceMatrix) - 1 + offsetX
+  const lastYIndex = getMatrixHeight(sourceMatrix) - 1 + offsetY
+
+  return destinationMatrix.reduce((detected, row, y) => {
+    if (detected) { return detected }
+    return row.reduce((detected, destinationValue, x) => {
+      if (detected) { return detected }
+      if (x >= offsetX && y >= offsetY) {
+        // if (getMatrixHeight(sourceMatrix) < rowIndex - offsetY + 1) { return false }
+        // if (getMatrixWidth(sourceMatrix) < columnIndex - offsetX + 1) { return false }
+        if (y > lastYIndex || x > lastXIndex) { return false }
+        let sourceValue = sourceMatrix[y - offsetY][x - offsetX]
+
+        return destinationValue !== 0 && sourceValue !== 0
+      }
+      return false
+    }, false)
+  }, false)
+}
+
+export const combineMatrices = (destinationMatrix, sourceMatrix, offsetX = 0, offsetY = 0, overwrite = true) => {
   if (!getMatrixHeight(sourceMatrix) || !getMatrixWidth(sourceMatrix) ||
       !getMatrixHeight(destinationMatrix) || !getMatrixWidth(destinationMatrix)) {
     throw new Error('\'sourceMatrix\' and \'destinationMatrix\' must be arrays with length > 0 containing arrays with length > 0.')
   }
 
-  const lastYIndex = getMatrixHeight(sourceMatrix) + offsetY - 1
   const lastXIndex = getMatrixWidth(sourceMatrix) + offsetX - 1
+  const lastYIndex = getMatrixHeight(sourceMatrix) + offsetY - 1
 
   if (_inRange(lastYIndex, 0, getMatrixHeight(destinationMatrix)) === false ||
       _inRange(lastXIndex, 0, getMatrixWidth(destinationMatrix)) === false) {

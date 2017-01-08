@@ -27,7 +27,7 @@
   "scripts": {
     "lint": "standard './*.js' './src/**/*.js'",
     "fix": "standard --fix './*.js' './src/**/*.js'",
-    "test": "npm run fix && babel-tape-runner test/**/*.test.js | node_modules/.bin/tap-spec",
-    "start": "npm run test && webpack --watch --config webpack.config.babel.js && open dist/index.html"
+    "test": "babel-tape-runner test/**/*.test.js | node_modules/.bin/tap-spec",
+    "start": "npm run fix && npm run test && webpack --watch --config webpack.config.babel.js && open dist/index.html"
   }
 }
