@@ -11,9 +11,9 @@ const L = 4
 const I = 5
 const S = 6
 const Z = 7
-const U = 8
-const P = 9
-const X = 10
+// const U = 8
+// const P = 9
+// const X = 10
 
 export function getColorForID (id) {
   return _find(pieces, {id: id}).color
@@ -87,7 +87,7 @@ export const pieces = [
     [Z, Z, 0],
     [0, Z, Z]
     ]
-  }//,
+  } // ,
   // {
   //   name: 'U',
   //   id: U,

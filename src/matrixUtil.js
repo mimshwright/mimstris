@@ -16,6 +16,14 @@ export const removeRow = (matrix, rowIndex) => {
   return matrix
 }
 
+export const removeColumn = (matrix, columnIndex) => {
+  return matrix.map((row, rowIndex) => {
+    row = _cloneDeep(row)
+    row.splice(columnIndex, 1)
+    return row
+  })
+}
+
 export const removeRowAndShiftRemaining = (matrix, rowIndex) => {
   let W = getMatrixWidth(matrix)
   let emptyRowMatrix = [createEmptyArray(W)]
