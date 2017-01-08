@@ -23,7 +23,7 @@
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
     "standard": "^8.6.0",
-    "webpack": "^1.14.0",
+    "webpack": "^1.14.0"
   },
   "scripts": {
     "fix": "standard --fix './*.js' './src/**/*.js'",
