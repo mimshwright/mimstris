@@ -16,9 +16,9 @@ const BACKGROUND_COLOR = '#00263F'
 
 let nextPiece = null
 let currentPiece = null
-let fallRate = null
-let gameTime = null
-let stepTime = null
+let fallRate = null // Rate of pieces falling in steps down per second
+let timeSincePieceLastFell = 0 // time since the piece last moved down automatically
+let lastTime = 0 // previous frame's current time
 let board = []
 
 reset()
@@ -33,8 +33,8 @@ function onFrame (currentTime) {
 }
 
 function reset () {
-  gameTime = null
-  stepTime = null
+  timeSincePieceLastFell = 0
+  lastTime = 0
   fallRate = config.initialFallRate
 
   nextPiece = getRandomPiece()
@@ -46,8 +46,8 @@ function reset () {
 }
 
 function update (currentTime) {
-  gameTime = gameTime || currentTime
-  stepTime = stepTime || currentTime
+  let deltaTime = currentTime - lastTime
+  lastTime = currentTime
 
   if (!currentPiece) {
     spawnNextPiece()
@@ -59,15 +59,19 @@ function update (currentTime) {
     spawnNextPiece()
   }
 
-  const currentStep = currentTime - stepTime
-  const stepSize = Math.ceil(1000 / fallRate)
-  if (currentStep > stepSize) {
-    stepTime = currentTime
-    currentPiece.y += 1
+  timeSincePieceLastFell += deltaTime
+  const stepThreshold = Math.ceil(1000 / fallRate)
+  if (timeSincePieceLastFell > stepThreshold) {
     console.log('tick')
+    makePieceFall(currentPiece)
   }
 
   board = clearCompletedLines(board)
+}
+
+function makePieceFall (piece) {
+  timeSincePieceLastFell = 0
+  piece.y += 1
 }
 
 function spawnNextPiece () {
@@ -123,7 +127,7 @@ document.addEventListener('keydown', event => {
       // break
     case keycode('down'):
     case keycode('s'):
-      currentPiece.y += 1
+      makePieceFall(currentPiece)
       break
     case keycode('left'):
     case keycode('a'):
