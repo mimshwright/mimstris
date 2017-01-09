@@ -74,27 +74,31 @@ function spawnNextPiece () {
   currentPiece = clonePiece(nextPiece)
   currentPiece.x = Math.floor((W - currentPiece.matrix[0].length) / 2)
 
+  if (detectCollision(board, currentPiece)) {
+    reset()
+  }
+
   nextPiece = getRandomPiece()
   console.log(currentPiece.name, '(', nextPiece.name, 'next )')
 }
 
 function movePieceLeft (piece) {
-  piece.x = Math.max(piece.x - 1, 0)
+  piece.x -= 1
+  // piece.x = Math.max(piece.x - 1, 0)
+  if (detectCollision(board, piece)) { piece.x += 1 }
 }
 
 function movePieceRight (piece) {
-  piece.x = Math.min(piece.x + 1, W - getMatrixWidth(piece.matrix))
+  piece.x += 1
+  // piece.x = Math.min(piece.x + 1, W - getMatrixWidth(piece.matrix))
+  if (detectCollision(board, piece)) { piece.x -= 1 }
 }
 
 function detectCollision (board, {x, y, matrix: pieceMatrix}) {
   // const left = piece.x
   // const right = piece.x + getMatrixWidth(piece.matrix)
   // const top = piece.y
-  if (detectMatrixCollision(board, pieceMatrix, x, y + 1)) {
-    return true
-  }
-  const bottom = y + getMatrixHeight(pieceMatrix) - 1
-  return bottom >= (H - 1)
+  return detectMatrixCollision(board, pieceMatrix, x, y + 1)
 }
 
 function resolveCollision (board, {matrix: pieceMatrix, x, y}) {
@@ -113,10 +117,10 @@ function clearCompletedLines (board) {
 
 document.addEventListener('keydown', event => {
   switch (event.keyCode) {
-    case keycode('up'):
-    case keycode('w'):
-      currentPiece.y -= 1
-      break
+    // case keycode('up'):
+    // case keycode('w'):
+      // currentPiece.y -= 1
+      // break
     case keycode('down'):
     case keycode('s'):
       currentPiece.y += 1

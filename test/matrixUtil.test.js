@@ -38,6 +38,15 @@ test('matrixUtil', (t) => {
     assert.end()
   })
 
+  test('getMatrixSize()', (assert) => {
+    let emptyMatrix = matrixUtil.createEmptyMatrix(4, 6)
+    const {width, height} = matrixUtil.getMatrixSize(emptyMatrix)
+    assert.equal(width, 4, 'Returns and object with correct width')
+    assert.equal(height, 6, 'Returns and object with correct height')
+
+    assert.end()
+  })
+
   test('removeRow()', (assert) => {
     assert.equal(matrixUtil.getMatrixHeight(mockMatrix), 3, 'mockMatrix has 3 rows')
     let testMatrix = matrixUtil.removeRow(mockMatrix, 1)
@@ -105,22 +114,27 @@ test('matrixUtil', (t) => {
   })
 
   test('detectCollision', (assert) => {
-    let destinationMatrix = [
-      [0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 2, 0, 0, 0],
-      [2, 0, 2, 2, 0, 0, 0]
+    let a = [
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 2, 0, 0, 0, 0],
+      [2, 0, 2, 2, 0, 0, 0, 0]
     ]
-    let sourceMatrix = [
-      [1, 1, 1],
-      [0, 1, 0],
-      [0, 0, 0]
+    let b = [
+      [1, 1, 1, 0],
+      [0, 1, 0, 0],
+      [0, 0, 0, 0]
     ]
+    const f = matrixUtil.detectCollision
 
-    assert.ok(matrixUtil.detectCollision(destinationMatrix, sourceMatrix) === false, "Doesn't detect collision with values set to 0. By default, offsets are 0")
-    assert.ok(matrixUtil.detectCollision(destinationMatrix, sourceMatrix, 1, 1), 'Detect collision with values set to non-zero.')
-    assert.ok(matrixUtil.detectCollision(destinationMatrix, sourceMatrix, -1, 0), 'Going outside of x boundaries is considered collision.')
-    assert.ok(matrixUtil.detectCollision(destinationMatrix, sourceMatrix, 4, 3), 'Going outside of y boundaries is considered collision.')
-    assert.ok(matrixUtil.detectCollision(destinationMatrix, sourceMatrix, 1, 0) === false, '0 values going outside of y boundaries is NOT considered collision.')
+    assert.ok(f(a, b) === false, "Doesn't detect collision with values set to 0. By default, offsets are 0")
+    assert.ok(f(a, b, 1, 1), 'Detect collision with values set to non-zero.')
+    assert.ok(f(a, b, -1, 0), 'Going outside of x boundaries to the left is considered collision.')
+    assert.ok(f(a, b, 6, 0), 'Going outside of x boundaries to the right is considered collision.')
+    assert.ok(f(a, b, 4, 3), 'Going outside of y boundaries is considered collision.')
+    assert.ok(f(a, b, 4, 0) === false, 'Going outside of x boundaries with only 0 values is NOT considered collision.')
+    assert.ok(f(a, b, 5, 0) === false, 'Going outside of x boundaries with only 0 values is NOT considered collision.')
+    assert.ok(f(a, b, 4, 1) === false, 'Going outside of y boundaries with only 0 values is NOT considered collision.')
+    assert.ok(f(a, b, 1, 0) === false, 'Collision with only 0 values is NOT considered collision.')
 
     assert.end()
   })
@@ -138,6 +152,23 @@ test('matrixUtil', (t) => {
     ]
     let msg = 'Values flipped as expected'
     assert.deepEqual(flipped, expected, msg)
+
+    assert.end()
+  })
+
+  test('mirror()', (assert) => {
+    let mirrored = matrixUtil.mirror([
+      [1, 0, 0],
+      [0, 1, 1],
+      [1, 1, 0]
+    ])
+    let expected = [
+      [0, 0, 1],
+      [1, 1, 0],
+      [0, 1, 1]
+    ]
+    let msg = 'Values mirrored as expected'
+    assert.deepEqual(mirrored, expected, msg)
 
     assert.end()
   })

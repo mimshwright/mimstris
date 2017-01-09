@@ -8,6 +8,8 @@ export const getMatrixHeight = matrix => matrix.length
 
 export const getMatrixWidth = matrix => matrix[0].length
 
+export const getMatrixSize = matrix => ({ width: getMatrixWidth(matrix), height: getMatrixHeight(matrix) })
+
 export const createEmptyArray = length => _times(length, _constant(0))
 
 export const removeRow = (matrix, rowIndex) => {
@@ -25,6 +27,7 @@ export const removeColumn = (matrix, columnIndex) => {
 }
 
 export const removeRowAndShiftRemaining = (matrix, rowIndex) => {
+  createEmptyArray(getMatrixWidth(matrix)).concat(removeRow(matrix, rowIndex))
   let W = getMatrixWidth(matrix)
   let emptyRowMatrix = [createEmptyArray(W)]
   return emptyRowMatrix.concat(removeRow(matrix, rowIndex))
@@ -37,24 +40,27 @@ export const createEmptyMatrix = (width, height) => {
 }
 
 export const detectCollision = (destinationMatrix, sourceMatrix, offsetX = 0, offsetY = 0) => {
-  const lastXIndex = getMatrixWidth(sourceMatrix) - 1 + offsetX
-  const lastYIndex = getMatrixHeight(sourceMatrix) - 1 + offsetY
+  const {width: sourceWidth, height: sourceHeight} = getMatrixSize(sourceMatrix)
+  const {width: destinationWidth, height: destinationHeight} = getMatrixSize(destinationMatrix)
 
-  return destinationMatrix.reduce((detected, row, y) => {
-    if (detected) { return detected }
-    return row.reduce((detected, destinationValue, x) => {
-      if (detected) { return detected }
-      if (x >= offsetX && y >= offsetY) {
-        // if (getMatrixHeight(sourceMatrix) < rowIndex - offsetY + 1) { return false }
-        // if (getMatrixWidth(sourceMatrix) < columnIndex - offsetX + 1) { return false }
-        if (y > lastYIndex || x > lastXIndex) { return false }
-        let sourceValue = sourceMatrix[y - offsetY][x - offsetX]
-
-        return destinationValue !== 0 && sourceValue !== 0
+  for (let sourceY = 0; sourceY < sourceHeight; sourceY++) {
+    for (let sourceX = 0; sourceX < sourceWidth; sourceX++) {
+      if (sourceMatrix[sourceY][sourceX] !== 0) {
+        const destinationX = sourceX + offsetX
+        const destinationY = sourceY + offsetY
+        if (_inRange(destinationX, 0, destinationWidth) &&
+          _inRange(destinationY, 0, destinationHeight)) {
+          if (destinationMatrix[destinationY][destinationX] !== 0) {
+            return true
+          }
+        } else { // piece is out of bounds
+          return true
+        }
       }
-      return false
-    }, false)
-  }, false)
+    }
+  }
+
+  return false
 }
 
 export const combineMatrices = (destinationMatrix, sourceMatrix, offsetX = 0, offsetY = 0, overwrite = true) => {
@@ -65,11 +71,6 @@ export const combineMatrices = (destinationMatrix, sourceMatrix, offsetX = 0, of
 
   const lastXIndex = getMatrixWidth(sourceMatrix) + offsetX - 1
   const lastYIndex = getMatrixHeight(sourceMatrix) + offsetY - 1
-
-  if (_inRange(lastYIndex, 0, getMatrixHeight(destinationMatrix)) === false ||
-      _inRange(lastXIndex, 0, getMatrixWidth(destinationMatrix)) === false) {
-    throw new Error('\'pattern\' is out of bounds.')
-  }
 
   const newMatrix = destinationMatrix.map((rows, y) => {
     return rows.map((value, x) => {
@@ -100,8 +101,10 @@ export const flip = (matrix) => {
   return newMatrix
 }
 
+export const mirror = matrix => matrix.map(row => row.reverse())
+
 export const rotateRight = (matrix) => {
-  return flip(matrix).map(row => row.reverse())
+  return mirror(flip(matrix))
 }
 
 export const rotateLeft = (matrix) => {
