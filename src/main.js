@@ -10,6 +10,7 @@ const canvas = document.getElementById('game')
 const context = canvas.getContext('2d')
 const W = 12
 const H = 20
+context.scale(20, 20)
 
 const BACKGROUND_COLOR = '#00263F'
 // const PIECE_COLOR = '#FFFF00' // yellow
@@ -38,11 +39,10 @@ function reset () {
   fallRate = config.initialFallRate
 
   nextPiece = getRandomPiece()
+  currentPiece = null
   board = createEmptyMatrix(W, H)
 
-  context.scale(20, 20)
-  context.fillStyle = 0
-  context.fillRect(0, 0, context.width, context.height)
+  spawnNextPiece()
 }
 
 function update (currentTime) {
@@ -78,12 +78,13 @@ function spawnNextPiece () {
   currentPiece = clonePiece(nextPiece)
   currentPiece.x = Math.floor((W - currentPiece.matrix[0].length) / 2)
 
-  if (detectCollision(board, currentPiece)) {
-    reset()
-  }
-
   nextPiece = getRandomPiece()
   console.log(currentPiece.name, '(', nextPiece.name, 'next )')
+
+  if (detectCollision(board, currentPiece)) {
+    console.error('Game over!')
+    reset()
+  }
 }
 
 function movePieceLeft (piece) {
