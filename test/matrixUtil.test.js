@@ -1,4 +1,4 @@
-import test from 'tape'
+import test from 'tape-catch'
 import * as matrixUtil from '../src/matrixUtil.js'
 
 test('matrixUtil', (t) => {
