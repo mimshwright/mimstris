@@ -1,12 +1,13 @@
 import _every from 'lodash/fp/every'
 import _lt from 'lodash/fp/lt'
+import _clamp from 'lodash/fp/clamp'
 
 import pressed from 'pressed'
 pressed.start()
 
 import config from './config.js'
-import {getRandomPiece, clonePiece, getColorForID, rotatePieceLeft, rotatePieceRight} from './pieces.js'
-import {detectCollision as detectMatrixCollision, removeRowAndShiftRemaining, createEmptyMatrix, combineMatrices} from './matrixUtil.js'
+import { getRandomPiece, clonePiece, getColorForID } from './pieces.js'
+import { detectCollision as detectMatrixCollision, rotateRight, rotateLeft, getMatrixWidth, removeRowAndShiftRemaining, createEmptyMatrix, combineMatrices } from './matrixUtil.js'
 
 const canvas = document.getElementById('game')
 const context = canvas.getContext('2d')
@@ -68,7 +69,7 @@ function update (currentTime) {
     spawnNextPiece()
   }
 
-  if (detectCollision(board, currentPiece)) {
+  if (detectCollisionBelow(board, currentPiece)) {
     console.log('Collision detected!')
     board = resolveCollision(board, currentPiece)
     spawnNextPiece()
@@ -83,7 +84,7 @@ function update (currentTime) {
       lastDownMove = currentTime
 
       if (config.instantDown) {
-        while (!detectCollision(board, currentPiece)) {
+        while (!detectCollisionBelow(board, currentPiece)) {
           makePieceFall(currentPiece)
         }
         pressed.remove(...DOWN_KEYS)
@@ -149,7 +150,7 @@ function spawnNextPiece () {
   nextPiece = getRandomPiece()
   console.log(currentPiece.name, '(', nextPiece.name, 'next )')
 
-  if (detectCollision(board, currentPiece)) {
+  if (detectCollisionBelow(board, currentPiece)) {
     console.error('Game over!')
     reset()
   }
@@ -157,20 +158,28 @@ function spawnNextPiece () {
 
 function movePieceLeft (piece) {
   piece.x -= 1
-  // piece.x = Math.max(piece.x - 1, 0)
   if (detectCollision(board, piece)) { piece.x += 1 }
 }
 
 function movePieceRight (piece) {
   piece.x += 1
-  // piece.x = Math.min(piece.x + 1, W - getMatrixWidth(piece.matrix))
   if (detectCollision(board, piece)) { piece.x -= 1 }
 }
 
+function rotatePieceRight (piece) {
+  piece.matrix = rotateRight(piece.matrix)
+  piece.x = _clamp(0, W - getMatrixWidth(piece.matrix), piece.x)
+}
+function rotatePieceLeft (piece) {
+  piece.matrix = rotateLeft(piece.matrix)
+  piece.x = _clamp(0, W - getMatrixWidth(piece.matrix), piece.x)
+}
+
 function detectCollision (board, {x, y, matrix: pieceMatrix}) {
-  // const left = piece.x
-  // const right = piece.x + getMatrixWidth(piece.matrix)
-  // const top = piece.y
+  return detectMatrixCollision(board, pieceMatrix, x, y + 1)
+}
+
+function detectCollisionBelow (board, {x, y, matrix: pieceMatrix}) {
   return detectMatrixCollision(board, pieceMatrix, x, y + 1)
 }
 

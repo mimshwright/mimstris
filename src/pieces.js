@@ -127,12 +127,7 @@ export function clonePiece (piece) {
   clonedPiece.y = clonedPiece.y || 0
   return clonedPiece
 }
-export function rotatePieceRight (piece) {
-  piece.matrix = rotateRight(piece.matrix)
-}
-export function rotatePieceLeft (piece) {
-  piece.matrix = rotateLeft(piece.matrix)
-}
+
 export function movePiece (piece, x = 0, y = 0) {
   piece.x += x
   piece.y += y
