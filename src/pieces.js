@@ -52,7 +52,7 @@ export const pieces = [
   {
     name: 'L',
     id: L,
-    color: '#FFE792',
+    color: '#7480ec',
     matrix: [
     [0, L, 0],
     [0, L, 0],

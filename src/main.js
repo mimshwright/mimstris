@@ -1,10 +1,12 @@
-import keycode from 'keycode'
 import _every from 'lodash/fp/every'
 import _lt from 'lodash/fp/lt'
 
+import pressed from 'pressed'
+pressed.start()
+
 import config from './config.js'
 import {getRandomPiece, clonePiece, getColorForID, rotatePieceLeft, rotatePieceRight} from './pieces.js'
-import {detectCollision as detectMatrixCollision, removeRowAndShiftRemaining, createEmptyMatrix, combineMatrices, getMatrixHeight, getMatrixWidth} from './matrixUtil.js'
+import {detectCollision as detectMatrixCollision, removeRowAndShiftRemaining, createEmptyMatrix, combineMatrices} from './matrixUtil.js'
 
 const canvas = document.getElementById('game')
 const context = canvas.getContext('2d')
@@ -12,18 +14,29 @@ const W = 12
 const H = 20
 context.scale(20, 20)
 
+const DOWN_KEYS = ['down', 's']
+const LEFT_KEYS = ['left', 'a']
+const RIGHT_KEYS = ['right', 'd']
+const ROTATE_LEFT_KEYS = ['/', 'z']
+const ROTATE_RIGHT_KEYS = ['shift']
+
 const BACKGROUND_COLOR = '#00263F'
 // const PIECE_COLOR = '#FFFF00' // yellow
 
 let nextPiece = null
 let currentPiece = null
 let fallRate = null // Rate of pieces falling in steps down per second
+let lateralMovementRate = null // Rate of pieces moving by user control in steps per second
+let downMovementRate = null // Rate of pieces moving down by user control in steps per second
 let timeSincePieceLastFell = 0 // time since the piece last moved down automatically
-let lastTime = 0 // previous frame's current time
+let lastFrameTime = 0 // previous frame's current time
+let lastRightMove = 0
+let lastLeftMove = 0
+let lastDownMove = 0
+let lastRotate = 0
 let board = []
 
 reset()
-
 window.requestAnimationFrame(onFrame)
 
 function onFrame (currentTime) {
@@ -35,8 +48,10 @@ function onFrame (currentTime) {
 
 function reset () {
   timeSincePieceLastFell = 0
-  lastTime = 0
+  lastFrameTime = 0
   fallRate = config.initialFallRate
+  lateralMovementRate = config.lateralMovementRate
+  downMovementRate = config.downMovementRate
 
   nextPiece = getRandomPiece()
   currentPiece = null
@@ -46,8 +61,8 @@ function reset () {
 }
 
 function update (currentTime) {
-  let deltaTime = currentTime - lastTime
-  lastTime = currentTime
+  let deltaTime = currentTime - lastFrameTime
+  lastFrameTime = currentTime
 
   if (!currentPiece) {
     spawnNextPiece()
@@ -57,6 +72,59 @@ function update (currentTime) {
     console.log('Collision detected!')
     board = resolveCollision(board, currentPiece)
     spawnNextPiece()
+  }
+
+  const lateralMovementThreshold = Math.ceil(1000 / lateralMovementRate)
+  const downMovementThreshold = Math.ceil(1000 / downMovementRate)
+
+  // Handle user input...
+  if (pressed.some(...DOWN_KEYS)) {
+    if (currentTime - lastDownMove > downMovementThreshold) {
+      lastDownMove = currentTime
+
+      if (config.instantDown) {
+        while (!detectCollision(board, currentPiece)) {
+          makePieceFall(currentPiece)
+        }
+        pressed.remove(...DOWN_KEYS)
+      } else {
+        makePieceFall(currentPiece)
+      }
+    }
+  } else {
+    lastDownMove = 0
+  }
+
+  if (pressed.some(...LEFT_KEYS)) {
+    if (currentTime - lastLeftMove > lateralMovementThreshold) {
+      lastLeftMove = currentTime
+      movePieceLeft(currentPiece)
+    }
+  } else {
+    lastLeftMove = 0
+  }
+
+  if (pressed.some(...RIGHT_KEYS)) {
+    if (currentTime - lastRightMove > lateralMovementThreshold) {
+      lastRightMove = currentTime
+      movePieceRight(currentPiece)
+    }
+  } else {
+    lastRightMove = 0
+  }
+
+  if (pressed.some(...ROTATE_LEFT_KEYS, ...ROTATE_RIGHT_KEYS)) {
+    if (currentTime - lastRotate > lateralMovementThreshold) {
+      lastRotate = currentTime
+      if (pressed.some(...ROTATE_LEFT_KEYS)) {
+        rotatePieceLeft(currentPiece)
+      }
+      if (pressed.some(...ROTATE_RIGHT_KEYS)) {
+        rotatePieceRight(currentPiece)
+      }
+    }
+  } else {
+    lastRotate = 0
   }
 
   timeSincePieceLastFell += deltaTime
@@ -119,36 +187,6 @@ function clearCompletedLines (board) {
   }, [])
   return fullRows.reduce((board, rowIndex) => removeRowAndShiftRemaining(board, rowIndex), board)
 }
-
-document.addEventListener('keydown', event => {
-  switch (event.keyCode) {
-    // case keycode('up'):
-    // case keycode('w'):
-      // currentPiece.y -= 1
-      // break
-    case keycode('down'):
-    case keycode('s'):
-      makePieceFall(currentPiece)
-      break
-    case keycode('left'):
-    case keycode('a'):
-      movePieceLeft(currentPiece)
-      break
-    case keycode('right'):
-    case keycode('d'):
-      movePieceRight(currentPiece)
-      break
-    case keycode('shift'):
-      rotatePieceRight(currentPiece)
-      break
-    case keycode('/'):
-    case keycode('z'):
-      rotatePieceLeft(currentPiece)
-      break
-    default:
-      // nothing
-  }
-})
 
 function draw () {
   clearCanvas(context)
