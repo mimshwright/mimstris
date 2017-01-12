@@ -171,6 +171,9 @@ function update (currentTime) {
 
   if (detectCollision(board, currentPiece)) {
     console.log('Collision detected!')
+
+    // This bit of foo allows you to shift the piece around a bit and only
+    // detects collisions at the end of the step instead of at the beginning.
     currentPiece.y -= 1
     board = resolveCollision(board, currentPiece)
     spawnNextPiece()
