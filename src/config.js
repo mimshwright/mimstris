@@ -4,7 +4,9 @@ export default {
 
   // Falling rate should be expressed in steps per second.
   initialFallRate: 1,
-  fallRateLevelModifier: 0.5,
+  // This number is added to the fall rate on each new level
+  fallRateLevelModifier: 0.333,
+  // When holding down a key, you will move this many times per second.
   lateralMovementRate: 6,
   downMovementRate: 20,
 

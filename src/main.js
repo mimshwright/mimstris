@@ -44,6 +44,19 @@ let level = 0
 let paused = false
 let gameRunning = false
 
+// Automatically pause when window is out of focus
+window.onblur = (e) => {
+  if (!paused) {
+    paused = true
+
+    // Unpause when it comes back to focus (but not if the user manually paused)
+    window.onfocus = (e) => {
+      paused = false
+      window.onfocus = null
+    }
+  }
+}
+
 reset()
 window.requestAnimationFrame(onFrame)
 
@@ -91,15 +104,8 @@ function update (currentTime) {
     return
   }
 
-  if (!currentPiece || detectCollisionBelow(board, currentPiece)) {
-    console.log('Collision detected!')
-    board = resolveCollision(board, currentPiece)
+  if (!currentPiece) {
     spawnNextPiece()
-
-    if (detectCollisionBelow(board, currentPiece)) {
-      console.error('Game over! Press ENTER to restart.')
-      gameRunning = false
-    }
   }
 
   const lateralMovementThreshold = Math.ceil(1000 / lateralMovementRate)
@@ -163,6 +169,18 @@ function update (currentTime) {
     makePieceFall(currentPiece)
   }
 
+  if (detectCollision(board, currentPiece)) {
+    console.log('Collision detected!')
+    currentPiece.y -= 1
+    board = resolveCollision(board, currentPiece)
+    spawnNextPiece()
+
+    if (detectCollision(board, currentPiece)) {
+      console.error('Game over! Press ENTER to restart.')
+      gameRunning = false
+    }
+  }
+
   board = clearCompletedLines(board)
 }
 
@@ -199,7 +217,7 @@ function rotatePieceLeft (piece) {
 }
 
 function detectCollision (board, {x, y, matrix: pieceMatrix}) {
-  return detectMatrixCollision(board, pieceMatrix, x, y + 1)
+  return detectMatrixCollision(board, pieceMatrix, x, y)
 }
 
 function detectCollisionBelow (board, {x, y, matrix: pieceMatrix}) {
