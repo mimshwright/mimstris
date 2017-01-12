@@ -199,7 +199,7 @@ function clearCompletedLines (board) {
 
 function draw () {
   clearCanvas(context)
-  drawMatrix(context, board, 0, 0)
+  drawBoard(board)
   drawPiece(context, currentPiece)
 }
 
@@ -207,19 +207,21 @@ function clearCanvas (context) {
   context.fillStyle = BACKGROUND_COLOR
   context.fillRect(0, 0, W, H)
 
-  context.fillStyle = '#001320'
-  let x = 0
-  while (x < W) {
-    x++
-    if (x % 2 === 0) { continue }
-    context.fillRect(x, 0, 1, H)
+  if (config.drawGuideLines) {
+    context.fillStyle = '#001320'
+    let x = 0
+    while (x < W) {
+      x++
+      if (x % 2 === 0) { continue }
+      context.fillRect(x, 0, 1, H)
+    }
   }
 }
 
 function drawMatrix (context, matrix, offsetX = 0, offsetY = 0) {
   matrix.map((column, columnIndex) => {
     column.map((value, rowIndex) => {
-      if (value) {
+      if (value !== 0) {
         drawBlock(context, rowIndex + offsetX, columnIndex + offsetY, getColorForID(value))
       } else {
         // drawBlock(context, rowIndex + offsetX, columnIndex + offsetY, BACKGROUND_COLOR)
@@ -228,11 +230,29 @@ function drawMatrix (context, matrix, offsetX = 0, offsetY = 0) {
   })
 }
 
+function drawBoard (board) {
+  drawMatrix(context, board, 0, 0)
+}
+
 function drawPiece (context, piece) {
   drawMatrix(context, piece.matrix, piece.x, piece.y)
 }
 
 function drawBlock (context, row, column, color) {
+  // fill block
   context.fillStyle = color
   context.fillRect(row, column, 1, 1)
+
+  // outline block
+  if (config.outlinePieces) {
+    context.beginPath()
+    context.strokeStyle = BACKGROUND_COLOR
+    context.lineWidth = 0.05
+    context.moveTo(row, column)
+    context.lineTo(row + 1, column)
+    context.lineTo(row + 1, column + 1)
+    context.lineTo(row, column + 1)
+    context.lineTo(row, column)
+    context.stroke()
+  }
 }

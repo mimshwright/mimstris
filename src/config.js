@@ -5,5 +5,7 @@ export default {
   downMovementRate: 20,
 
   // When true, blocks fall all the way down instantly when you press down.
-  instantDown: false
+  instantDown: false,
+  drawGuideLines: true,
+  outlinePieces: true
 }
