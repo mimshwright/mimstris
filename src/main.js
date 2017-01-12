@@ -6,14 +6,15 @@ import pressed from 'pressed'
 pressed.start()
 
 import config from './config.js'
+import score from './score.js'
 import { getRandomPiece, clonePiece, getColorForID } from './pieces.js'
 import { detectCollision as detectMatrixCollision, rotateRight, rotateLeft, getMatrixWidth, removeRowAndShiftRemaining, createEmptyMatrix, combineMatrices } from './matrixUtil.js'
 
 const canvas = document.getElementById('game')
 const context = canvas.getContext('2d')
+context.scale(20, 20)
 const W = 12
 const H = 20
-context.scale(20, 20)
 
 const DOWN_KEYS = ['down', 's']
 const LEFT_KEYS = ['left', 'a']
@@ -35,7 +36,9 @@ let lastRightMove = 0
 let lastLeftMove = 0
 let lastDownMove = 0
 let lastRotate = 0
+
 let board = []
+let level = 0
 
 reset()
 window.requestAnimationFrame(onFrame)
@@ -48,6 +51,9 @@ function onFrame (currentTime) {
 }
 
 function reset () {
+  level = config.startLevel
+  score.reset()
+
   timeSincePieceLastFell = 0
   lastFrameTime = 0
   fallRate = config.initialFallRate
@@ -129,7 +135,8 @@ function update (currentTime) {
   }
 
   timeSincePieceLastFell += deltaTime
-  const stepThreshold = Math.ceil(1000 / fallRate)
+  const adjustedFallRate = fallRate + level * config.fallRateLevelModifier
+  const stepThreshold = Math.ceil(1000 / adjustedFallRate)
   if (timeSincePieceLastFell > stepThreshold) {
     console.log('tick')
     makePieceFall(currentPiece)
@@ -194,7 +201,20 @@ function clearCompletedLines (board) {
     }
     return fullRows
   }, [])
+
+  if (fullRows.length) {
+    const lines = fullRows.length
+    score.increment(score.calculateScore(lines, level), lines)
+    if (score.lines > level + config.newLevelEvery) {
+      setLevel(level + 1)
+    }
+  }
+
   return fullRows.reduce((board, rowIndex) => removeRowAndShiftRemaining(board, rowIndex), board)
+}
+
+function setLevel (newLevel) {
+  level = newLevel
 }
 
 function draw () {

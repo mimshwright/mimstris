@@ -2,8 +2,6 @@ import _cloneDeep from 'lodash/cloneDeep'
 import _find from 'lodash/find'
 import _random from 'lodash/random'
 
-import {rotateRight, rotateLeft} from './matrixUtil.js' // combineMatrices
-
 const T = 1
 const O = 2
 const J = 3
