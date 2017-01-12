@@ -6,6 +6,8 @@
       background: #371B52;
     }
     body {
+      color: #FFF;
+      font-family: montserrat, helvetica, arial, sans-serif;
     }
     main {
       width: 240px;
@@ -15,6 +17,11 @@
   </head>
   <body>
     <main>
+      <div class="scoreboard">
+        <div id="level"></div>
+        <div id="score"></div>
+        <div id="lines"></div>
+      </div>
       <canvas id="game" width="240" height="400"></canvas>
     </main>
     <script src="main.js"></script>

@@ -7,6 +7,7 @@ pressed.start()
 
 import config from './config.js'
 import score from './score.js'
+import {updateScoreboard} from './scoreboard.js'
 import { getRandomPiece, clonePiece, getColorForID } from './pieces.js'
 import { detectCollision as detectMatrixCollision, rotateRight, rotateLeft, getMatrixWidth, removeRowAndShiftRemaining, createEmptyMatrix, combineMatrices } from './matrixUtil.js'
 
@@ -21,6 +22,7 @@ const LEFT_KEYS = ['left', 'a']
 const RIGHT_KEYS = ['right', 'd']
 const ROTATE_LEFT_KEYS = ['/', 'z']
 const ROTATE_RIGHT_KEYS = ['shift']
+const START_KEYS = ['enter']
 
 const BACKGROUND_COLOR = '#00263F'
 // const PIECE_COLOR = '#FFFF00' // yellow
@@ -39,6 +41,8 @@ let lastRotate = 0
 
 let board = []
 let level = 0
+let paused = false
+let gameRunning = false
 
 reset()
 window.requestAnimationFrame(onFrame)
@@ -53,6 +57,7 @@ function onFrame (currentTime) {
 function reset () {
   level = config.startLevel
   score.reset()
+  updateScoreboard(score.score, score.lines, level)
 
   timeSincePieceLastFell = 0
   lastFrameTime = 0
@@ -63,22 +68,38 @@ function reset () {
   nextPiece = getRandomPiece()
   currentPiece = null
   board = createEmptyMatrix(W, H)
-
   spawnNextPiece()
+
+  paused = false
+  gameRunning = true
 }
 
 function update (currentTime) {
   let deltaTime = currentTime - lastFrameTime
   lastFrameTime = currentTime
 
-  if (!currentPiece) {
-    spawnNextPiece()
+  if (pressed.some(...START_KEYS)) {
+    if (gameRunning === false) {
+      reset()
+    } else {
+      paused = !paused
+      pressed.remove(...START_KEYS)
+    }
   }
 
-  if (detectCollisionBelow(board, currentPiece)) {
+  if (gameRunning === false || paused) {
+    return
+  }
+
+  if (!currentPiece || detectCollisionBelow(board, currentPiece)) {
     console.log('Collision detected!')
     board = resolveCollision(board, currentPiece)
     spawnNextPiece()
+
+    if (detectCollisionBelow(board, currentPiece)) {
+      console.error('Game over! Press ENTER to restart.')
+      gameRunning = false
+    }
   }
 
   const lateralMovementThreshold = Math.ceil(1000 / lateralMovementRate)
@@ -156,11 +177,6 @@ function spawnNextPiece () {
 
   nextPiece = getRandomPiece()
   console.log(currentPiece.name, '(', nextPiece.name, 'next )')
-
-  if (detectCollisionBelow(board, currentPiece)) {
-    console.error('Game over!')
-    reset()
-  }
 }
 
 function movePieceLeft (piece) {
@@ -205,9 +221,10 @@ function clearCompletedLines (board) {
   if (fullRows.length) {
     const lines = fullRows.length
     score.increment(score.calculateScore(lines, level), lines)
-    if (score.lines > level + config.newLevelEvery) {
+    if (score.lines >= (level + 1) * config.newLevelEvery) {
       setLevel(level + 1)
     }
+    updateScoreboard(score.score, score.lines, level)
   }
 
   return fullRows.reduce((board, rowIndex) => removeRowAndShiftRemaining(board, rowIndex), board)

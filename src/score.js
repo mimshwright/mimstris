@@ -1,7 +1,7 @@
 export default {
   score: 0,
   lines: 0,
-  BASE_SCORE: 100,
+  BASE_SCORE: 10,
 
   reset () {
     this.score = 0
@@ -15,7 +15,6 @@ export default {
   increment (score, lines) {
     this.score += score
     this.lines += lines
-
-    console.log('lines:', this.lines, 'score:', this.score)
+    // console.log('lines:', this.lines, 'score:', this.score)
   }
 }
