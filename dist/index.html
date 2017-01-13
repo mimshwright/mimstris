@@ -17,6 +17,23 @@
       font-size: 10px;
       color: rgba(255, 255, 255, 0.3);
     }
+    .game-wrapper {
+      position: relative;
+    }
+    #message {
+      position: absolute;
+      top: 45%;
+      left: 0;
+      width: 100%;
+      margin: auto 0;
+      padding: 1rem 0;
+
+      background: rgba(50, 50, 50, 0.40);
+      color: #FFFFFF;
+      font-size: 24px;
+      text-align: center;
+      vertical-align: middle;
+    }
     </style>
   </head>
   <body>
@@ -28,6 +45,7 @@
       </div>
       <div class="game-wrapper ">
         <canvas id="game" width="240" height="400"></canvas>
+        <div id="message"></div>
       </div>
       <p class="instructions">WASD or Arrow keys to move - Shift + Z or Shift and / to Rotate - Enter to pause or restart</p>
     </main>

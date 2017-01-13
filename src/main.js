@@ -7,7 +7,8 @@ pressed.start()
 import config from './config.js'
 import score from './score.js'
 import canvasRenderer from './canvasRenderer.js'
-import {updateScoreboard} from './scoreboard.js'
+import { updateScoreboard } from './scoreboard.js'
+import { updateMessage } from './message.js'
 import { getRandomPiece, clonePiece } from './pieces.js'
 import { detectCollision as detectMatrixCollision, rotateRight, rotateLeft, getMatrixWidth, removeRowAndShiftRemaining, createEmptyMatrix, combineMatrices } from './matrixUtil.js'
 
@@ -34,15 +35,16 @@ let board = []
 let paused = false
 let gameRunning = false
 let level = 0
+let message = ''
 
 // Automatically pause when window is out of focus
 window.onblur = (e) => {
   if (!paused) {
-    paused = true
+    pauseGame()
 
     // Unpause when it comes back to focus (but not if the user manually paused)
     window.onfocus = (e) => {
-      paused = false
+      unpauseGame()
       window.onfocus = null
     }
   }
@@ -61,6 +63,7 @@ function onFrame (currentTime) {
 function reset () {
   score.reset()
   level = config.startLevel
+  message = ''
 
   timeSincePieceLastFell = 0
   lastFrameTime = 0
@@ -77,6 +80,15 @@ function reset () {
   gameRunning = true
 }
 
+function pauseGame () {
+  paused = true
+  message = 'Paused'
+}
+function unpauseGame () {
+  paused = false
+  message = ''
+}
+
 function update (currentTime) {
   let deltaTime = currentTime - lastFrameTime
   lastFrameTime = currentTime
@@ -85,7 +97,7 @@ function update (currentTime) {
     if (gameRunning === false) {
       reset()
     } else {
-      paused = !paused
+      paused ? unpauseGame() : pauseGame()
       pressed.remove(...START_KEYS)
     }
   }
@@ -171,6 +183,7 @@ function update (currentTime) {
 
     if (detectCollision(board, currentPiece)) {
       console.error('Game over! Press ENTER to restart.')
+      message = 'Game Over!'
       gameRunning = false
     }
   }
@@ -218,7 +231,7 @@ function validateRotation (board, piece, originalMatrix) {
   let originalX = piece.x
   let pieceWidth = getMatrixWidth(piece.matrix)
   let offsetX = 1
-  
+
   while (detectCollision(board, piece)) {
     piece.x += offsetX
 
@@ -275,4 +288,5 @@ function setLevel (newLevel) {
 function draw () {
   canvasRenderer.draw(board, currentPiece)
   updateScoreboard(score.score, score.lines, level)
+  updateMessage(message)
 }
