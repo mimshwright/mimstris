@@ -98,8 +98,8 @@ function update (currentTime) {
       reset()
     } else {
       paused ? unpauseGame() : pauseGame()
-      pressed.remove(...START_KEYS)
     }
+    pressed.remove(...START_KEYS)
   }
 
   if (gameRunning === false || paused) {
