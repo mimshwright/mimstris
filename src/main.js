@@ -39,7 +39,7 @@ let message = ''
 
 // Automatically pause when window is out of focus
 window.onblur = (e) => {
-  if (!paused) {
+  if (!paused && gameRunning) {
     pauseGame()
 
     // Unpause when it comes back to focus (but not if the user manually paused)
