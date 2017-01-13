@@ -136,6 +136,20 @@ test('matrixUtil', (t) => {
     assert.ok(f(a, b, 4, 1) === false, 'Going outside of y boundaries with only 0 values is NOT considered collision.')
     assert.ok(f(a, b, 1, 0) === false, 'Collision with only 0 values is NOT considered collision.')
 
+    a = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 2, 2, 0],
+      [2, 2, 0, 0]
+    ]
+    b = [
+      [0, 1, 0],
+      [0, 1, 0],
+      [1, 1, 0]
+    ]
+    assert.ok(f(a, b, 2, 0), 'Do detect collision when pieces overlap.')
+    assert.ok(f(a, b, 2, 1) === false, 'Don\'t detect collision when pieces don\'t overlap.')
+
     assert.end()
   })
 
