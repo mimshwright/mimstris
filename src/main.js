@@ -7,15 +7,10 @@ pressed.start()
 
 import config from './config.js'
 import score from './score.js'
+import canvasRenderer from './canvasRenderer.js'
 import {updateScoreboard} from './scoreboard.js'
-import { getRandomPiece, clonePiece, getColorForID } from './pieces.js'
+import { getRandomPiece, clonePiece } from './pieces.js'
 import { detectCollision as detectMatrixCollision, rotateRight, rotateLeft, getMatrixWidth, removeRowAndShiftRemaining, createEmptyMatrix, combineMatrices } from './matrixUtil.js'
-
-const canvas = document.getElementById('game')
-const context = canvas.getContext('2d')
-context.scale(20, 20)
-const W = 12
-const H = 20
 
 const DOWN_KEYS = ['down', 's']
 const LEFT_KEYS = ['left', 'a']
@@ -23,9 +18,6 @@ const RIGHT_KEYS = ['right', 'd']
 const ROTATE_LEFT_KEYS = ['/', 'z']
 const ROTATE_RIGHT_KEYS = ['shift']
 const START_KEYS = ['enter']
-
-const BACKGROUND_COLOR = '#00263F'
-// const PIECE_COLOR = '#FFFF00' // yellow
 
 let nextPiece = null
 let currentPiece = null
@@ -40,9 +32,9 @@ let lastDownMove = 0
 let lastRotate = 0
 
 let board = []
-let level = 0
 let paused = false
 let gameRunning = false
+let level = 0
 
 // Automatically pause when window is out of focus
 window.onblur = (e) => {
@@ -68,9 +60,8 @@ function onFrame (currentTime) {
 }
 
 function reset () {
-  level = config.startLevel
   score.reset()
-  updateScoreboard(score.score, score.lines, level)
+  level = config.startLevel
 
   timeSincePieceLastFell = 0
   lastFrameTime = 0
@@ -80,7 +71,7 @@ function reset () {
 
   nextPiece = getRandomPiece()
   currentPiece = null
-  board = createEmptyMatrix(W, H)
+  board = createEmptyMatrix(...config.boardSize)
   spawnNextPiece()
 
   paused = false
@@ -177,6 +168,7 @@ function update (currentTime) {
     currentPiece.y -= 1
     board = resolveCollision(board, currentPiece)
     spawnNextPiece()
+    score.increment(score.calculatePieceScore(level))
 
     if (detectCollision(board, currentPiece)) {
       console.error('Game over! Press ENTER to restart.')
@@ -193,6 +185,7 @@ function makePieceFall (piece) {
 }
 
 function spawnNextPiece () {
+  const [W] = config.boardSize
   currentPiece = clonePiece(nextPiece)
   currentPiece.x = Math.floor((W - currentPiece.matrix[0].length) / 2)
 
@@ -211,10 +204,12 @@ function movePieceRight (piece) {
 }
 
 function rotatePieceRight (piece) {
+  const [W] = config.boardSize
   piece.matrix = rotateRight(piece.matrix)
   piece.x = _clamp(0, W - getMatrixWidth(piece.matrix), piece.x)
 }
 function rotatePieceLeft (piece) {
+  const [W] = config.boardSize
   piece.matrix = rotateLeft(piece.matrix)
   piece.x = _clamp(0, W - getMatrixWidth(piece.matrix), piece.x)
 }
@@ -240,12 +235,11 @@ function clearCompletedLines (board) {
   }, [])
 
   if (fullRows.length) {
-    const lines = fullRows.length
-    score.increment(score.calculateScore(lines, level), lines)
+    const clearedLines = fullRows.length
+    score.increment(score.calculateLineScore(clearedLines, level), clearedLines)
     if (score.lines >= (level + 1) * config.newLevelEvery) {
       setLevel(level + 1)
     }
-    updateScoreboard(score.score, score.lines, level)
   }
 
   return fullRows.reduce((board, rowIndex) => removeRowAndShiftRemaining(board, rowIndex), board)
@@ -256,61 +250,6 @@ function setLevel (newLevel) {
 }
 
 function draw () {
-  clearCanvas(context)
-  drawBoard(board)
-  drawPiece(context, currentPiece)
-}
-
-function clearCanvas (context) {
-  context.fillStyle = BACKGROUND_COLOR
-  context.fillRect(0, 0, W, H)
-
-  if (config.drawGuideLines) {
-    context.fillStyle = '#001320'
-    let x = 0
-    while (x < W) {
-      x++
-      if (x % 2 === 0) { continue }
-      context.fillRect(x, 0, 1, H)
-    }
-  }
-}
-
-function drawMatrix (context, matrix, offsetX = 0, offsetY = 0) {
-  matrix.map((column, columnIndex) => {
-    column.map((value, rowIndex) => {
-      if (value !== 0) {
-        drawBlock(context, rowIndex + offsetX, columnIndex + offsetY, getColorForID(value))
-      } else {
-        // drawBlock(context, rowIndex + offsetX, columnIndex + offsetY, BACKGROUND_COLOR)
-      }
-    })
-  })
-}
-
-function drawBoard (board) {
-  drawMatrix(context, board, 0, 0)
-}
-
-function drawPiece (context, piece) {
-  drawMatrix(context, piece.matrix, piece.x, piece.y)
-}
-
-function drawBlock (context, row, column, color) {
-  // fill block
-  context.fillStyle = color
-  context.fillRect(row, column, 1, 1)
-
-  // outline block
-  if (config.outlinePieces) {
-    context.beginPath()
-    context.strokeStyle = BACKGROUND_COLOR
-    context.lineWidth = 0.05
-    context.moveTo(row, column)
-    context.lineTo(row + 1, column)
-    context.lineTo(row + 1, column + 1)
-    context.lineTo(row, column + 1)
-    context.lineTo(row, column)
-    context.stroke()
-  }
+  canvasRenderer.draw(board, currentPiece)
+  updateScoreboard(score.score, score.lines, level)
 }
