@@ -1,6 +1,5 @@
 import _every from 'lodash/fp/every'
 import _lt from 'lodash/fp/lt'
-import _clamp from 'lodash/fp/clamp'
 
 import pressed from 'pressed'
 pressed.start()
@@ -204,14 +203,38 @@ function movePieceRight (piece) {
 }
 
 function rotatePieceRight (piece) {
-  const [W] = config.boardSize
+  const matrixBeforeRotation = piece.matrix
   piece.matrix = rotateRight(piece.matrix)
-  piece.x = _clamp(0, W - getMatrixWidth(piece.matrix), piece.x)
+  validateRotation(board, piece, matrixBeforeRotation)
 }
+
 function rotatePieceLeft (piece) {
-  const [W] = config.boardSize
+  const matrixBeforeRotation = piece.matrix
   piece.matrix = rotateLeft(piece.matrix)
-  piece.x = _clamp(0, W - getMatrixWidth(piece.matrix), piece.x)
+  validateRotation(board, piece, matrixBeforeRotation)
+}
+
+function validateRotation (board, piece, originalMatrix) {
+  let originalX = piece.x
+  let pieceWidth = getMatrixWidth(piece.matrix)
+  let offsetX = 1
+  
+  while (detectCollision(board, piece)) {
+    piece.x += offsetX
+
+    // flip direction and add one square after trying left and right
+    if (offsetX > 0) {
+      offsetX = -offsetX
+    } else {
+      offsetX = -offsetX + 1
+    }
+
+    if (Math.abs(offsetX) > Math.ceil(pieceWidth / 2)) {
+      piece.matrix = originalMatrix
+      piece.x = originalX
+      return piece
+    }
+  }
 }
 
 function detectCollision (board, {x, y, matrix: pieceMatrix}) {
