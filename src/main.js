@@ -287,6 +287,6 @@ function setLevel (newLevel) {
 
 function draw () {
   canvasRenderer.draw(board, currentPiece)
-  updateScoreboard(score.score, score.lines, level)
+  updateScoreboard(score.score, score.lines, level, nextPiece.name)
   updateMessage(message)
 }

@@ -93,7 +93,7 @@ test('combineMatrices()', (assert) => {
   ]
   assert.deepEqual(combined, expected, "Combines correctly. If 5th param is false, doesn't overwrite non-zero values")
 
-  assert.throws(assert => { matrixUtil.combineMatrices(a, [[]], 0, 0) }, Error, "Bogus matrices throw errors.")
+  assert.throws(assert => { matrixUtil.combineMatrices(a, [[]], 0, 0) }, Error, 'Bogus matrices throw errors.')
 })
 
 test('detectCollision', (assert) => {
