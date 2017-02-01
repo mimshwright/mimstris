@@ -33,7 +33,8 @@
     "coverage": "nyc npm run test",
     "build": "webpack --config webpack.config.babel.js",
     "watch": "webpack --watch --config webpack.config.babel.js",
-    "start": "npm run fix && npm run test && npm run watch && open dist/index.html"
+    "open": "open dist/index.html",
+    "start": "npm run fix && npm run test && npm run watch && npm run open"
   },
   "ava": {
     "files": [

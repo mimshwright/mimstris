@@ -1,6 +1,6 @@
-import _cloneDeep from 'lodash/cloneDeep'
-import _find from 'lodash/find'
-import _random from 'lodash/random'
+import _cloneDeep from 'lodash/fp/cloneDeep'
+import _find from 'lodash/fp/find'
+import _random from 'lodash/fp/random'
 
 const T = 1
 const O = 2
@@ -14,7 +14,7 @@ const Z = 7
 // const X = 10
 
 export function getColorForID (id) {
-  return _find(pieces, {id: id}).color
+  return _find({id: id})(pieces).color
 }
 
 export const pieces = [
