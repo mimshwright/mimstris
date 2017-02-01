@@ -1,5 +1,7 @@
 import _every from 'lodash/fp/every'
 import _lt from 'lodash/fp/lt'
+import _cloneDeep from 'lodash/fp/cloneDeep'
+import _random from 'lodash/fp/random'
 
 import pressed from 'pressed'
 pressed.start()
@@ -9,7 +11,7 @@ import score from './score.js'
 import canvasRenderer from './canvasRenderer.js'
 import { updateScoreboard } from './scoreboard.js'
 import { updateMessage } from './message.js'
-import { getRandomPiece, clonePiece } from './pieces.js'
+import pieces from './pieces.js'
 import { detectCollision as detectMatrixCollision, rotateRight, rotateLeft, getMatrixWidth, removeRowAndShiftRemaining, createEmptyMatrix, combineMatrices } from './matrixUtil.js'
 
 const DOWN_KEYS = ['down', 's']
@@ -203,6 +205,19 @@ function spawnNextPiece () {
 
   nextPiece = getRandomPiece()
   console.log(currentPiece.name, '(', nextPiece.name, 'next )')
+}
+
+function clonePiece (piece) {
+  let clonedPiece = _cloneDeep(piece)
+  clonedPiece.x = clonedPiece.x || 0
+  clonedPiece.y = clonedPiece.y || 0
+  return clonedPiece
+}
+
+function getRandomPiece () {
+  const l = pieces.length
+  const i = _random(0, l - 1)
+  return pieces[i]
 }
 
 function movePieceLeft (piece) {

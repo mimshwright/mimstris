@@ -1,7 +1,3 @@
-import _cloneDeep from 'lodash/fp/cloneDeep'
-import _find from 'lodash/fp/find'
-import _random from 'lodash/fp/random'
-
 const T = 1
 const O = 2
 const J = 3
@@ -12,12 +8,10 @@ const Z = 7
 // const U = 8
 // const P = 9
 // const X = 10
+// const H = 11
+// const OO = 12
 
-export function getColorForID (id) {
-  return _find({id: id})(pieces).color
-}
-
-export const pieces = [
+export default [
   {
     name: 'T',
     id: T,
@@ -50,7 +44,7 @@ export const pieces = [
   {
     name: 'L',
     id: L,
-    color: '#7480ec',
+    color: '#2753f1',
     matrix: [
     [0, L, 0],
     [0, L, 0],
@@ -85,7 +79,8 @@ export const pieces = [
     [Z, Z, 0],
     [0, Z, Z]
     ]
-  } // ,
+  }
+  // ,
   // {
   //   name: 'U',
   //   id: U,
@@ -116,23 +111,25 @@ export const pieces = [
   //   [X, X, X],
   //   [0, X, 0]
   //   ]
+  // },
+  // {
+  //   name: 'OO',
+  //   id: OO,
+  //   color: '#FF445A',
+  //   matrix: [
+  //   [OO, OO, OO],
+  //   [OO, 0, OO],
+  //   [OO, OO, OO]
+  //   ]
+  // },
+  // {
+  //   name: 'H',
+  //   id: H,
+  //   color: '#FF445A',
+  //   matrix: [
+  //   [H, 0, H],
+  //   [H, H, H],
+  //   [H, 0, H]
+  //   ]
   // }
 ]
-
-export function clonePiece (piece) {
-  let clonedPiece = _cloneDeep(piece)
-  clonedPiece.x = clonedPiece.x || 0
-  clonedPiece.y = clonedPiece.y || 0
-  return clonedPiece
-}
-
-export function movePiece (piece, x = 0, y = 0) {
-  piece.x += x
-  piece.y += y
-}
-
-export function getRandomPiece () {
-  const l = pieces.length
-  const i = _random(0, l - 1)
-  return pieces[i]
-}

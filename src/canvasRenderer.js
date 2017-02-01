@@ -1,6 +1,7 @@
 import config from './config.js'
 // import {getMatrixSize} from './matrixUtil.js'
-import {getColorForID} from './pieces.js'
+import _find from 'lodash/fp/find'
+import pieces from './pieces.js'
 
 const canvas = document.getElementById('game')
 const context = canvas.getContext('2d')
@@ -8,6 +9,10 @@ const { width: CANVAS_WIDTH, height: CANVAS_HEIGHT } = canvas
 const [BOARD_WIDTH, BOARD_HEIGHT] = config.boardSize
 const SCALE_X = CANVAS_WIDTH / BOARD_WIDTH
 const SCALE_Y = CANVAS_HEIGHT / BOARD_HEIGHT
+
+function getColorForID (id) {
+  return _find({id: id})(pieces).color
+}
 
 function clearCanvas (context) {
   context.fillStyle = config.backgroundColor
