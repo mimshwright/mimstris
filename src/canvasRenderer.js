@@ -1,6 +1,7 @@
 import config from './config.js'
 // import {getMatrixSize} from './matrixUtil.js'
 import _find from 'lodash/fp/find'
+import _memoize from 'lodash/fp/memoize'
 import pieces from './pieces.js'
 
 const canvas = document.getElementById('game')
@@ -10,9 +11,10 @@ const [BOARD_WIDTH, BOARD_HEIGHT] = config.boardSize
 const SCALE_X = CANVAS_WIDTH / BOARD_WIDTH
 const SCALE_Y = CANVAS_HEIGHT / BOARD_HEIGHT
 
-function getColorForID (id) {
+// memoized for performance (roughly doubles speed of draw!)
+const getColorForID = _memoize(id => {
   return _find({id: id})(pieces).color
-}
+})
 
 function clearCanvas (context) {
   context.fillStyle = config.backgroundColor
