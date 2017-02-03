@@ -1,0 +1,51 @@
+html {
+  background: #371B52;
+}
+body {
+  color: #FFF;
+  font-family: montserrat, helvetica, arial, sans-serif;
+}
+main {
+  width: 240px;
+  margin: 4em auto;
+}
+.instructions {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.3);
+}
+.app {
+  display: flex;
+  flex-flow: row nowrap;
+}
+.scoreWrapper {
+  flex: 1 auto;
+  order: 2;
+  margin-left: 1rem;
+}
+.gameWrapper {
+  flex: 1 auto;
+  order: 1;
+  position: relative;
+}
+.nextPiece {
+}
+.nextPiece canvas {
+  transform-origin: top left;
+  transform: scale(0.5);
+}
+
+
+#message {
+  position: absolute;
+  top: 45%;
+  left: 0;
+  width: 100%;
+  margin: auto 0;
+  padding: 1rem 0;
+
+  background: rgba(50, 50, 50, 0.40);
+  color: #FFFFFF;
+  font-size: 24px;
+  text-align: center;
+  vertical-align: middle;
+}
