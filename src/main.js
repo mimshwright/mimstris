@@ -304,12 +304,12 @@ function setLevel (newLevel) {
 }
 
 function draw () {
-  canvasRenderer.draw(board, currentPiece)
+  canvasRenderer.drawGame(board, currentPiece)
   ReactDOM.render(
     <App score={score.score}
       lines={score.lines}
       level={level}
-      next={nextPiece.name}
       message={message}
+      nextPiece={nextPiece}
        />, document.getElementById('app'))
 }
