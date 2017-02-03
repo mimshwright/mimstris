@@ -3,7 +3,7 @@ import _memoize from 'lodash/fp/memoize'
 import config from './config.js'
 import pieces from './pieces.js'
 
-const [BOARD_WIDTH] = config.boardSize
+const [BOARD_WIDTH, BOARD_HEIGHT] = config.boardSize
 
 // memoized for performance (roughly doubles speed of draw!)
 const getColorForID = _memoize(id => {
@@ -55,13 +55,21 @@ function drawBlock (context, row, column, color, outlinePieces = true) {
 
   // fill block
   context.fillStyle = color
-  context.fillRect(x, y, width, height)
+
+  if (config.midnightMode) {
+    const SIZE = 0.20
+    const BORDER = width * ((1.0 - SIZE) / 2)
+    context.fillRect(x + BORDER, y + BORDER, width * SIZE, height * SIZE)
+    return
+  } else {
+    context.fillRect(x, y, width, height)
+  }
 
   // outline block
   if (config.outlinePieces && outlinePieces) {
     context.beginPath()
     context.strokeStyle = config.backgroundColor
-    context.lineWidth = 1
+    context.lineWidth = config.blockSize * config.outlineThickness
     context.moveTo(x, y)
     context.lineTo(x + width, y)
     context.lineTo(x + width, y + height)
@@ -75,11 +83,12 @@ function drawGame (board, currentPiece) {
   const canvas = document.getElementById('game')
   if (canvas) {
     const context = canvas.getContext('2d')
-
     clearCanvas(context, config.backgroundColor)
-    if (config.drawGuideLines) {
+
+    if (config.drawGuideLines && !config.midnightMode) {
       drawGuideLines(context)
     }
+
     drawBoard(context, board)
     drawPiece(context, currentPiece)
   }

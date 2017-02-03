@@ -6,7 +6,6 @@ body {
   font-family: montserrat, helvetica, arial, sans-serif;
 }
 main {
-  width: 240px;
   margin: 4em auto;
 }
 .instructions {
@@ -16,14 +15,19 @@ main {
 .app {
   display: flex;
   flex-flow: row nowrap;
+  justify-content: center;
 }
 .scoreWrapper {
-  flex: 1 auto;
+  flex: 0 1 auto;
   order: 2;
   margin-left: 1rem;
 }
+.scoreboardText {
+  min-width: 10rem; 
+}
+
 .gameWrapper {
-  flex: 1 auto;
+  flex: 0 1 auto;
   order: 1;
   position: relative;
 }
