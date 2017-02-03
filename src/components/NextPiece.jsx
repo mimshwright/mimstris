@@ -12,7 +12,12 @@ class NextPiece extends React.Component {
   }
 
   render () {
-    return (<canvas ref='canvas' width={this.props.width} height={this.props.height} />)
+    return (
+      <div className='nextPiece'>
+        <p>Next...</p>
+        <canvas ref='canvas' width={this.props.width} height={this.props.height} />
+      </div>
+    )
   }
 }
 
