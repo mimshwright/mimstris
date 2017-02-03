@@ -78,13 +78,15 @@ function drawBlock (context, row, column, color, outlinePieces = true) {
 export default {
   draw (board, currentPiece) {
     const canvas = document.getElementById('game')
-    const context = canvas.getContext('2d')
+    if (canvas) {
+      const context = canvas.getContext('2d')
 
-    clearCanvas(context)
-    if (config.drawGuideLines) {
-      drawGuideLines(context)
+      clearCanvas(context)
+      if (config.drawGuideLines) {
+        drawGuideLines(context)
+      }
+      drawBoard(context, board)
+      drawPiece(context, currentPiece)
     }
-    drawBoard(context, board)
-    drawPiece(context, currentPiece)
   }
 }

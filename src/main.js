@@ -12,13 +12,10 @@ pressed.start()
 import config from './config'
 import score from './score'
 import canvasRenderer from './canvasRenderer'
-import { updateScoreboard } from './scoreboard'
-import { updateMessage } from './message'
 import pieces from './pieces'
 import { detectCollision as detectMatrixCollision, rotateRight, rotateLeft, getMatrixWidth, removeRowAndShiftRemaining, createEmptyMatrix, combineMatrices } from './matrixUtil'
 
 import App from './components/App'
-ReactDOM.render(<App />, document.getElementById('app'))
 
 const DOWN_KEYS = ['down', 's']
 const LEFT_KEYS = ['left', 'a']
@@ -308,6 +305,11 @@ function setLevel (newLevel) {
 
 function draw () {
   canvasRenderer.draw(board, currentPiece)
-  updateScoreboard(score.score, score.lines, level, nextPiece.name)
-  updateMessage(message)
+  ReactDOM.render(
+    <App score={score.score}
+      lines={score.lines}
+      level={level}
+      next={nextPiece.name}
+      message={message}
+       />, document.getElementById('app'))
 }
