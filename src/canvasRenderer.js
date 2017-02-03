@@ -12,20 +12,21 @@ const getColorForID = _memoize(id => {
 })
 
 function clearCanvas (context) {
+  context.fillStyle = config.backgroundColor
+  context.fillRect(0, 0, context.canvas.width, context.canvas.height)
+}
+
+function drawGuideLines (context) {
   const { width: CANVAS_WIDTH, height: CANVAS_HEIGHT } = context.canvas
   const SCALE_X = CANVAS_WIDTH / BOARD_WIDTH
+  let x = 0
 
-  context.fillStyle = config.backgroundColor
-  context.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
-
-  if (config.drawGuideLines) {
-    context.fillStyle = '#001320'
-    let x = 0
-    while (x < BOARD_WIDTH) {
-      x++
-      if (x % 2 === 0) { continue }
+  context.fillStyle = config.guideColor
+  while (x < BOARD_WIDTH) {
+    if (x % 2 === 0) {
       context.fillRect(x * SCALE_X, 0, 1 * SCALE_X, CANVAS_HEIGHT)
     }
+    x++
   }
 }
 
@@ -47,7 +48,7 @@ function drawPiece (context, piece) {
   drawMatrix(context, piece.matrix, piece.x, piece.y)
 }
 
-function drawBlock (context, row, column, color) {
+function drawBlock (context, row, column, color, outlinePieces = true) {
   const SCALE_X = context.canvas.width / BOARD_WIDTH
   const SCALE_Y = context.canvas.height / BOARD_HEIGHT
   // Scale up coordinates
@@ -61,7 +62,7 @@ function drawBlock (context, row, column, color) {
   context.fillRect(x, y, width, height)
 
   // outline block
-  if (config.outlinePieces) {
+  if (config.outlinePieces && outlinePieces) {
     context.beginPath()
     context.strokeStyle = config.backgroundColor
     context.lineWidth = 1
@@ -80,6 +81,9 @@ export default {
     const context = canvas.getContext('2d')
 
     clearCanvas(context)
+    if (config.drawGuideLines) {
+      drawGuideLines(context)
+    }
     drawBoard(context, board)
     drawPiece(context, currentPiece)
   }

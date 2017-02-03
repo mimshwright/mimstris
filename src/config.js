@@ -13,6 +13,7 @@ export default {
   downMovementRate: 20,
 
   backgroundColor: '#00263F',
+  guideColor: '#021c2d',
 
   // When true, blocks fall all the way down instantly when you press down.
   instantDown: false,
