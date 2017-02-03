@@ -3,6 +3,7 @@ export default {
   newLevelEvery: 10,
 
   boardSize: [12, 20],
+  blockSize: 20,
 
   // Falling rate should be expressed in steps per second.
   initialFallRate: 1,
@@ -12,6 +13,7 @@ export default {
   lateralMovementRate: 6,
   downMovementRate: 20,
 
+  htmlBackgroundColor: '#371B52',
   backgroundColor: '#00263F',
   guideColor: '#021c2d',
 

@@ -8,7 +8,7 @@ import Message from './Message'
 const App = props => (
   <div>
     <Scoreboard level={props.level} score={props.score} lines={props.lines} />
-    <NextPiece piece={props.nextPiece} width={80} height={80} />
+    <NextPiece piece={props.nextPiece} width={120} height={120} />
     <div className='game-wrapper '>
       <canvas id='game' width='240' height='400' />
       <Message message={props.message} />

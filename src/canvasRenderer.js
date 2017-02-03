@@ -1,30 +1,28 @@
-import config from './config.js'
-// import {getMatrixSize} from './matrixUtil.js'
 import _find from 'lodash/fp/find'
 import _memoize from 'lodash/fp/memoize'
+import config from './config.js'
 import pieces from './pieces.js'
 
-const [BOARD_WIDTH, BOARD_HEIGHT] = config.boardSize
+const [BOARD_WIDTH] = config.boardSize
 
 // memoized for performance (roughly doubles speed of draw!)
 const getColorForID = _memoize(id => {
   return _find({id: id})(pieces).color
 })
 
-function clearCanvas (context) {
-  context.fillStyle = config.backgroundColor
+function clearCanvas (context, color) {
+  context.fillStyle = color
   context.fillRect(0, 0, context.canvas.width, context.canvas.height)
 }
 
 function drawGuideLines (context) {
-  const { width: CANVAS_WIDTH, height: CANVAS_HEIGHT } = context.canvas
-  const SCALE_X = CANVAS_WIDTH / BOARD_WIDTH
+  const { height: CANVAS_HEIGHT } = context.canvas
   let x = 0
 
   context.fillStyle = config.guideColor
   while (x < BOARD_WIDTH) {
     if (x % 2 === 0) {
-      context.fillRect(x * SCALE_X, 0, 1 * SCALE_X, CANVAS_HEIGHT)
+      context.fillRect(x * config.blockSize, 0, config.blockSize, CANVAS_HEIGHT)
     }
     x++
   }
@@ -49,13 +47,11 @@ function drawPiece (context, piece) {
 }
 
 function drawBlock (context, row, column, color, outlinePieces = true) {
-  const SCALE_X = context.canvas.width / BOARD_WIDTH
-  const SCALE_Y = context.canvas.height / BOARD_HEIGHT
   // Scale up coordinates
-  const x = row * SCALE_X
-  const y = column * SCALE_Y
-  const width = SCALE_X
-  const height = SCALE_Y
+  const x = row * config.blockSize
+  const y = column * config.blockSize
+  const width = config.blockSize
+  const height = config.blockSize
 
   // fill block
   context.fillStyle = color
@@ -80,7 +76,7 @@ function drawGame (board, currentPiece) {
   if (canvas) {
     const context = canvas.getContext('2d')
 
-    clearCanvas(context)
+    clearCanvas(context, config.backgroundColor)
     if (config.drawGuideLines) {
       drawGuideLines(context)
     }
@@ -91,6 +87,6 @@ function drawGame (board, currentPiece) {
 
 export default {
   drawGame,
-  drawPiece,
+  drawMatrix,
   clearCanvas
 }
