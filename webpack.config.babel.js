@@ -1,9 +1,13 @@
 module.exports = {
   entry: './src/main.js',
   output: {
-    filename: './dist/main.js'
+    path: './dist',
+    filename: 'main.js'
   },
   devtool: 'source-map',
+  devServer: {
+    contentBase: './dist'
+  },
   module: {
     loaders: [
       {
@@ -11,12 +15,12 @@ module.exports = {
         loader: 'babel-loader',
         exclude: [/node_modules/],
         query: {
-          presets: ['es2015']
+          presets: ['latest']
         }
       }
     ]
   },
   resolve: {
-    extensions: ['', '.js', '.jsx']
+    extensions: ['.js', '.jsx']
   }
 }

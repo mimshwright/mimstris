@@ -4,12 +4,7 @@ import _find from 'lodash/fp/find'
 import _memoize from 'lodash/fp/memoize'
 import pieces from './pieces.js'
 
-const canvas = document.getElementById('game')
-const context = canvas.getContext('2d')
-const { width: CANVAS_WIDTH, height: CANVAS_HEIGHT } = canvas
 const [BOARD_WIDTH, BOARD_HEIGHT] = config.boardSize
-const SCALE_X = CANVAS_WIDTH / BOARD_WIDTH
-const SCALE_Y = CANVAS_HEIGHT / BOARD_HEIGHT
 
 // memoized for performance (roughly doubles speed of draw!)
 const getColorForID = _memoize(id => {
@@ -17,6 +12,9 @@ const getColorForID = _memoize(id => {
 })
 
 function clearCanvas (context) {
+  const { width: CANVAS_WIDTH, height: CANVAS_HEIGHT } = context.canvas
+  const SCALE_X = CANVAS_WIDTH / BOARD_WIDTH
+
   context.fillStyle = config.backgroundColor
   context.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
 
@@ -41,7 +39,7 @@ function drawMatrix (context, matrix, offsetX = 0, offsetY = 0) {
   })
 }
 
-function drawBoard (board) {
+function drawBoard (context, board) {
   drawMatrix(context, board, 0, 0)
 }
 
@@ -50,6 +48,8 @@ function drawPiece (context, piece) {
 }
 
 function drawBlock (context, row, column, color) {
+  const SCALE_X = context.canvas.width / BOARD_WIDTH
+  const SCALE_Y = context.canvas.height / BOARD_HEIGHT
   // Scale up coordinates
   const x = row * SCALE_X
   const y = column * SCALE_Y
@@ -76,8 +76,11 @@ function drawBlock (context, row, column, color) {
 
 export default {
   draw (board, currentPiece) {
+    const canvas = document.getElementById('game')
+    const context = canvas.getContext('2d')
+
     clearCanvas(context)
-    drawBoard(board)
+    drawBoard(context, board)
     drawPiece(context, currentPiece)
   }
 }

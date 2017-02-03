@@ -3,16 +3,22 @@ import _lt from 'lodash/fp/lt'
 import _cloneDeep from 'lodash/fp/cloneDeep'
 import _random from 'lodash/fp/random'
 
+import React from 'react'
+import ReactDOM from 'react-dom'
+
 import pressed from 'pressed'
 pressed.start()
 
-import config from './config.js'
-import score from './score.js'
-import canvasRenderer from './canvasRenderer.js'
-import { updateScoreboard } from './scoreboard.js'
-import { updateMessage } from './message.js'
-import pieces from './pieces.js'
-import { detectCollision as detectMatrixCollision, rotateRight, rotateLeft, getMatrixWidth, removeRowAndShiftRemaining, createEmptyMatrix, combineMatrices } from './matrixUtil.js'
+import config from './config'
+import score from './score'
+import canvasRenderer from './canvasRenderer'
+import { updateScoreboard } from './scoreboard'
+import { updateMessage } from './message'
+import pieces from './pieces'
+import { detectCollision as detectMatrixCollision, rotateRight, rotateLeft, getMatrixWidth, removeRowAndShiftRemaining, createEmptyMatrix, combineMatrices } from './matrixUtil'
+
+import App from './components/App'
+ReactDOM.render(<App />, document.getElementById('app'))
 
 const DOWN_KEYS = ['down', 's']
 const LEFT_KEYS = ['left', 'a']
