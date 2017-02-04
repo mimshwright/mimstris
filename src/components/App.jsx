@@ -9,6 +9,7 @@ const NEXT_HEIGHT = 5 * config.blockSize
 
 import Scoreboard from './Scoreboard'
 import Instructions from './Instructions'
+import ConfigPanel from './ConfigPanel'
 import NextPiece from './NextPiece'
 import Message from './Message'
 
@@ -17,6 +18,7 @@ const App = props => (
     <div className='scoreWrapper'>
       <Scoreboard level={props.level} score={props.score} lines={props.lines} />
       {config.showNextPiece ? <NextPiece piece={props.nextPiece} width={NEXT_WIDTH} height={NEXT_HEIGHT} /> : null}
+      <ConfigPanel />
     </div>
     <div className='gameWrapper' style={{width: CANVAS_WIDTH, height: CANVAS_HEIGHT}} >
       <canvas id='game' width={CANVAS_WIDTH} height={CANVAS_HEIGHT} />

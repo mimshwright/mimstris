@@ -3,8 +3,6 @@ import _memoize from 'lodash/fp/memoize'
 import config from './config.js'
 import pieces from './pieces.js'
 
-const [BOARD_WIDTH, BOARD_HEIGHT] = config.boardSize
-
 // memoized for performance (roughly doubles speed of draw!)
 const getColorForID = _memoize(id => {
   return _find({id: id})(pieces).color
@@ -17,6 +15,7 @@ function clearCanvas (context, color) {
 
 function drawGuideLines (context) {
   const { height: CANVAS_HEIGHT } = context.canvas
+  const [BOARD_WIDTH] = config.boardSize
   let x = 0
 
   context.fillStyle = config.guideColor
@@ -85,7 +84,7 @@ function drawGame (board, currentPiece) {
     const context = canvas.getContext('2d')
     clearCanvas(context, config.backgroundColor)
 
-    if (config.drawGuideLines && !config.midnightMode) {
+    if (config.showGuideLines && !config.midnightMode) {
       drawGuideLines(context)
     }
 

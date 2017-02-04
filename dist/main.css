@@ -23,7 +23,7 @@ main {
   margin-left: 1rem;
 }
 .scoreboardText {
-  min-width: 10rem; 
+  min-width: 10rem;
 }
 
 .gameWrapper {
@@ -38,6 +38,11 @@ main {
   transform: scale(0.5);
 }
 
+.configPanel ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
 
 #message {
   position: absolute;

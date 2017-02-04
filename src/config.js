@@ -19,7 +19,7 @@ export default {
 
   // When true, blocks fall all the way down instantly when you press down.
   instantDown: false,
-  drawGuideLines: true,
+  showGuideLines: true,
   outlinePieces: true,
   outlineThickness: 0.08, // %
   showNextPiece: true,
