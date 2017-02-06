@@ -1,5 +1,5 @@
-import _every from 'lodash/fp/every'
 import _lt from 'lodash/fp/lt'
+import _every from 'lodash/fp/every'
 import _cloneDeep from 'lodash/fp/cloneDeep'
 import _random from 'lodash/fp/random'
 
@@ -15,7 +15,7 @@ import canvasRenderer from './canvasRenderer'
 import pieces from './pieces'
 import { detectCollision as detectMatrixCollision, rotateRight, rotateLeft, getMatrixWidth, removeRowAndShiftRemaining, createEmptyMatrix, combineMatrices } from './matrixUtil'
 
-import App from './components/App'
+import App, {store} from './components/App'
 
 const DOWN_KEYS = ['down', 's']
 const LEFT_KEYS = ['left', 'a']
@@ -172,19 +172,19 @@ function update (currentTime) {
   const adjustedFallRate = fallRate + level * config.fallRateLevelModifier
   const stepThreshold = Math.ceil(1000 / adjustedFallRate)
   if (timeSincePieceLastFell > stepThreshold) {
-    console.log('tick')
+    // console.log('tick')
     makePieceFall(currentPiece)
   }
 
   if (detectCollision(board, currentPiece)) {
-    console.log('Collision detected!')
+    // console.log('Collision detected!')
 
     // This bit of foo allows you to shift the piece around a bit and only
     // detects collisions at the end of the step instead of at the beginning.
     currentPiece.y -= 1
     board = resolveCollision(board, currentPiece)
     spawnNextPiece()
-    score.increment(score.calculatePieceScore(level))
+    score.addPieceScore(level)
 
     if (detectCollision(board, currentPiece)) {
       console.error('Game over! Press ENTER to restart.')
@@ -207,7 +207,7 @@ function spawnNextPiece () {
   currentPiece.x = Math.floor((W - currentPiece.matrix[0].length) / 2)
 
   nextPiece = getRandomPiece()
-  console.log(currentPiece.name, '(', nextPiece.name, 'next )')
+  // console.log(currentPiece.name, '(', nextPiece.name, 'next )')
 }
 
 function clonePiece (piece) {
@@ -290,8 +290,8 @@ function clearCompletedLines (board) {
 
   if (fullRows.length) {
     const clearedLines = fullRows.length
-    score.increment(score.calculateLineScore(clearedLines, level), clearedLines)
-    if (score.lines >= (level + 1) * config.newLevelEvery) {
+    score.addLineClearedScore(clearedLines, level)
+    if (store.getState().lines >= (level + 1) * config.newLevelEvery) {
       setLevel(level + 1)
     }
   }
@@ -306,9 +306,7 @@ function setLevel (newLevel) {
 function draw () {
   canvasRenderer.drawGame(board, currentPiece)
   ReactDOM.render(
-    <App score={score.score}
-      lines={score.lines}
-      level={level}
+    <App level={level}
       message={message}
       nextPiece={nextPiece}
        />, document.getElementById('app'))
