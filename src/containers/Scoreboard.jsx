@@ -4,7 +4,7 @@ import commaNumber from 'comma-number'
 
 import ScoreboardText from '../components/ScoreboardText'
 
-const mapStateToProps = ({gameMetrics: {score, level, lines}}) => ({
+const mapStateToProps = ({score, level, lines}) => ({
   level: commaNumber(level),
   lines: commaNumber(lines),
   score: commaNumber(score)

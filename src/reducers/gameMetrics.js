@@ -1,13 +1,19 @@
-import {combineReducers} from 'redux'
-import * as actions from '../actions/actions'
+import * as actions from '../actions'
 import config from '../config'
 
-const score = (previousScore = 0, {type, score = 0}) => {
+const BASE_LINE_SCORE = 10
+
+export const score = (previousScore = 0, {type, lines, level, score = 0}) => {
   switch (type) {
     case actions.RESET_SCORE:
       return 0
     case actions.SET_SCORE:
       return score
+    case actions.ADD_PIECE_SCORE:
+      return previousScore + (level + 1)
+    case actions.ADD_CLEARED_LINE_SCORE:
+      const additionalScore = BASE_LINE_SCORE * lines * lines * (level + 1)
+      return previousScore + additionalScore
     case actions.INCREMENT_SCORE:
       return score + previousScore
     default:
@@ -15,7 +21,7 @@ const score = (previousScore = 0, {type, score = 0}) => {
   }
 }
 
-const lines = (previousLines = 0, {type, lines = 0}) => {
+export const lines = (previousLines = 0, {type, lines = 0}) => {
   switch (type) {
     case actions.RESET_SCORE:
       return 0
@@ -28,7 +34,7 @@ const lines = (previousLines = 0, {type, lines = 0}) => {
   }
 }
 
-const level = (previousLevel = 0, {type, level = 0}) => {
+export const level = (previousLevel = 0, {type, level = 0}) => {
   switch (type) {
     case actions.RESET_SCORE:
       return config.startLevel
@@ -38,11 +44,3 @@ const level = (previousLevel = 0, {type, level = 0}) => {
       return previousLevel
   }
 }
-
-export default combineReducers(
-  {
-    score,
-    lines,
-    level
-  }
-)

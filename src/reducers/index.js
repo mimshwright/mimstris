@@ -1,8 +1,6 @@
 import { combineReducers } from 'redux'
-import gameMetrics from './gameMetrics'
+import * as gameMetrics from './gameMetrics'
 
 export default combineReducers(
-  {
-    gameMetrics
-  }
+  gameMetrics
 )

@@ -10,12 +10,11 @@ import pressed from 'pressed'
 pressed.start()
 
 import config from './config'
-import score from './score'
 import canvasRenderer from './canvasRenderer'
 import pieces from './pieces'
 import { detectCollision as detectMatrixCollision, rotateRight, rotateLeft, getMatrixWidth, removeRowAndShiftRemaining, createEmptyMatrix, combineMatrices } from './matrixUtil'
 
-import * as actionCreators from './actions/actionCreators'
+import * as actions from './actions'
 
 import App, {store} from './components/App'
 
@@ -67,7 +66,7 @@ function onFrame (currentTime) {
 }
 
 function reset () {
-  score.reset()
+  store.dispatch(actions.resetScore())
   message = ''
 
   timeSincePieceLastFell = 0
@@ -169,7 +168,7 @@ function update (currentTime) {
   }
 
   timeSincePieceLastFell += deltaTime
-  const adjustedFallRate = fallRate + store.getState().gameMetrics.level * config.fallRateLevelModifier
+  const adjustedFallRate = fallRate + store.getState().level * config.fallRateLevelModifier
   const stepThreshold = Math.ceil(1000 / adjustedFallRate)
   if (timeSincePieceLastFell > stepThreshold) {
     // console.log('tick')
@@ -184,7 +183,9 @@ function update (currentTime) {
     currentPiece.y -= 1
     board = resolveCollision(board, currentPiece)
     spawnNextPiece()
-    score.addPieceScore()
+
+    const level = store.getState().level
+    store.dispatch(actions.addPieceScore(level))
 
     if (detectCollision(board, currentPiece)) {
       console.error('Game over! Press ENTER to restart.')
@@ -289,13 +290,16 @@ function clearCompletedLines (board) {
   }, [])
 
   if (fullRows.length) {
-    const clearedLines = fullRows.length
-    score.addLineClearedScore(clearedLines)
     const state = store.getState()
-    const lines = state.gameMetrics.lines
-    const level = state.gameMetrics.level
+
+    const clearedLines = fullRows.length
+    const lines = state.lines
+    const level = state.level
+    store.dispatch(actions.addClearedLineScore(clearedLines, level))
+    store.dispatch(actions.incrementLines(clearedLines))
+
     if (lines >= (level + 1) * config.newLevelEvery) {
-      const incrementLevelAction = actionCreators.setLevel(level + 1)
+      const incrementLevelAction = actions.setLevel(level + 1)
       store.dispatch(incrementLevelAction)
     }
   }
