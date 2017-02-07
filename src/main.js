@@ -15,6 +15,8 @@ import canvasRenderer from './canvasRenderer'
 import pieces from './pieces'
 import { detectCollision as detectMatrixCollision, rotateRight, rotateLeft, getMatrixWidth, removeRowAndShiftRemaining, createEmptyMatrix, combineMatrices } from './matrixUtil'
 
+import * as actionCreators from './actions/actionCreators'
+
 import App, {store} from './components/App'
 
 const DOWN_KEYS = ['down', 's']
@@ -39,7 +41,6 @@ let lastRotate = 0
 let board = []
 let paused = false
 let gameRunning = false
-let level = 0
 let message = ''
 
 // Automatically pause when window is out of focus
@@ -67,7 +68,6 @@ function onFrame (currentTime) {
 
 function reset () {
   score.reset()
-  level = config.startLevel
   message = ''
 
   timeSincePieceLastFell = 0
@@ -169,7 +169,7 @@ function update (currentTime) {
   }
 
   timeSincePieceLastFell += deltaTime
-  const adjustedFallRate = fallRate + level * config.fallRateLevelModifier
+  const adjustedFallRate = fallRate + store.getState().gameMetrics.level * config.fallRateLevelModifier
   const stepThreshold = Math.ceil(1000 / adjustedFallRate)
   if (timeSincePieceLastFell > stepThreshold) {
     // console.log('tick')
@@ -184,7 +184,7 @@ function update (currentTime) {
     currentPiece.y -= 1
     board = resolveCollision(board, currentPiece)
     spawnNextPiece()
-    score.addPieceScore(level)
+    score.addPieceScore()
 
     if (detectCollision(board, currentPiece)) {
       console.error('Game over! Press ENTER to restart.')
@@ -290,24 +290,23 @@ function clearCompletedLines (board) {
 
   if (fullRows.length) {
     const clearedLines = fullRows.length
-    score.addLineClearedScore(clearedLines, level)
-    if (store.getState().lines >= (level + 1) * config.newLevelEvery) {
-      setLevel(level + 1)
+    score.addLineClearedScore(clearedLines)
+    const state = store.getState()
+    const lines = state.gameMetrics.lines
+    const level = state.gameMetrics.level
+    if (lines >= (level + 1) * config.newLevelEvery) {
+      const incrementLevelAction = actionCreators.setLevel(level + 1)
+      store.dispatch(incrementLevelAction)
     }
   }
 
   return fullRows.reduce((board, rowIndex) => removeRowAndShiftRemaining(board, rowIndex), board)
 }
 
-function setLevel (newLevel) {
-  level = newLevel
-}
-
 function draw () {
   canvasRenderer.drawGame(board, currentPiece)
   ReactDOM.render(
-    <App level={level}
-      message={message}
+    <App message={message}
       nextPiece={nextPiece}
        />, document.getElementById('app'))
 }

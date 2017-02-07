@@ -8,19 +8,23 @@ export default {
     store.dispatch(resetScore())
   },
 
-  addPieceScore (level) {
+  addPieceScore () {
+    const level = store.getState().gameMetrics.level
     this.increment(this.calculatePieceScore(level))
   },
 
-  addLineClearedScore (clearedLines, level) {
+  addLineClearedScore (clearedLines) {
+    const level = store.getState().gameMetrics.level
     this.increment(this.calculateLineScore(clearedLines, level), clearedLines)
   },
 
-  calculateLineScore (lines, level) {
+  calculateLineScore (lines) {
+    const level = store.getState().gameMetrics.level
     return this.BASE_LINE_SCORE * lines * lines * (level + 1)
   },
 
-  calculatePieceScore (level) {
+  calculatePieceScore () {
+    const level = store.getState().gameMetrics.level
     return Math.pow(2, level)
   },
 
@@ -31,6 +35,5 @@ export default {
     if (lines !== 0) {
       store.dispatch(incrementLines(lines))
     }
-    // console.log('lines:', this.lines, 'score:', this.score)
   }
 }

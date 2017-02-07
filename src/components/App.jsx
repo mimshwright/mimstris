@@ -3,7 +3,7 @@ import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import gameState from '../reducers'
 
-import Scoreboard from './Scoreboard'
+import Scoreboard from '../containers/Scoreboard'
 import Instructions from './Instructions'
 import ConfigPanel from './ConfigPanel'
 import NextPiece from './NextPiece'

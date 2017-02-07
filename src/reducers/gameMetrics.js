@@ -1,5 +1,6 @@
 import {combineReducers} from 'redux'
 import * as actions from '../actions/actions'
+import config from '../config'
 
 const score = (previousScore = 0, {type, score = 0}) => {
   switch (type) {
@@ -30,7 +31,7 @@ const lines = (previousLines = 0, {type, lines = 0}) => {
 const level = (previousLevel = 0, {type, level = 0}) => {
   switch (type) {
     case actions.RESET_SCORE:
-      return 0
+      return config.startLevel
     case actions.SET_LEVEL:
       return level
     default:
