@@ -1,16 +1,30 @@
 import * as actions from './actions'
 
-export const setScore = newScore => ({
+export const resetScore = () => ({
+  type: actions.RESET_SCORE
+})
+
+export const setScore = score => ({
   type: actions.SET_SCORE,
-  score: newScore
+  score
 })
 
 export const incrementScore = score => ({
   type: actions.INCREMENT_SCORE,
-  incrementScoreBy: score
+  score
 })
 
-export const setLines = newLines => ({
+export const setLines = lines => ({
   type: actions.SET_LINES,
-  lines: newLines
+  lines
+})
+
+export const incrementLines = lines => ({
+  type: actions.INCREMENT_LINES,
+  lines
+})
+
+export const setLevel = level => ({
+  type: actions.SET_LEVEL,
+  level
 })

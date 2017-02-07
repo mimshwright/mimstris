@@ -1,7 +1,7 @@
 import {connect} from 'react-redux'
 import ScoreboardText from '../components/ScoreboardText'
 
-const mapStateToProps = ({lines}) => ({
+const mapStateToProps = ({gameMetrics: {lines}}) => ({
   label: 'Lines',
   value: lines
 })

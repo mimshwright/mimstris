@@ -1,3 +1,6 @@
-export const SET_SCORE = Symbol('set score')
-export const INCREMENT_SCORE = Symbol('increment score')
-export const SET_LINES = Symbol('set lines')
+export const SET_SCORE = 'set score'
+export const INCREMENT_SCORE = 'increment score'
+export const SET_LINES = 'set lines'
+export const INCREMENT_LINES = 'increment lines'
+export const SET_LEVEL = 'set level'
+export const RESET_SCORE = 'reset score'

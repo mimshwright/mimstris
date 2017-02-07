@@ -27,7 +27,7 @@ const App = props => (
   <Provider store={store}>
     <div className='app'>
       <div className='scoreWrapper'>
-        <Scoreboard level={props.level} score={props.score} lines={props.lines} />
+        <Scoreboard />
         {config.showNextPiece ? <NextPiece piece={props.nextPiece} width={NEXT_WIDTH} height={NEXT_HEIGHT} /> : null}
         <ConfigPanel />
       </div>
@@ -42,9 +42,6 @@ const App = props => (
 
 App.propTypes = {
   message: PropTypes.string,
-  level: PropTypes.number,
-  score: PropTypes.number,
-  lines: PropTypes.number,
   nextPiece: PropTypes.object
 }
 

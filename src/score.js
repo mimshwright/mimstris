@@ -1,12 +1,11 @@
 import {store} from './components/App'
-import {setLines, setScore, incrementScore} from './actions/actionCreators'
+import {resetScore, incrementScore, incrementLines} from './actions/actionCreators'
 
 export default {
   BASE_LINE_SCORE: 10,
 
   reset () {
-    store.dispatch(setScore(0))
-    store.dispatch(setLines(0))
+    store.dispatch(resetScore())
   },
 
   addPieceScore (level) {
@@ -26,9 +25,12 @@ export default {
   },
 
   increment (score = 0, lines = 0) {
-    let action = incrementScore(score)
-    store.dispatch(action)
-    store.dispatch(setLines(store.getState().lines + lines))
+    if (score !== 0) {
+      store.dispatch(incrementScore(score))
+    }
+    if (lines !== 0) {
+      store.dispatch(incrementLines(lines))
+    }
     // console.log('lines:', this.lines, 'score:', this.score)
   }
 }

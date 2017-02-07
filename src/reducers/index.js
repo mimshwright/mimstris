@@ -1,10 +1,8 @@
 import { combineReducers } from 'redux'
-import score from './score'
-import lines from './lines'
+import gameMetrics from './gameMetrics'
 
 export default combineReducers(
   {
-    score,
-    lines
+    gameMetrics
   }
 )
