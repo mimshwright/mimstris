@@ -17,6 +17,7 @@ import { detectCollision as detectMatrixCollision, rotateRight, rotateLeft, getM
 import * as actions from './actions'
 
 import App, {store} from './components/App'
+import {fallRate as fallRateSelector} from './selectors/fallRate'
 
 const DOWN_KEYS = ['down', 's']
 const LEFT_KEYS = ['left', 'a']
@@ -27,7 +28,6 @@ const START_KEYS = ['enter']
 
 let nextPiece = null
 let currentPiece = null
-let fallRate = null // Rate of pieces falling in steps down per second
 let lateralMovementRate = null // Rate of pieces moving by user control in steps per second
 let downMovementRate = null // Rate of pieces moving down by user control in steps per second
 let timeSincePieceLastFell = 0 // time since the piece last moved down automatically
@@ -71,7 +71,6 @@ function reset () {
 
   timeSincePieceLastFell = 0
   lastFrameTime = 0
-  fallRate = config.initialFallRate
   lateralMovementRate = config.lateralMovementRate
   downMovementRate = config.downMovementRate
 
@@ -168,8 +167,9 @@ function update (currentTime) {
   }
 
   timeSincePieceLastFell += deltaTime
-  const adjustedFallRate = fallRate + store.getState().level * config.fallRateLevelModifier
-  const stepThreshold = Math.ceil(1000 / adjustedFallRate)
+
+  const fallRate = fallRateSelector(store.getState())
+  const stepThreshold = Math.ceil(1000 / fallRate)
   if (timeSincePieceLastFell > stepThreshold) {
     // console.log('tick')
     makePieceFall(currentPiece)
@@ -293,14 +293,14 @@ function clearCompletedLines (board) {
     const state = store.getState()
 
     const clearedLines = fullRows.length
-    const lines = state.lines
     const level = state.level
     store.dispatch(actions.addClearedLineScore(clearedLines, level))
     store.dispatch(actions.incrementLines(clearedLines))
 
-    if (lines >= (level + 1) * config.newLevelEvery) {
-      const incrementLevelAction = actions.setLevel(level + 1)
-      store.dispatch(incrementLevelAction)
+    const lines = store.getState().lines
+    const newLevel = Math.floor(lines / config.newLevelEvery)
+    if (newLevel >= level) {
+      store.dispatch(actions.setLevel(newLevel))
     }
   }
 

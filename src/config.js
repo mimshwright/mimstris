@@ -1,5 +1,5 @@
 export default {
-  startLevel: 5,
+  startLevel: 0,
   newLevelEvery: 10,
 
   boardSize: [12, 20],
