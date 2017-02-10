@@ -1,8 +1,12 @@
 import { combineReducers } from 'redux'
-import _merge from 'lodash/fp/merge'
 import * as gameMetrics from './gameMetrics'
 import * as message from './message'
+import * as nextPiece from './nextPiece'
 
 export default combineReducers(
-  _merge(message)(gameMetrics)
+  Object.assign(
+    message,
+    gameMetrics,
+    nextPiece
+  )
 )

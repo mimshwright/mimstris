@@ -1,12 +1,12 @@
-import React, {PropTypes} from 'react'
+import React from 'react'
 import { Provider } from 'react-redux'
 import store from '../store'
 
 import Scoreboard from '../containers/Scoreboard'
 import StatusMessage from '../containers/StatusMessage'
+import NextPiece from '../containers/NextPiece'
 import Instructions from './Instructions'
 import ConfigPanel from './ConfigPanel'
-import NextPiece from './NextPiece'
 
 import config from '../config'
 
@@ -21,7 +21,7 @@ const App = props => (
     <div className='app'>
       <div className='scoreWrapper'>
         <Scoreboard />
-        {config.showNextPiece ? <NextPiece piece={props.nextPiece} width={NEXT_WIDTH} height={NEXT_HEIGHT} /> : null}
+        {config.showNextPiece ? <NextPiece width={NEXT_WIDTH} height={NEXT_HEIGHT} /> : null}
         <ConfigPanel />
       </div>
       <div className='gameWrapper' style={{width: CANVAS_WIDTH, height: CANVAS_HEIGHT}} >
@@ -34,7 +34,6 @@ const App = props => (
 )
 
 App.propTypes = {
-  nextPiece: PropTypes.object
 }
 
 export default App

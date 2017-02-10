@@ -28,7 +28,6 @@ const ROTATE_LEFT_KEYS = ['/', 'z']
 const ROTATE_RIGHT_KEYS = ['shift']
 const START_KEYS = ['enter']
 
-let nextPiece = null
 let currentPiece = null
 let lateralMovementRate = null // Rate of pieces moving by user control in steps per second
 let downMovementRate = null // Rate of pieces moving down by user control in steps per second
@@ -75,7 +74,8 @@ function reset () {
   lateralMovementRate = config.lateralMovementRate
   downMovementRate = config.downMovementRate
 
-  nextPiece = getRandomPiece()
+  const nextPiece = getRandomPiece()
+  store.dispatch(actions.setNextPiece(nextPiece))
   currentPiece = null
   board = createEmptyMatrix(...config.boardSize)
   spawnNextPiece()
@@ -205,10 +205,11 @@ function makePieceFall (piece) {
 
 function spawnNextPiece () {
   const [W] = config.boardSize
-  currentPiece = clonePiece(nextPiece)
+  currentPiece = clonePiece(store.getState().nextPiece)
   currentPiece.x = Math.floor((W - currentPiece.matrix[0].length) / 2)
 
-  nextPiece = getRandomPiece()
+  const nextPiece = getRandomPiece()
+  store.dispatch(actions.setNextPiece(nextPiece))
   // console.log(currentPiece.name, '(', nextPiece.name, 'next )')
 }
 
@@ -302,5 +303,5 @@ function clearCompletedLines (board) {
 
 function draw () {
   canvasRenderer.drawGame(board, currentPiece)
-  ReactDOM.render( <App nextPiece={nextPiece} />, document.getElementById('app') )
+  ReactDOM.render(<App />, document.getElementById('app'))
 }

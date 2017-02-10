@@ -7,6 +7,7 @@ export const INCREMENT_LINES = 'Increment lines'
 export const RESET_SCORE = 'Reset score'
 export const CLEAR_MESSAGE = 'Clear message'
 export const SET_MESSAGE = 'Set message'
+export const SET_NEXT_PIECE = 'Set next piece'
 
 export const addPieceScore = (level) => ({
   type: ADD_PIECE_SCORE,
@@ -46,3 +47,8 @@ export const incrementLines = lines => ({
 export const clearMessage = () => ({ type: CLEAR_MESSAGE })
 
 export const setMessage = message => ({ type: SET_MESSAGE, message })
+
+export const setNextPiece = (piece) => ({
+  type: SET_NEXT_PIECE,
+  piece
+})

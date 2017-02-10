@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react'
 import canvasRenderer from '../canvasRenderer'
 import config from '../config'
 
-class NextPiece extends React.Component {
+class Piece extends React.Component {
   componentDidUpdate () {
     const canvas = this.refs.canvas
     if (canvas) {
@@ -14,18 +14,17 @@ class NextPiece extends React.Component {
 
   render () {
     return (
-      <div className='nextPiece'>
-        <p>Next...</p>
+      <div className='piece'>
         <canvas ref='canvas' width={this.props.width} height={this.props.height} />
       </div>
     )
   }
 }
 
-NextPiece.propTypes = {
+Piece.propTypes = {
   piece: PropTypes.object,
   width: PropTypes.number,
   height: PropTypes.number
 }
 
-export default NextPiece
+export default Piece
