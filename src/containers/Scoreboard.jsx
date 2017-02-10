@@ -1,13 +1,14 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import commaNumber from 'comma-number'
+import getLevel from '../selectors/level'
 
 import ScoreboardText from '../components/ScoreboardText'
 
-const mapStateToProps = ({score, level, lines}) => ({
-  level: commaNumber(level),
-  lines: commaNumber(lines),
-  score: commaNumber(score)
+const mapStateToProps = (state) => ({
+  level: commaNumber(getLevel(state)),
+  lines: commaNumber(state.lines),
+  score: commaNumber(state.score)
 })
 
 const Scoreboard = props => (

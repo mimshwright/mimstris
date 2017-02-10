@@ -17,7 +17,8 @@ import { detectCollision as detectMatrixCollision, rotateRight, rotateLeft, getM
 import * as actions from './actions'
 
 import App, {store} from './components/App'
-import {fallRate as fallRateSelector} from './selectors/fallRate'
+import getFallRate from './selectors/fallRate'
+import getLevel from './selectors/level'
 
 const DOWN_KEYS = ['down', 's']
 const LEFT_KEYS = ['left', 'a']
@@ -168,7 +169,7 @@ function update (currentTime) {
 
   timeSincePieceLastFell += deltaTime
 
-  const fallRate = fallRateSelector(store.getState())
+  const fallRate = getFallRate(store.getState())
   const stepThreshold = Math.ceil(1000 / fallRate)
   if (timeSincePieceLastFell > stepThreshold) {
     // console.log('tick')
@@ -184,7 +185,7 @@ function update (currentTime) {
     board = resolveCollision(board, currentPiece)
     spawnNextPiece()
 
-    const level = store.getState().level
+    const level = getLevel(store.getState())
     store.dispatch(actions.addPieceScore(level))
 
     if (detectCollision(board, currentPiece)) {
@@ -290,18 +291,10 @@ function clearCompletedLines (board) {
   }, [])
 
   if (fullRows.length) {
-    const state = store.getState()
-
     const clearedLines = fullRows.length
-    const level = state.level
+    const level = getLevel(store.getState())
     store.dispatch(actions.addClearedLineScore(clearedLines, level))
     store.dispatch(actions.incrementLines(clearedLines))
-
-    const lines = store.getState().lines
-    const newLevel = Math.floor(lines / config.newLevelEvery)
-    if (newLevel >= level) {
-      store.dispatch(actions.setLevel(newLevel))
-    }
   }
 
   return fullRows.reduce((board, rowIndex) => removeRowAndShiftRemaining(board, rowIndex), board)

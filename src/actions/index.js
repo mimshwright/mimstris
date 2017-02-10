@@ -4,7 +4,6 @@ export const ADD_PIECE_SCORE = 'Add piece score'
 export const ADD_CLEARED_LINE_SCORE = 'Add cleared line score'
 export const SET_LINES = 'Set lines'
 export const INCREMENT_LINES = 'Increment lines'
-export const SET_LEVEL = 'Set level'
 export const RESET_SCORE = 'Reset score'
 
 export const addPieceScore = (level) => ({
@@ -40,9 +39,4 @@ export const setLines = lines => ({
 export const incrementLines = lines => ({
   type: INCREMENT_LINES,
   lines
-})
-
-export const setLevel = level => ({
-  type: SET_LEVEL,
-  level
 })

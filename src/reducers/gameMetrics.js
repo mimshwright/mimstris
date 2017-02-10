@@ -1,9 +1,8 @@
 import * as actions from '../actions'
-import config from '../config'
 
 const BASE_LINE_SCORE = 10
 
-export const score = (previousScore = 0, {type, lines, level, score = 0}) => {
+export const score = (previousScore = 0, {type, level, lines, score = 0}) => {
   switch (type) {
     case actions.RESET_SCORE:
       return 0
@@ -31,16 +30,5 @@ export const lines = (previousLines = 0, {type, lines = 0}) => {
       return lines + previousLines
     default:
       return previousLines
-  }
-}
-
-export const level = (previousLevel = 0, {type, level = 0}) => {
-  switch (type) {
-    case actions.RESET_SCORE:
-      return config.startLevel
-    case actions.SET_LEVEL:
-      return level
-    default:
-      return previousLevel
   }
 }
