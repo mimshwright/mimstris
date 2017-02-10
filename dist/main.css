@@ -44,7 +44,7 @@ main {
   padding: 0;
 }
 
-#message {
+.modalText {
   position: absolute;
   top: 45%;
   left: 0;

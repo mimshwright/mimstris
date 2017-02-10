@@ -3,10 +3,10 @@ import { Provider } from 'react-redux'
 import store from '../store'
 
 import Scoreboard from '../containers/Scoreboard'
+import Message from '../containers/Message'
 import Instructions from './Instructions'
 import ConfigPanel from './ConfigPanel'
 import NextPiece from './NextPiece'
-import Message from './Message'
 
 import config from '../config'
 
@@ -26,7 +26,7 @@ const App = props => (
       </div>
       <div className='gameWrapper' style={{width: CANVAS_WIDTH, height: CANVAS_HEIGHT}} >
         <canvas id='game' width={CANVAS_WIDTH} height={CANVAS_HEIGHT} />
-        <Message message={props.message} />
+        <Message />
         <Instructions />
       </div>
     </div>
@@ -34,7 +34,6 @@ const App = props => (
 )
 
 App.propTypes = {
-  message: PropTypes.string,
   nextPiece: PropTypes.object
 }
 

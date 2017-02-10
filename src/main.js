@@ -42,7 +42,6 @@ let lastRotate = 0
 let board = []
 let paused = false
 let gameRunning = false
-let message = ''
 
 // Automatically pause when window is out of focus
 window.onblur = (e) => {
@@ -69,7 +68,7 @@ function onFrame (currentTime) {
 
 function reset () {
   store.dispatch(actions.resetScore())
-  message = ''
+  store.dispatch(actions.clearMessage())
 
   timeSincePieceLastFell = 0
   lastFrameTime = 0
@@ -87,11 +86,11 @@ function reset () {
 
 function pauseGame () {
   paused = true
-  message = 'Paused'
+  store.dispatch(actions.setMessage('Paused'))
 }
 function unpauseGame () {
   paused = false
-  message = ''
+  store.dispatch(actions.clearMessage())
 }
 
 function update (currentTime) {
@@ -191,7 +190,7 @@ function update (currentTime) {
 
     if (detectCollision(board, currentPiece)) {
       console.error('Game over! Press ENTER to restart.')
-      message = 'Game Over!'
+      store.dispatch(actions.setMessage('Game Over!'))
       gameRunning = false
     }
   }
@@ -303,8 +302,5 @@ function clearCompletedLines (board) {
 
 function draw () {
   canvasRenderer.drawGame(board, currentPiece)
-  ReactDOM.render(
-    <App message={message}
-      nextPiece={nextPiece}
-       />, document.getElementById('app'))
+  ReactDOM.render( <App nextPiece={nextPiece} />, document.getElementById('app') )
 }
