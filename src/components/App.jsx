@@ -1,7 +1,6 @@
 import React, {PropTypes} from 'react'
-import { createStore } from 'redux'
 import { Provider } from 'react-redux'
-import gameState from '../reducers'
+import store from '../store'
 
 import Scoreboard from '../containers/Scoreboard'
 import Instructions from './Instructions'
@@ -16,12 +15,6 @@ const CANVAS_WIDTH = BOARD_WIDTH * config.blockSize
 const CANVAS_HEIGHT = BOARD_HEIGHT * config.blockSize
 const NEXT_WIDTH = 5 * config.blockSize
 const NEXT_HEIGHT = 5 * config.blockSize
-
-export const store = createStore(
-  gameState,
-  // To trigger dev tools in browser extension
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-)
 
 const App = props => (
   <Provider store={store}>

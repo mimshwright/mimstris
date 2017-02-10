@@ -16,7 +16,8 @@ import { detectCollision as detectMatrixCollision, rotateRight, rotateLeft, getM
 
 import * as actions from './actions'
 
-import App, {store} from './components/App'
+import store from './store'
+import App from './components/App'
 import getFallRate from './selectors/fallRate'
 import getLevel from './selectors/level'
 
