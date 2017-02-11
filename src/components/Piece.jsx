@@ -23,7 +23,9 @@ class Piece extends React.Component {
   render () {
     return (
       <div className='piece'>
-        <canvas ref='canvas' width={this.props.width} height={this.props.height} />
+        <canvas ref='canvas' width={this.props.width} height={this.props.height} >
+          {this.props.piece.name}
+        </canvas>
       </div>
     )
   }
