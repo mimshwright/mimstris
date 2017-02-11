@@ -3,7 +3,15 @@ import canvasRenderer from '../canvasRenderer'
 import config from '../config'
 
 class Piece extends React.Component {
+  componentDidMount () {
+    this.drawCanvas()
+  }
+
   componentDidUpdate () {
+    this.drawCanvas()
+  }
+
+  drawCanvas () {
     const canvas = this.refs.canvas
     if (canvas) {
       const context = canvas.getContext('2d')

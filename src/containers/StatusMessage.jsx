@@ -10,7 +10,7 @@ const mapStateToProps = (state) => {
 }
 
 const StatusMessage = props => (
-  <ModalText text={props.text} />
+  <ModalText {...props} />
 )
 
 export default connect(mapStateToProps)(StatusMessage)

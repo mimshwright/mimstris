@@ -7,10 +7,10 @@ const mapStateToProps = (state) => ({
   piece: state.nextPiece
 })
 
-const NextPiece = ({piece, width, height}) => (
+const NextPiece = (props) => (
   <div className='nextPiece'>
     <div>Next...</div>
-    <Piece piece={piece} width={width} height={height} />
+    <Piece {...props} />
   </div>
 )
 
