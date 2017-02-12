@@ -14,12 +14,15 @@ import canvasRenderer from './canvasRenderer'
 import pieces from './pieces'
 import { detectCollision as detectMatrixCollision, rotateRight, rotateLeft, getMatrixWidth, removeRowAndShiftRemaining, createEmptyMatrix, combineMatrices } from './matrixUtil'
 
-import * as actions from './actions'
-
 import store from './store'
+import * as score from './stores/score'
+import * as lines from './stores/lines'
+import * as level from './stores/level'
+import * as fallRate from './stores/fallRate'
+import * as nextPiece from './stores/nextPiece'
+import * as message from './stores/message'
+
 import App from './components/App'
-import getFallRate from './selectors/fallRate'
-import getLevel from './selectors/level'
 
 const DOWN_KEYS = ['down', 's']
 const LEFT_KEYS = ['left', 'a']
@@ -66,16 +69,16 @@ function onFrame (currentTime) {
 }
 
 function reset () {
-  store.dispatch(actions.resetScore())
-  store.dispatch(actions.clearMessage())
+  store.dispatch(score.resetScore())
+  store.dispatch(message.clearMessage())
 
   timeSincePieceLastFell = 0
   lastFrameTime = 0
   lateralMovementRate = config.lateralMovementRate
   downMovementRate = config.downMovementRate
 
-  const nextPiece = getRandomPiece()
-  store.dispatch(actions.setNextPiece(nextPiece))
+  const nextRandomPiece = getRandomPiece()
+  store.dispatch(nextPiece.setNextPiece(nextRandomPiece))
   currentPiece = null
   board = createEmptyMatrix(...config.boardSize)
   spawnNextPiece()
@@ -86,11 +89,11 @@ function reset () {
 
 function pauseGame () {
   paused = true
-  store.dispatch(actions.setMessage('Paused'))
+  store.dispatch(message.setMessage('Paused'))
 }
 function unpauseGame () {
   paused = false
-  store.dispatch(actions.clearMessage())
+  store.dispatch(message.clearMessage())
 }
 
 function update (currentTime) {
@@ -169,8 +172,8 @@ function update (currentTime) {
 
   timeSincePieceLastFell += deltaTime
 
-  const fallRate = getFallRate(store.getState())
-  const stepThreshold = Math.ceil(1000 / fallRate)
+  const currentFallRate = fallRate.getFallRate(store.getState())
+  const stepThreshold = Math.ceil(1000 / currentFallRate)
   if (timeSincePieceLastFell > stepThreshold) {
     // console.log('tick')
     makePieceFall(currentPiece)
@@ -185,12 +188,12 @@ function update (currentTime) {
     board = resolveCollision(board, currentPiece)
     spawnNextPiece()
 
-    const level = getLevel(store.getState())
-    store.dispatch(actions.addPieceScore(level))
+    const currentLevel = level.getLevel(store.getState())
+    store.dispatch(score.addPieceScore(currentLevel))
 
     if (detectCollision(board, currentPiece)) {
       console.error('Game over! Press ENTER to restart.')
-      store.dispatch(actions.setMessage('Game Over!'))
+      store.dispatch(message.setMessage('Game Over!'))
       gameRunning = false
     }
   }
@@ -205,12 +208,12 @@ function makePieceFall (piece) {
 
 function spawnNextPiece () {
   const [W] = config.boardSize
-  currentPiece = clonePiece(store.getState().nextPiece)
+  currentPiece = clonePiece(nextPiece.getNextPiece(store.getState()))
   currentPiece.x = Math.floor((W - currentPiece.matrix[0].length) / 2)
 
-  const nextPiece = getRandomPiece()
-  store.dispatch(actions.setNextPiece(nextPiece))
-  // console.log(currentPiece.name, '(', nextPiece.name, 'next )')
+  const randomNextPiece = getRandomPiece()
+  store.dispatch(nextPiece.setNextPiece(randomNextPiece))
+  // console.log(currentPiece.name, '(', randomNextPiece.name, 'next )')
 }
 
 function clonePiece (piece) {
@@ -293,9 +296,9 @@ function clearCompletedLines (board) {
 
   if (fullRows.length) {
     const clearedLines = fullRows.length
-    const level = getLevel(store.getState())
-    store.dispatch(actions.addClearedLineScore(clearedLines, level))
-    store.dispatch(actions.incrementLines(clearedLines))
+    const currentLevel = level.getLevel(store.getState())
+    store.dispatch(score.addClearedLineScore(clearedLines, currentLevel))
+    store.dispatch(lines.incrementLines(clearedLines))
   }
 
   return fullRows.reduce((board, rowIndex) => removeRowAndShiftRemaining(board, rowIndex), board)

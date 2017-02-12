@@ -1,8 +1,8 @@
 import {createSelector} from 'reselect'
 import config from '../config'
-import getLevel from './level'
+import {getLevel} from './level'
 
-export default createSelector(
+export const getFallRate = createSelector(
   getLevel,
   (level) => config.initialFallRate + (level * config.fallRateLevelModifier)
 )

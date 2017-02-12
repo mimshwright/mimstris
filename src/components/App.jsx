@@ -33,7 +33,4 @@ const App = props => (
   </Provider>
 )
 
-App.propTypes = {
-}
-
 export default App

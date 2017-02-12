@@ -1,11 +1,12 @@
 import React from 'react'
 import {connect} from 'react-redux'
+import {getMessage} from '../stores/message'
 
 import ModalText from '../components/ModalText'
 
 const mapStateToProps = (state) => {
   return ({
-    text: state.message
+    text: getMessage(state)
   })
 }
 
