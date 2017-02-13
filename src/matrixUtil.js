@@ -110,3 +110,10 @@ export const rotateRight = (matrix) => {
 export const rotateLeft = (matrix) => {
   return flip(matrix).reverse()
 }
+
+export const rotate = (matrix, direction) => {
+  if (direction && (direction <= 0 || direction.toString().toLowerCase() === 'left')) {
+    return rotateLeft(matrix)
+  }
+  return rotateRight(matrix)
+}

@@ -193,3 +193,17 @@ test('rotateRight()', (assert) => {
   let msg = 'Values rotated as expected'
   assert.deepEqual(rotated, expected, msg)
 })
+
+test('rotate()', (assert) => {
+  let matrix = (
+    [0, 0, 0],
+    [0, 1, 0],
+    [1, 1, 0]
+  )
+
+  assert.deepEqual(matrixUtil.rotate(matrix, 'right'), matrixUtil.rotateRight(matrix), 'rotate() is another way to call rotateRight() depending on a string')
+  assert.deepEqual(matrixUtil.rotate(matrix, 'left'), matrixUtil.rotateLeft(matrix), 'rotate() is another way to call rotateLeft() depending on a string')
+  assert.deepEqual(matrixUtil.rotate(matrix, 1), matrixUtil.rotateRight(matrix), 'rotate() can use a positive number to rotate right')
+  assert.deepEqual(matrixUtil.rotate(matrix, -1), matrixUtil.rotateLeft(matrix), 'rotate() can use a negative number to rotate left')
+  assert.deepEqual(matrixUtil.rotate(matrix), matrixUtil.rotateRight(matrix), 'rotate() by default rotates to the right')
+})

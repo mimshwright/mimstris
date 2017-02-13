@@ -12,7 +12,7 @@ pressed.start()
 import config from './config'
 import canvasRenderer from './canvasRenderer'
 import pieces from './pieces'
-import { detectCollision as detectMatrixCollision, rotateRight, rotateLeft, getMatrixWidth, removeRowAndShiftRemaining, createEmptyMatrix, combineMatrices } from './matrixUtil'
+import { detectCollision as detectMatrixCollision, getMatrixWidth, removeRowAndShiftRemaining, createEmptyMatrix, combineMatrices } from './matrixUtil'
 
 import store from './store'
 import * as score from './stores/score'
@@ -21,6 +21,7 @@ import * as level from './stores/level'
 import * as fallRate from './stores/fallRate'
 import * as nextPiece from './stores/nextPiece'
 import * as message from './stores/message'
+import * as currentPiece from './stores/currentPiece'
 
 import App from './components/App'
 
@@ -31,7 +32,6 @@ const ROTATE_LEFT_KEYS = ['/', 'z']
 const ROTATE_RIGHT_KEYS = ['shift']
 const START_KEYS = ['enter']
 
-let currentPiece = null
 let lateralMovementRate = null // Rate of pieces moving by user control in steps per second
 let downMovementRate = null // Rate of pieces moving down by user control in steps per second
 let timeSincePieceLastFell = 0 // time since the piece last moved down automatically
@@ -60,6 +60,7 @@ window.onblur = (e) => {
 
 reset()
 window.requestAnimationFrame(onFrame)
+ReactDOM.render(<App />, document.getElementById('app'))
 
 function onFrame (currentTime) {
   update(currentTime)
@@ -79,9 +80,11 @@ function reset () {
 
   const nextRandomPiece = getRandomPiece()
   store.dispatch(nextPiece.setNextPiece(nextRandomPiece))
-  currentPiece = null
+  store.dispatch(currentPiece.setCurrentPiece(null))
   board = createEmptyMatrix(...config.boardSize)
-  spawnNextPiece()
+  const {currentPiece: newCurrentPiece, nextPiece: newNextPiece} = spawnNextAndCurrentPieces()
+  store.dispatch(currentPiece.setCurrentPiece(newCurrentPiece))
+  store.dispatch(nextPiece.setNextPiece(newNextPiece))
 
   paused = false
   gameRunning = true
@@ -113,8 +116,10 @@ function update (currentTime) {
     return
   }
 
-  if (!currentPiece) {
-    spawnNextPiece()
+  if (!getCurrentPiece()) {
+    const {currentPiece: newCurrentPiece, nextPiece: newNextPiece} = spawnNextAndCurrentPieces()
+    store.dispatch(currentPiece.setCurrentPiece(newCurrentPiece))
+    store.dispatch(nextPiece.setNextPiece(newNextPiece))
   }
 
   const lateralMovementThreshold = Math.ceil(1000 / lateralMovementRate)
@@ -126,12 +131,12 @@ function update (currentTime) {
       lastDownMove = currentTime
 
       if (config.instantDown) {
-        while (!detectCollisionBelow(board, currentPiece)) {
-          makePieceFall(currentPiece)
+        while (!detectCollisionBelow(board, getCurrentPiece())) {
+          makePieceFall(getCurrentPiece())
         }
         pressed.remove(...DOWN_KEYS)
       } else {
-        makePieceFall(currentPiece)
+        makePieceFall(getCurrentPiece())
       }
     }
   } else {
@@ -141,7 +146,8 @@ function update (currentTime) {
   if (pressed.some(...LEFT_KEYS)) {
     if (currentTime - lastLeftMove > lateralMovementThreshold) {
       lastLeftMove = currentTime
-      movePieceLeft(currentPiece)
+
+      movePieceLeft(getCurrentPiece())
     }
   } else {
     lastLeftMove = 0
@@ -150,7 +156,7 @@ function update (currentTime) {
   if (pressed.some(...RIGHT_KEYS)) {
     if (currentTime - lastRightMove > lateralMovementThreshold) {
       lastRightMove = currentTime
-      movePieceRight(currentPiece)
+      movePieceRight(getCurrentPiece())
     }
   } else {
     lastRightMove = 0
@@ -160,10 +166,10 @@ function update (currentTime) {
     if (currentTime - lastRotate > lateralMovementThreshold) {
       lastRotate = currentTime
       if (pressed.some(...ROTATE_LEFT_KEYS)) {
-        rotatePieceLeft(currentPiece)
+        rotatePieceLeft(getCurrentPiece())
       }
       if (pressed.some(...ROTATE_RIGHT_KEYS)) {
-        rotatePieceRight(currentPiece)
+        rotatePieceRight(getCurrentPiece())
       }
     }
   } else {
@@ -176,22 +182,27 @@ function update (currentTime) {
   const stepThreshold = Math.ceil(1000 / currentFallRate)
   if (timeSincePieceLastFell > stepThreshold) {
     // console.log('tick')
-    makePieceFall(currentPiece)
+    makePieceFall(getCurrentPiece())
   }
 
-  if (detectCollision(board, currentPiece)) {
+  if (detectCollision(board, getCurrentPiece())) {
     // console.log('Collision detected!')
 
     // This bit of foo allows you to shift the piece around a bit and only
     // detects collisions at the end of the step instead of at the beginning.
-    currentPiece.y -= 1
-    board = resolveCollision(board, currentPiece)
-    spawnNextPiece()
+    const previousPositionPiece = _cloneDeep(getCurrentPiece())
+    previousPositionPiece.y -= 1
+    board = resolveCollision(board, previousPositionPiece)
+
+    const {currentPiece: newCurrentPiece, nextPiece: newNextPiece} = spawnNextAndCurrentPieces()
+    store.dispatch(currentPiece.setCurrentPiece(newCurrentPiece))
+    store.dispatch(nextPiece.setNextPiece(newNextPiece))
 
     const currentLevel = level.getLevel(store.getState())
     store.dispatch(score.addPieceScore(currentLevel))
 
-    if (detectCollision(board, currentPiece)) {
+    // If there is still a collision right after a new piece is spawned, the game ends.
+    if (detectCollision(board, getCurrentPiece())) {
       console.error('Game over! Press ENTER to restart.')
       store.dispatch(message.setMessage('Game Over!'))
       gameRunning = false
@@ -201,19 +212,21 @@ function update (currentTime) {
   board = clearCompletedLines(board)
 }
 
+const getCurrentPiece = () => currentPiece.getCurrentPiece(store.getState())
+
 function makePieceFall (piece) {
   timeSincePieceLastFell = 0
   piece.y += 1
 }
 
-function spawnNextPiece () {
+function spawnNextAndCurrentPieces () {
   const [W] = config.boardSize
-  currentPiece = clonePiece(nextPiece.getNextPiece(store.getState()))
-  currentPiece.x = Math.floor((W - currentPiece.matrix[0].length) / 2)
+  const newCurrentPiece = clonePiece(nextPiece.getNextPiece(store.getState()))
+  newCurrentPiece.x = Math.floor((W - newCurrentPiece.matrix[0].length) / 2)
 
   const randomNextPiece = getRandomPiece()
-  store.dispatch(nextPiece.setNextPiece(randomNextPiece))
-  // console.log(currentPiece.name, '(', randomNextPiece.name, 'next )')
+
+  return {currentPiece: newCurrentPiece, nextPiece: randomNextPiece}
 }
 
 function clonePiece (piece) {
@@ -241,17 +254,22 @@ function movePieceRight (piece) {
 
 function rotatePieceRight (piece) {
   const matrixBeforeRotation = piece.matrix
-  piece.matrix = rotateRight(piece.matrix)
-  validateRotation(board, piece, matrixBeforeRotation)
+  store.dispatch(currentPiece.rotateRight())
+  const rotatedPiece = getCurrentPiece()
+  const x = validateRotation(board, rotatedPiece, matrixBeforeRotation)
+  store.dispatch(currentPiece.setX(x))
 }
 
 function rotatePieceLeft (piece) {
   const matrixBeforeRotation = piece.matrix
-  piece.matrix = rotateLeft(piece.matrix)
-  validateRotation(board, piece, matrixBeforeRotation)
+  store.dispatch(currentPiece.rotateLeft())
+  const rotatedPiece = getCurrentPiece()
+  const x = validateRotation(board, rotatedPiece, matrixBeforeRotation)
+  store.dispatch(currentPiece.setX(x))
 }
 
 function validateRotation (board, piece, originalMatrix) {
+  piece = _cloneDeep(piece)
   let originalX = piece.x
   let pieceWidth = getMatrixWidth(piece.matrix)
   let offsetX = 1
@@ -267,11 +285,10 @@ function validateRotation (board, piece, originalMatrix) {
     }
 
     if (Math.abs(offsetX) > Math.ceil(pieceWidth / 2)) {
-      piece.matrix = originalMatrix
-      piece.x = originalX
-      return piece
+      return originalX
     }
   }
+  return piece.x
 }
 
 function detectCollision (board, {x, y, matrix: pieceMatrix}) {
@@ -305,6 +322,5 @@ function clearCompletedLines (board) {
 }
 
 function draw () {
-  canvasRenderer.drawGame(board, currentPiece)
-  ReactDOM.render(<App />, document.getElementById('app'))
+  canvasRenderer.drawGame(board, getCurrentPiece())
 }
