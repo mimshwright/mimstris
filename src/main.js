@@ -12,7 +12,7 @@ pressed.start()
 import config from './config'
 import canvasRenderer from './canvasRenderer'
 import pieces from './pieces'
-import { detectCollision as detectMatrixCollision, getMatrixWidth, removeRowAndShiftRemaining, createEmptyMatrix, combineMatrices } from './matrixUtil'
+import { detectCollision as detectMatrixCollision, removeRowAndShiftRemaining, createEmptyMatrix, combineMatrices } from './matrixUtil'
 
 import store from './store'
 import * as score from './stores/score'
@@ -20,8 +20,8 @@ import * as lines from './stores/lines'
 import * as level from './stores/level'
 import * as fallRate from './stores/fallRate'
 import * as nextPiece from './stores/nextPiece'
-import * as message from './stores/message'
 import * as currentPiece from './stores/currentPiece'
+import * as gameState from './stores/gameState'
 
 import App from './components/App'
 
@@ -42,12 +42,11 @@ let lastDownMove = 0
 let lastRotate = 0
 
 let board = []
-let paused = false
-let gameRunning = false
 
 // Automatically pause when window is out of focus
 window.onblur = (e) => {
-  if (!paused && gameRunning) {
+  const currentGameState = gameState.getGameState(store.getState())
+  if (currentGameState === gameState.GAME_STATE_RUNNING) {
     pauseGame()
 
     // Unpause when it comes back to focus (but not if the user manually paused)
@@ -71,7 +70,6 @@ function onFrame (currentTime) {
 
 function reset () {
   store.dispatch(score.resetScore())
-  store.dispatch(message.clearMessage())
 
   timeSincePieceLastFell = 0
   lastFrameTime = 0
@@ -86,33 +84,32 @@ function reset () {
   store.dispatch(currentPiece.setCurrentPiece(newCurrentPiece))
   store.dispatch(nextPiece.setNextPiece(newNextPiece))
 
-  paused = false
-  gameRunning = true
+  store.dispatch(gameState.setGameState(gameState.GAME_STATE_RUNNING))
 }
 
 function pauseGame () {
-  paused = true
-  store.dispatch(message.setMessage('Paused'))
+  store.dispatch(gameState.setGameState(gameState.GAME_STATE_PAUSED))
 }
 function unpauseGame () {
-  paused = false
-  store.dispatch(message.clearMessage())
+  store.dispatch(gameState.setGameState(gameState.GAME_STATE_RUNNING))
 }
 
 function update (currentTime) {
   let deltaTime = currentTime - lastFrameTime
   lastFrameTime = currentTime
+  let currentGameState = gameState.getGameState(store.getState())
 
   if (pressed.some(...START_KEYS)) {
-    if (gameRunning === false) {
+    if (currentGameState === gameState.GAME_STATE_GAME_OVER) {
       reset()
     } else {
-      paused ? unpauseGame() : pauseGame()
+      currentGameState === gameState.GAME_STATE_PAUSED ? unpauseGame() : pauseGame()
     }
     pressed.remove(...START_KEYS)
   }
 
-  if (gameRunning === false || paused) {
+  currentGameState = gameState.getGameState(store.getState())
+  if (currentGameState !== gameState.GAME_STATE_RUNNING) {
     return
   }
 
@@ -204,8 +201,7 @@ function update (currentTime) {
     // If there is still a collision right after a new piece is spawned, the game ends.
     if (detectCollision(board, getCurrentPiece())) {
       console.error('Game over! Press ENTER to restart.')
-      store.dispatch(message.setMessage('Game Over!'))
-      gameRunning = false
+      store.dispatch(gameState.setGameState(gameState.GAME_STATE_GAME_OVER))
     }
   }
 
@@ -253,42 +249,11 @@ function movePieceRight (piece) {
 }
 
 function rotatePieceRight (piece) {
-  const matrixBeforeRotation = piece.matrix
-  store.dispatch(currentPiece.rotateRight())
-  const rotatedPiece = getCurrentPiece()
-  const x = validateRotation(board, rotatedPiece, matrixBeforeRotation)
-  store.dispatch(currentPiece.setX(x))
+  store.dispatch(currentPiece.rotateRight(board))
 }
 
 function rotatePieceLeft (piece) {
-  const matrixBeforeRotation = piece.matrix
-  store.dispatch(currentPiece.rotateLeft())
-  const rotatedPiece = getCurrentPiece()
-  const x = validateRotation(board, rotatedPiece, matrixBeforeRotation)
-  store.dispatch(currentPiece.setX(x))
-}
-
-function validateRotation (board, piece, originalMatrix) {
-  piece = _cloneDeep(piece)
-  let originalX = piece.x
-  let pieceWidth = getMatrixWidth(piece.matrix)
-  let offsetX = 1
-
-  while (detectCollision(board, piece)) {
-    piece.x += offsetX
-
-    // flip direction and add one square after trying left and right
-    if (offsetX > 0) {
-      offsetX = -offsetX
-    } else {
-      offsetX = -offsetX + 1
-    }
-
-    if (Math.abs(offsetX) > Math.ceil(pieceWidth / 2)) {
-      return originalX
-    }
-  }
-  return piece.x
+  store.dispatch(currentPiece.rotateLeft(board))
 }
 
 function detectCollision (board, {x, y, matrix: pieceMatrix}) {

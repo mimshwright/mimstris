@@ -1,20 +1,17 @@
-export const CLEAR_MESSAGE = 'Clear message'
-export const clearMessage = () => ({ type: CLEAR_MESSAGE })
+import {createSelector} from 'reselect'
+import * as gameState from './gameState'
 
-export const SET_MESSAGE = 'Set message'
-export const setMessage = message => ({ type: SET_MESSAGE, message })
-
-const initialState = ''
-
-export default function reducers (previousMessage = initialState, action) {
-  switch (action.type) {
-    case CLEAR_MESSAGE:
-      return initialState
-    case SET_MESSAGE:
-      return action.message
-    default:
-      return previousMessage
+export const getMessage = createSelector(
+  gameState.getGameState,
+  (state) => {
+    switch (state) {
+      case gameState.GAME_STATE_PAUSED:
+        return 'Paused'
+      case gameState.GAME_STATE_GAME_OVER:
+        return 'Game Over!'
+      case gameState.GAME_STATE_RUNNING:
+      default:
+        return ''
+    }
   }
-}
-
-export const getMessage = state => state.message
+)
