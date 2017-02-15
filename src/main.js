@@ -182,7 +182,8 @@ function update (currentTime) {
     makePieceFall(getCurrentPiece())
   }
 
-  if (detectCollision(board, getCurrentPiece())) {
+  const currentPieceValue = getCurrentPiece()
+  if (detectCollision(board, currentPieceValue)) {
     // console.log('Collision detected!')
 
     // This bit of foo allows you to shift the piece around a bit and only
@@ -210,11 +211,6 @@ function update (currentTime) {
 
 const getCurrentPiece = () => currentPiece.getCurrentPiece(store.getState())
 
-function makePieceFall (piece) {
-  timeSincePieceLastFell = 0
-  piece.y += 1
-}
-
 function spawnNextAndCurrentPieces () {
   const [W] = config.boardSize
   const newCurrentPiece = clonePiece(nextPiece.getNextPiece(store.getState()))
@@ -238,14 +234,17 @@ function getRandomPiece () {
   return pieces[i]
 }
 
+function makePieceFall (piece) {
+  timeSincePieceLastFell = 0
+  store.dispatch(currentPiece.movePieceDown())
+}
+
 function movePieceLeft (piece) {
-  piece.x -= 1
-  if (detectCollision(board, piece)) { piece.x += 1 }
+  store.dispatch(currentPiece.movePieceLeft(board))
 }
 
 function movePieceRight (piece) {
-  piece.x += 1
-  if (detectCollision(board, piece)) { piece.x -= 1 }
+  store.dispatch(currentPiece.movePieceRight(board))
 }
 
 function rotatePieceRight (piece) {

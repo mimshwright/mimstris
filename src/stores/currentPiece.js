@@ -26,6 +26,23 @@ export const rotateCurrentPiece = (direction, board) => ({
   board
 })
 
+export const OFFSET_X_AND_CHECK = 'Offset X and Check'
+export const movePieceLeft = (board) => ({
+  type: OFFSET_X_AND_CHECK,
+  distance: -1,
+  board
+})
+export const movePieceRight = (board) => ({
+  type: OFFSET_X_AND_CHECK,
+  distance: 1,
+  board
+})
+
+export const MOVE_PIECE_DOWN = "Move Piece Down"
+export const movePieceDown = () => ({
+  type: MOVE_PIECE_DOWN
+})
+
 export const SET_X = 'Set x'
 export const setX = x => ({
   type: SET_X,
@@ -35,6 +52,8 @@ export const setX = x => ({
 const initialState = null
 
 export default function reducer (previousPiece = initialState, action) {
+  let newPiece
+
   switch (action.type) {
     case SET_CURRENT_PIECE:
       return action.piece
@@ -43,7 +62,7 @@ export default function reducer (previousPiece = initialState, action) {
       if (!board) {
         throw new Error("The action '" + action.type + "' must provide a value called 'board'.")
       }
-      let newPiece = _cloneDeep(previousPiece)
+      newPiece = _cloneDeep(previousPiece)
       newPiece.matrix = rotate(newPiece.matrix, direction)
       const pieceWidth = getMatrixWidth(newPiece.matrix)
 
@@ -69,9 +88,21 @@ export default function reducer (previousPiece = initialState, action) {
       return newPiece
 
     case SET_X:
-      let piece = _cloneDeep(previousPiece)
-      piece.x = action.x
-      return piece
+      newPiece = _cloneDeep(previousPiece)
+      newPiece.x = action.x
+      return newPiece
+    case OFFSET_X_AND_CHECK:
+      newPiece = _cloneDeep(previousPiece)
+      newPiece.x += action.distance
+      if (detectCollision(action.board, newPiece.matrix, newPiece.x, newPiece.y)) {
+        return previousPiece
+      }
+      return newPiece
+      case MOVE_PIECE_DOWN:
+      newPiece = _cloneDeep(previousPiece)
+      newPiece.y += 1
+      return newPiece
+
     default:
       return previousPiece
   }
