@@ -38,7 +38,7 @@ export const movePieceRight = (board) => ({
   board
 })
 
-export const MOVE_PIECE_DOWN = "Move Piece Down"
+export const MOVE_PIECE_DOWN = 'Move Piece Down'
 export const movePieceDown = () => ({
   type: MOVE_PIECE_DOWN
 })
@@ -98,7 +98,7 @@ export default function reducer (previousPiece = initialState, action) {
         return previousPiece
       }
       return newPiece
-      case MOVE_PIECE_DOWN:
+    case MOVE_PIECE_DOWN:
       newPiece = _cloneDeep(previousPiece)
       newPiece.y += 1
       return newPiece

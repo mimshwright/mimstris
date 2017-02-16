@@ -79,6 +79,12 @@ function drawBlock (context, row, column, color, outlinePieces = true) {
 }
 
 function drawGame (board, currentPiece) {
+  if (!board || !board[0]) {
+    throw new Error('"board" is not defined.')
+  }
+  if (!currentPiece) {
+    throw new Error('"currentPiece" is not defined.')
+  }
   const canvas = document.getElementById('game')
   if (canvas) {
     const context = canvas.getContext('2d')

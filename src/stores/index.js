@@ -4,6 +4,7 @@ import score from './score'
 import lines from './lines'
 import nextPiece from './nextPiece'
 import currentPiece from './currentPiece'
+import board from './board'
 import gameState from './gameState'
 // selector-only modules
 // import message from './message'
@@ -11,5 +12,5 @@ import gameState from './gameState'
 // import level from './level'
 
 export default combineReducers(
-  {score, lines, nextPiece, currentPiece, gameState}
+  {score, lines, nextPiece, currentPiece, board, gameState}
 )

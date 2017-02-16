@@ -1,5 +1,3 @@
-import _lt from 'lodash/fp/lt'
-import _every from 'lodash/fp/every'
 import _cloneDeep from 'lodash/fp/cloneDeep'
 import _random from 'lodash/fp/random'
 
@@ -12,16 +10,21 @@ pressed.start()
 import config from './config'
 import canvasRenderer from './canvasRenderer'
 import pieces from './pieces'
-import { detectCollision as detectMatrixCollision, removeRowAndShiftRemaining, createEmptyMatrix, combineMatrices } from './matrixUtil'
+import { detectCollision as detectMatrixCollision } from './matrixUtil'
 
 import store from './store'
 import * as score from './stores/score'
-import * as lines from './stores/lines'
+// import * as lines from './stores/lines'
 import * as level from './stores/level'
 import * as fallRate from './stores/fallRate'
 import * as nextPiece from './stores/nextPiece'
 import * as currentPiece from './stores/currentPiece'
+import * as boardX from './stores/board'
 import * as gameState from './stores/gameState'
+
+const getCurrentPiece = () => currentPiece.getCurrentPiece(store.getState())
+const getBoard = () => boardX.getBoard(store.getState())
+const getNextPiece = () => nextPiece.getNextPiece(store.getState())
 
 import App from './components/App'
 
@@ -41,7 +44,18 @@ let lastLeftMove = 0
 let lastDownMove = 0
 let lastRotate = 0
 
-let board = []
+// Main executable code:
+reset()
+window.requestAnimationFrame(onFrame)
+ReactDOM.render(<App />, document.getElementById('app'))
+//
+
+function onFrame (currentTime) {
+  update(currentTime)
+  draw()
+
+  window.requestAnimationFrame(onFrame)
+}
 
 // Automatically pause when window is out of focus
 window.onblur = (e) => {
@@ -57,34 +71,21 @@ window.onblur = (e) => {
   }
 }
 
-reset()
-window.requestAnimationFrame(onFrame)
-ReactDOM.render(<App />, document.getElementById('app'))
-
-function onFrame (currentTime) {
-  update(currentTime)
-  draw()
-
-  window.requestAnimationFrame(onFrame)
-}
-
 function reset () {
-  store.dispatch(score.resetScore())
-
   timeSincePieceLastFell = 0
   lastFrameTime = 0
   lateralMovementRate = config.lateralMovementRate
   downMovementRate = config.downMovementRate
 
-  const nextRandomPiece = getRandomPiece()
-  store.dispatch(nextPiece.setNextPiece(nextRandomPiece))
-  store.dispatch(currentPiece.setCurrentPiece(null))
-  board = createEmptyMatrix(...config.boardSize)
-  const {currentPiece: newCurrentPiece, nextPiece: newNextPiece} = spawnNextAndCurrentPieces()
+  store.dispatch(boardX.resetBoard())
+  store.dispatch(score.resetScore())
+  const {currentPiece: newCurrentPiece, nextPiece: randomNextPiece} = spawnNextAndCurrentPieces()
   store.dispatch(currentPiece.setCurrentPiece(newCurrentPiece))
-  store.dispatch(nextPiece.setNextPiece(newNextPiece))
+  store.getState()
+  store.dispatch(nextPiece.setNextPiece(randomNextPiece))
 
   store.dispatch(gameState.setGameState(gameState.GAME_STATE_RUNNING))
+  console.log(store.getState())
 }
 
 function pauseGame () {
@@ -128,11 +129,13 @@ function update (currentTime) {
       lastDownMove = currentTime
 
       if (config.instantDown) {
-        while (!detectCollisionBelow(board, getCurrentPiece())) {
+        while (!detectCollisionBelow(getBoard(), getCurrentPiece())) {
+          timeSincePieceLastFell = 0
           makePieceFall(getCurrentPiece())
         }
         pressed.remove(...DOWN_KEYS)
       } else {
+        timeSincePieceLastFell = 0
         makePieceFall(getCurrentPiece())
       }
     }
@@ -179,18 +182,18 @@ function update (currentTime) {
   const stepThreshold = Math.ceil(1000 / currentFallRate)
   if (timeSincePieceLastFell > stepThreshold) {
     // console.log('tick')
+    timeSincePieceLastFell = 0
     makePieceFall(getCurrentPiece())
   }
 
-  const currentPieceValue = getCurrentPiece()
-  if (detectCollision(board, currentPieceValue)) {
+  if (detectCollision(getBoard(), getCurrentPiece())) {
     // console.log('Collision detected!')
 
     // This bit of foo allows you to shift the piece around a bit and only
     // detects collisions at the end of the step instead of at the beginning.
     const previousPositionPiece = _cloneDeep(getCurrentPiece())
     previousPositionPiece.y -= 1
-    board = resolveCollision(board, previousPositionPiece)
+    store.dispatch(boardX.mergePieceIntoBoard(previousPositionPiece))
 
     const {currentPiece: newCurrentPiece, nextPiece: newNextPiece} = spawnNextAndCurrentPieces()
     store.dispatch(currentPiece.setCurrentPiece(newCurrentPiece))
@@ -199,21 +202,26 @@ function update (currentTime) {
     const currentLevel = level.getLevel(store.getState())
     store.dispatch(score.addPieceScore(currentLevel))
 
+    store.dispatch(boardX.clearCompletedLines())
+
     // If there is still a collision right after a new piece is spawned, the game ends.
-    if (detectCollision(board, getCurrentPiece())) {
+    if (detectCollision(getBoard(), getCurrentPiece())) {
       console.error('Game over! Press ENTER to restart.')
       store.dispatch(gameState.setGameState(gameState.GAME_STATE_GAME_OVER))
     }
   }
-
-  board = clearCompletedLines(board)
 }
-
-const getCurrentPiece = () => currentPiece.getCurrentPiece(store.getState())
 
 function spawnNextAndCurrentPieces () {
   const [W] = config.boardSize
-  const newCurrentPiece = clonePiece(nextPiece.getNextPiece(store.getState()))
+  let newCurrentPiece
+  const nextPieceValue = getNextPiece()
+
+  if (nextPieceValue) {
+    newCurrentPiece = clonePiece(nextPieceValue)
+  } else {
+    newCurrentPiece = clonePiece(getRandomPiece())
+  }
   newCurrentPiece.x = Math.floor((W - newCurrentPiece.matrix[0].length) / 2)
 
   const randomNextPiece = getRandomPiece()
@@ -235,56 +243,40 @@ function getRandomPiece () {
 }
 
 function makePieceFall (piece) {
-  timeSincePieceLastFell = 0
   store.dispatch(currentPiece.movePieceDown())
 }
 
 function movePieceLeft (piece) {
-  store.dispatch(currentPiece.movePieceLeft(board))
+  store.dispatch(currentPiece.movePieceLeft(getBoard()))
 }
 
 function movePieceRight (piece) {
-  store.dispatch(currentPiece.movePieceRight(board))
+  store.dispatch(currentPiece.movePieceRight(getBoard()))
 }
 
 function rotatePieceRight (piece) {
-  store.dispatch(currentPiece.rotateRight(board))
+  store.dispatch(currentPiece.rotateRight(getBoard()))
 }
 
 function rotatePieceLeft (piece) {
-  store.dispatch(currentPiece.rotateLeft(board))
+  store.dispatch(currentPiece.rotateLeft(getBoard()))
 }
 
-function detectCollision (board, {x, y, matrix: pieceMatrix}) {
-  return detectMatrixCollision(board, pieceMatrix, x, y)
+function detectCollision (board, piece) {
+  if (!board) {
+    throw new Error('"board" is not defined.')
+  }
+  if (!piece) {
+    throw new Error('"piece" is not defined.')
+  }
+  const {x, y, matrix} = piece
+  return detectMatrixCollision(board, matrix, x, y)
 }
 
 function detectCollisionBelow (board, {x, y, matrix: pieceMatrix}) {
   return detectMatrixCollision(board, pieceMatrix, x, y + 1)
 }
 
-function resolveCollision (board, {matrix: pieceMatrix, x, y}) {
-  return combineMatrices(board, pieceMatrix, x, y, false)
-}
-
-function clearCompletedLines (board) {
-  let fullRows = board.reduce((fullRows, row, rowIndex, board) => {
-    if (_every(_lt(0))(row)) {
-      fullRows.push(rowIndex)
-    }
-    return fullRows
-  }, [])
-
-  if (fullRows.length) {
-    const clearedLines = fullRows.length
-    const currentLevel = level.getLevel(store.getState())
-    store.dispatch(score.addClearedLineScore(clearedLines, currentLevel))
-    store.dispatch(lines.incrementLines(clearedLines))
-  }
-
-  return fullRows.reduce((board, rowIndex) => removeRowAndShiftRemaining(board, rowIndex), board)
-}
-
 function draw () {
-  canvasRenderer.drawGame(board, getCurrentPiece())
+  canvasRenderer.drawGame(getBoard(), getCurrentPiece())
 }
