@@ -4,7 +4,7 @@
   "description": "A challenging puzzle game, just for funsies",
   "main": "main.js",
   "repository": {
-    "url": "https://github.com/mimshwright/mimstris",
+    "url": "https://github.com/mimshwright/reductris",
     "type": "git"
   },
   "author": "Mims H. Wright",
