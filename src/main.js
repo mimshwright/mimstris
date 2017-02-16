@@ -8,7 +8,6 @@ import pressed from 'pressed'
 pressed.start()
 
 import config from './config'
-import canvasRenderer from './canvasRenderer'
 import pieces from './pieces'
 import { detectCollision as detectMatrixCollision } from './matrixUtil'
 
@@ -26,7 +25,7 @@ const getCurrentPiece = () => currentPiece.getCurrentPiece(store.getState())
 const getBoard = () => boardX.getBoard(store.getState())
 const getNextPiece = () => nextPiece.getNextPiece(store.getState())
 
-import App from './components/App'
+import App from './containers/App'
 
 const DOWN_KEYS = ['down', 's']
 const LEFT_KEYS = ['left', 'a']
@@ -52,7 +51,6 @@ ReactDOM.render(<App />, document.getElementById('app'))
 
 function onFrame (currentTime) {
   update(currentTime)
-  draw()
 
   window.requestAnimationFrame(onFrame)
 }
@@ -275,8 +273,4 @@ function detectCollision (board, piece) {
 
 function detectCollisionBelow (board, {x, y, matrix: pieceMatrix}) {
   return detectMatrixCollision(board, pieceMatrix, x, y + 1)
-}
-
-function draw () {
-  canvasRenderer.drawGame(getBoard(), getCurrentPiece())
 }

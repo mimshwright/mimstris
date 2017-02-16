@@ -1,14 +1,14 @@
 import React from 'react'
 import { Provider } from 'react-redux'
 import store from '../store'
-
-import Scoreboard from '../containers/Scoreboard'
-import StatusMessage from '../containers/StatusMessage'
-import NextPiece from '../containers/NextPiece'
-import Instructions from './Instructions'
-import ConfigPanel from './ConfigPanel'
-
 import config from '../config'
+
+import Game from './Game'
+import Scoreboard from './Scoreboard'
+import StatusMessage from './StatusMessage'
+import NextPiece from './NextPiece'
+import Instructions from '../components/Instructions'
+import ConfigPanel from '../components/ConfigPanel'
 
 const [BOARD_WIDTH, BOARD_HEIGHT] = config.boardSize
 const CANVAS_WIDTH = BOARD_WIDTH * config.blockSize
@@ -25,7 +25,7 @@ const App = props => (
         <ConfigPanel />
       </div>
       <div className='gameWrapper' style={{width: CANVAS_WIDTH, height: CANVAS_HEIGHT}} >
-        <canvas id='game' width={CANVAS_WIDTH} height={CANVAS_HEIGHT} />
+        <Game width={CANVAS_WIDTH} height={CANVAS_HEIGHT} />
         <StatusMessage />
         <Instructions />
       </div>

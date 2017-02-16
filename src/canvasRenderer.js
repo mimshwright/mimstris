@@ -78,25 +78,26 @@ function drawBlock (context, row, column, color, outlinePieces = true) {
   }
 }
 
-function drawGame (board, currentPiece) {
+function drawGame (context, board, currentPiece) {
+  console.log("draw()")
   if (!board || !board[0]) {
     throw new Error('"board" is not defined.')
   }
   if (!currentPiece) {
     throw new Error('"currentPiece" is not defined.')
   }
-  const canvas = document.getElementById('game')
-  if (canvas) {
-    const context = canvas.getContext('2d')
-    clearCanvas(context, config.backgroundColor)
-
-    if (config.showGuideLines && !config.midnightMode) {
-      drawGuideLines(context)
-    }
-
-    drawBoard(context, board)
-    drawPiece(context, currentPiece)
+  if (!context) {
+    throw new Error('Canvas "context" is not defined.')
   }
+
+  clearCanvas(context, config.backgroundColor)
+
+  if (config.showGuideLines && !config.midnightMode) {
+    drawGuideLines(context)
+  }
+
+  drawBoard(context, board)
+  drawPiece(context, currentPiece)
 }
 
 export default {
