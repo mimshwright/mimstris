@@ -3,12 +3,23 @@ import _inRange from 'lodash/inRange'
 import _times from 'lodash/times'
 import _constant from 'lodash/constant'
 import _partial from 'lodash/partial'
+import _every from 'lodash/fp/every'
+import _lt from 'lodash/fp/lt'
 
 export const getMatrixHeight = matrix => matrix.length
 
 export const getMatrixWidth = matrix => matrix[0].length
 
 export const getMatrixSize = matrix => ({ width: getMatrixWidth(matrix), height: getMatrixHeight(matrix) })
+
+export const getFullRows = matrix => (
+  matrix.reduce((fullRowIndeces, row, rowIndex) => {
+    if (_every(_lt(0))(row)) {
+      fullRowIndeces.push(rowIndex)
+    }
+    return fullRowIndeces
+  }, [])
+)
 
 export const createEmptyArray = length => _times(length, _constant(0))
 

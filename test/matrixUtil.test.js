@@ -36,6 +36,27 @@ test('getMatrixSize()', (assert) => {
   assert.is(height, 6, 'Returns and object with correct height')
 })
 
+test('getFullRows()', (assert) => {
+  let matrix = [
+    [0, 0, 0],
+    [1, 2, 3],
+    [1, 2, 0],
+    [1, 2, null],
+    ['foo', 1, 2]
+  ]
+  let expected = [1]
+
+  assert.deepEqual(matrixUtil.getFullRows(matrix), expected, 'getFullRows() returns and array of the row indeces that have all non-zero numeric values')
+
+  matrix = [
+    [0, 0],
+    [0, 0]
+  ]
+  expected = []
+
+  assert.deepEqual(matrixUtil.getFullRows(matrix), expected, 'getFullRows() returns an empty array if no rows are full')
+})
+
 test('removeRow()', (assert) => {
   assert.is(matrixUtil.getMatrixHeight(mockMatrix), 3, 'mockMatrix has 3 rows')
   let testMatrix = matrixUtil.removeRow(mockMatrix, 1)

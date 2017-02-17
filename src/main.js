@@ -9,20 +9,20 @@ pressed.start()
 
 import config from './config'
 import pieces from './pieces'
-import { detectCollision as detectMatrixCollision } from './matrixUtil'
+import { detectCollision as detectMatrixCollision, getFullRows } from './matrixUtil'
 
 import store from './store'
 import * as score from './stores/score'
-// import * as lines from './stores/lines'
+import * as lines from './stores/lines'
 import * as level from './stores/level'
 import * as fallRate from './stores/fallRate'
 import * as nextPiece from './stores/nextPiece'
 import * as currentPiece from './stores/currentPiece'
-import * as boardX from './stores/board'
+import * as board from './stores/board'
 import * as gameState from './stores/gameState'
 
 const getCurrentPiece = () => currentPiece.getCurrentPiece(store.getState())
-const getBoard = () => boardX.getBoard(store.getState())
+const getBoard = () => board.getBoard(store.getState())
 const getNextPiece = () => nextPiece.getNextPiece(store.getState())
 
 import App from './containers/App'
@@ -75,7 +75,7 @@ function reset () {
   lateralMovementRate = config.lateralMovementRate
   downMovementRate = config.downMovementRate
 
-  store.dispatch(boardX.resetBoard())
+  store.dispatch(board.resetBoard())
   store.dispatch(score.resetScore())
   const {currentPiece: newCurrentPiece, nextPiece: randomNextPiece} = spawnNextAndCurrentPieces()
   store.dispatch(currentPiece.setCurrentPiece(newCurrentPiece))
@@ -83,7 +83,6 @@ function reset () {
   store.dispatch(nextPiece.setNextPiece(randomNextPiece))
 
   store.dispatch(gameState.setGameState(gameState.GAME_STATE_RUNNING))
-  console.log(store.getState())
 }
 
 function pauseGame () {
@@ -191,7 +190,7 @@ function update (currentTime) {
     // detects collisions at the end of the step instead of at the beginning.
     const previousPositionPiece = _cloneDeep(getCurrentPiece())
     previousPositionPiece.y -= 1
-    store.dispatch(boardX.mergePieceIntoBoard(previousPositionPiece))
+    store.dispatch(board.mergePieceIntoBoard(previousPositionPiece))
 
     const {currentPiece: newCurrentPiece, nextPiece: newNextPiece} = spawnNextAndCurrentPieces()
     store.dispatch(currentPiece.setCurrentPiece(newCurrentPiece))
@@ -200,7 +199,14 @@ function update (currentTime) {
     const currentLevel = level.getLevel(store.getState())
     store.dispatch(score.addPieceScore(currentLevel))
 
-    store.dispatch(boardX.clearCompletedLines())
+    const fullRowIndeces = getFullRows(getBoard())
+    const numberOfClearedLines = fullRowIndeces ? fullRowIndeces.length : 0
+    if (numberOfClearedLines > 0) {
+      const currentLevel = level.getLevel(store.getState())
+      store.dispatch(score.addClearedLineScore(numberOfClearedLines, currentLevel))
+      store.dispatch(lines.incrementLines(numberOfClearedLines))
+      store.dispatch(board.clearCompletedLines())
+    }
 
     // If there is still a collision right after a new piece is spawned, the game ends.
     if (detectCollision(getBoard(), getCurrentPiece())) {

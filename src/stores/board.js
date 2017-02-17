@@ -1,8 +1,6 @@
 import _cloneDeep from 'lodash/fp/cloneDeep'
-import _lt from 'lodash/fp/lt'
-import _every from 'lodash/fp/every'
 
-import {createEmptyMatrix, removeRowAndShiftRemaining, combineMatrices} from '../matrixUtil'
+import {createEmptyMatrix, removeRowAndShiftRemaining, combineMatrices, getFullRows} from '../matrixUtil'
 import config from '../config'
 
 export const RESET_BOARD = 'Reset board'
@@ -30,19 +28,7 @@ export default function reducer (previousBoard = initialState, action) {
       return emptyBoard
     case CLEAR_COMPLETED_LINES:
       let newBoard = _cloneDeep(previousBoard)
-      let fullRowIndeces = newBoard.reduce((fullRowIndeces, row, rowIndex) => {
-        if (_every(_lt(0))(row)) {
-          fullRowIndeces.push(rowIndex)
-        }
-        return fullRowIndeces
-      }, [])
-
-      // if (fullRowIndeces.length > 0) {
-      //   const numberOfClearedLines = fullRowIndeces.length
-      //   const currentLevel = level.getLevel(store.getState())
-      //   dispatch(score.addClearedLineScore(numberOfClearedLines, currentLevel))
-      //   dispatch(lines.incrementLines(numberOfClearedLines))
-      // }
+      let fullRowIndeces = getFullRows(newBoard)
 
       newBoard = fullRowIndeces.reduce(
         (board, rowIndex) => removeRowAndShiftRemaining(board, rowIndex)
