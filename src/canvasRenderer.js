@@ -79,7 +79,6 @@ function drawBlock (context, row, column, color, outlinePieces = true) {
 }
 
 function drawGame (context, board, currentPiece) {
-  console.log("draw()")
   if (!board || !board[0]) {
     throw new Error('"board" is not defined.')
   }
