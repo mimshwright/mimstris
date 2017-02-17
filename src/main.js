@@ -21,9 +21,13 @@ import * as currentPiece from './stores/currentPiece'
 import * as board from './stores/board'
 import * as gameState from './stores/gameState'
 
-const getCurrentPiece = () => currentPiece.getCurrentPiece(store.getState())
-const getBoard = () => board.getBoard(store.getState())
-const getNextPiece = () => nextPiece.getNextPiece(store.getState())
+const wrapGetter = getter => getter(store.getState())
+const getCurrentPiece = () => wrapGetter(currentPiece.getCurrentPiece)
+const getBoard = () => wrapGetter(board.getBoard)
+const getNextPiece = () => wrapGetter(nextPiece.getNextPiece)
+const getLevel = () => wrapGetter(level.getLevel)
+const getFallRate = () => wrapGetter(fallRate.getFallRate)
+const getGameState = () => wrapGetter(gameState.getGameState)
 
 import App from './containers/App'
 
@@ -57,7 +61,7 @@ function onFrame (currentTime) {
 
 // Automatically pause when window is out of focus
 window.onblur = (e) => {
-  const currentGameState = gameState.getGameState(store.getState())
+  const currentGameState = getGameState()
   if (currentGameState === gameState.GAME_STATE_RUNNING) {
     pauseGame()
 
@@ -79,7 +83,6 @@ function reset () {
   store.dispatch(score.resetScore())
   const {currentPiece: newCurrentPiece, nextPiece: randomNextPiece} = spawnNextAndCurrentPieces()
   store.dispatch(currentPiece.setCurrentPiece(newCurrentPiece))
-  store.getState()
   store.dispatch(nextPiece.setNextPiece(randomNextPiece))
 
   store.dispatch(gameState.setGameState(gameState.GAME_STATE_RUNNING))
@@ -95,7 +98,7 @@ function unpauseGame () {
 function update (currentTime) {
   let deltaTime = currentTime - lastFrameTime
   lastFrameTime = currentTime
-  let currentGameState = gameState.getGameState(store.getState())
+  let currentGameState = getGameState()
 
   if (pressed.some(...START_KEYS)) {
     if (currentGameState === gameState.GAME_STATE_GAME_OVER) {
@@ -106,7 +109,7 @@ function update (currentTime) {
     pressed.remove(...START_KEYS)
   }
 
-  currentGameState = gameState.getGameState(store.getState())
+  currentGameState = getGameState()
   if (currentGameState !== gameState.GAME_STATE_RUNNING) {
     return
   }
@@ -175,7 +178,7 @@ function update (currentTime) {
 
   timeSincePieceLastFell += deltaTime
 
-  const currentFallRate = fallRate.getFallRate(store.getState())
+  const currentFallRate = getFallRate()
   const stepThreshold = Math.ceil(1000 / currentFallRate)
   if (timeSincePieceLastFell > stepThreshold) {
     // console.log('tick')
@@ -196,13 +199,13 @@ function update (currentTime) {
     store.dispatch(currentPiece.setCurrentPiece(newCurrentPiece))
     store.dispatch(nextPiece.setNextPiece(newNextPiece))
 
-    const currentLevel = level.getLevel(store.getState())
+    const currentLevel = getLevel()
     store.dispatch(score.addPieceScore(currentLevel))
 
     const fullRowIndeces = getFullRows(getBoard())
     const numberOfClearedLines = fullRowIndeces ? fullRowIndeces.length : 0
     if (numberOfClearedLines > 0) {
-      const currentLevel = level.getLevel(store.getState())
+      const currentLevel = getLevel()
       store.dispatch(score.addClearedLineScore(numberOfClearedLines, currentLevel))
       store.dispatch(lines.incrementLines(numberOfClearedLines))
       store.dispatch(board.clearCompletedLines())
