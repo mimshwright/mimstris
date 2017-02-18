@@ -35,7 +35,7 @@ const DOWN_KEYS = ['down', 's']
 const LEFT_KEYS = ['left', 'a']
 const RIGHT_KEYS = ['right', 'd']
 const ROTATE_LEFT_KEYS = ['/', 'z']
-const ROTATE_RIGHT_KEYS = ['shift']
+const ROTATE_RIGHT_KEYS = ['shift', 'up']
 const START_KEYS = ['enter']
 
 let lateralMovementRate = null // Rate of pieces moving by user control in steps per second
