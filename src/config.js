@@ -24,5 +24,9 @@ export default {
   outlineThickness: 0.08, // %
   showNextPiece: true,
 
+  // When true, random blocks will be in an identical order every game.
+  isDeterministic: false,
+  randSeed: 'seed',
+
   midnightMode: false
 }

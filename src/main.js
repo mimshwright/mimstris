@@ -1,11 +1,10 @@
 import _cloneDeep from 'lodash/fp/cloneDeep'
-import _random from 'lodash/fp/random'
 
 import React from 'react'
 import ReactDOM from 'react-dom'
 
+import createRandomNumberGenerator from 'random-seed'
 import pressed from 'pressed'
-pressed.start()
 
 import config from './config'
 import pieces from './pieces'
@@ -38,6 +37,7 @@ const ROTATE_LEFT_KEYS = ['/', 'z']
 const ROTATE_RIGHT_KEYS = ['shift', 'up']
 const START_KEYS = ['enter']
 
+let random = null
 let lateralMovementRate = null // Rate of pieces moving by user control in steps per second
 let downMovementRate = null // Rate of pieces moving down by user control in steps per second
 let timeSincePieceLastFell = 0 // time since the piece last moved down automatically
@@ -48,6 +48,7 @@ let lastDownMove = 0
 let lastRotate = 0
 
 // Main executable code:
+pressed.start()
 reset()
 window.requestAnimationFrame(onFrame)
 ReactDOM.render(<App />, document.getElementById('app'))
@@ -74,6 +75,13 @@ window.onblur = (e) => {
 }
 
 function reset () {
+  // Create RNG
+  if (config.isDeterministic) {
+    random = createRandomNumberGenerator.create(config.randSeed)
+  } else {
+    random = createRandomNumberGenerator.create()
+  }
+
   timeSincePieceLastFell = 0
   lastFrameTime = 0
   lateralMovementRate = config.lateralMovementRate
@@ -81,6 +89,7 @@ function reset () {
 
   store.dispatch(board.resetBoard())
   store.dispatch(score.resetScore())
+  store.dispatch(nextPiece.clearNextPiece())
   const {currentPiece: newCurrentPiece, nextPiece: randomNextPiece} = spawnNextAndCurrentPieces()
   store.dispatch(currentPiece.setCurrentPiece(newCurrentPiece))
   store.dispatch(nextPiece.setNextPiece(randomNextPiece))
@@ -224,7 +233,7 @@ function spawnNextAndCurrentPieces () {
   let newCurrentPiece
   const nextPieceValue = getNextPiece()
 
-  if (nextPieceValue) {
+  if (nextPieceValue && nextPieceValue.name) {
     newCurrentPiece = clonePiece(nextPieceValue)
   } else {
     newCurrentPiece = clonePiece(getRandomPiece())
@@ -245,7 +254,7 @@ function clonePiece (piece) {
 
 function getRandomPiece () {
   const l = pieces.length
-  const i = _random(0, l - 1)
+  const i = random(l - 1)
   return pieces[i]
 }
 

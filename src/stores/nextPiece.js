@@ -4,7 +4,14 @@ export const setNextPiece = (piece) => ({
   piece
 })
 
-const initialState = null
+export const clearNextPiece = () => setNextPiece(initialState)
+
+const initialState = {
+  name: '',
+  matrix: [[0]],
+  id: -1,
+  color: 0
+}
 
 export default function reducer (previousPiece = initialState, action) {
   switch (action.type) {
