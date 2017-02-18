@@ -26,7 +26,9 @@ export default {
 
   // When true, random blocks will be in an identical order every game.
   isDeterministic: false,
+  // Changing this value will change the random blocks generated.
   randSeed: 'seed',
 
-  midnightMode: false
+  // Draws the blocks as teeny lights on dark background
+  midnightMode: true
 }

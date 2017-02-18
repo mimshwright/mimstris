@@ -58,7 +58,10 @@ function drawBlock (context, row, column, color, outlinePieces = true) {
   if (config.midnightMode) {
     const SIZE = 0.20
     const BORDER = width * ((1.0 - SIZE) / 2)
-    context.fillRect(x + BORDER, y + BORDER, width * SIZE, height * SIZE)
+    const RADIUS = width * SIZE / 2
+    context.beginPath()
+    context.arc(x + BORDER, y + BORDER, RADIUS, 0, Math.PI * 2)
+    context.fill()
     return
   } else {
     context.fillRect(x, y, width, height)
