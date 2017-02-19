@@ -30,5 +30,5 @@ export default {
   randSeed: 'seed',
 
   // Draws the blocks as teeny lights on dark background
-  midnightMode: true
+  midnightMode: false
 }
