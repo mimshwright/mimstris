@@ -1,6 +1,6 @@
 {
   "name": "mimstris",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "A challenging puzzle game, just for funsies",
   "main": "main.js",
   "repository": {
