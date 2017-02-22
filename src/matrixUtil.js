@@ -1,10 +1,10 @@
-import _cloneDeep from 'lodash/cloneDeep'
-import _inRange from 'lodash/inRange'
-import _times from 'lodash/times'
-import _constant from 'lodash/constant'
-import _partial from 'lodash/partial'
-import _every from 'lodash/fp/every'
-import _lt from 'lodash/fp/lt'
+import cloneDeep from 'lodash/cloneDeep'
+import inRange from 'lodash/inRange'
+import times from 'lodash/times'
+import constant from 'lodash/constant'
+import partiallyExecute from 'lodash/partial'
+import every from 'lodash/fp/every'
+import lessThan from 'lodash/fp/lt'
 
 export const getMatrixHeight = matrix => matrix.length
 
@@ -14,24 +14,26 @@ export const getMatrixSize = matrix => ({ width: getMatrixWidth(matrix), height:
 
 export const getFullRows = matrix => (
   matrix.reduce((fullRowIndeces, row, rowIndex) => {
-    if (_every(_lt(0))(row)) {
+    // lessThan(0) is misleading (because it uses iteratee-first, data-last parameters)
+    // but it actually checks if 0 is less than the input value
+    if (every(lessThan(0))(row)) {
       fullRowIndeces.push(rowIndex)
     }
     return fullRowIndeces
   }, [])
 )
 
-export const createEmptyArray = length => _times(length, _constant(0))
+export const createEmptyArray = length => times(length, constant(0))
 
 export const removeRow = (matrix, rowIndex) => {
-  matrix = _cloneDeep(matrix)
+  matrix = cloneDeep(matrix)
   matrix.splice(rowIndex, 1)
   return matrix
 }
 
 export const removeColumn = (matrix, columnIndex) => {
   return matrix.map((row, rowIndex) => {
-    row = _cloneDeep(row)
+    row = cloneDeep(row)
     row.splice(columnIndex, 1)
     return row
   })
@@ -46,7 +48,7 @@ export const removeRowAndShiftRemaining = (matrix, rowIndex) => {
 
 export const createEmptyMatrix = (width, height) => {
   const columns = createEmptyArray(height)
-  const createRow = _partial(createEmptyArray, width)
+  const createRow = partiallyExecute(createEmptyArray, width)
   return columns.map(createRow)
 }
 
@@ -59,8 +61,8 @@ export const detectCollision = (destinationMatrix, sourceMatrix, offsetX = 0, of
       if (sourceMatrix[sourceY][sourceX] !== 0) {
         const destinationX = sourceX + offsetX
         const destinationY = sourceY + offsetY
-        if (_inRange(destinationX, 0, destinationWidth) &&
-          _inRange(destinationY, 0, destinationHeight)) {
+        if (inRange(destinationX, 0, destinationWidth) &&
+          inRange(destinationY, 0, destinationHeight)) {
           if (destinationMatrix[destinationY][destinationX] !== 0) {
             return true
           }
@@ -85,8 +87,8 @@ export const combineMatrices = (destinationMatrix, sourceMatrix, offsetX = 0, of
 
   const newMatrix = destinationMatrix.map((rows, y) => {
     return rows.map((value, x) => {
-      if (_inRange(x, offsetX, lastXIndex + 1) &&
-          _inRange(y, offsetY, lastYIndex + 1)) {
+      if (inRange(x, offsetX, lastXIndex + 1) &&
+          inRange(y, offsetY, lastYIndex + 1)) {
         if (overwrite || !value) {
           return sourceMatrix[y - offsetY][x - offsetX]
         }
@@ -104,8 +106,8 @@ export const flip = (matrix) => {
 
   let newMatrix = createEmptyMatrix(H, W)
 
-  _times(H, (row) => {
-    _times(W, (column) => {
+  times(H, (row) => {
+    times(W, (column) => {
       newMatrix[column][row] = matrix[row][column]
     })
   })

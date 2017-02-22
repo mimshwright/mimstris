@@ -1,18 +1,33 @@
-import _find from 'lodash/fp/find'
-import _memoize from 'lodash/fp/memoize'
-import config from './config.js'
-import pieces from './pieces.js'
+import find from 'lodash/fp/find'
+import memoize from 'lodash/fp/memoize'
 
-// memoized for performance (roughly doubles speed of draw!)
-const getColorForID = _memoize(id => {
-  return _find({id: id})(pieces).color
+import config from './config.js'
+import pieceLibrary from './pieceLibrary.js'
+
+/**
+ * Gets the color associated with the piece's id.
+ * Memoized for performance (roughly doubles speed of draw!)
+ *
+ * Why not just save the color to the piece matrix? I thought it would
+ * be nice to be able to change the colors during gameplay, for example,
+ * a pallete swap on each new level!
+ */
+const getColorForID = memoize(id => {
+  return find({id: id})(pieceLibrary).color
 })
 
+/**
+ * Resets the canvas so it will be ready to have freshly drawn pieces.
+ */
 function clearCanvas (context, color) {
   context.fillStyle = color
   context.fillRect(0, 0, context.canvas.width, context.canvas.height)
 }
 
+/**
+ * Draws helpful lines on the board to help the player determine where the
+ * piece will end up.
+ */
 function drawGuideLines (context) {
   const { height: CANVAS_HEIGHT } = context.canvas
   const [BOARD_WIDTH] = config.boardSize
@@ -27,6 +42,9 @@ function drawGuideLines (context) {
   }
 }
 
+/**
+ * Renders a matrix (of color ids) to the context.
+ */
 function drawMatrix (context, matrix, offsetX = 0, offsetY = 0) {
   matrix.map((column, columnIndex) => {
     column.map((value, rowIndex) => {
@@ -37,14 +55,23 @@ function drawMatrix (context, matrix, offsetX = 0, offsetY = 0) {
   })
 }
 
+/**
+ * Draw a board matrix.
+ */
 function drawBoard (context, board) {
   drawMatrix(context, board, 0, 0)
 }
 
+/**
+ * Draw a single piece (usually current or next)
+ */
 function drawPiece (context, piece) {
   drawMatrix(context, piece.matrix, piece.x, piece.y)
 }
 
+/**
+ * Draw a single block. Each matrix (board or piece) is composed of many blocks.
+ */
 function drawBlock (context, row, column, color, outlinePieces = true) {
   // Scale up coordinates
   const x = row * config.blockSize
@@ -81,6 +108,9 @@ function drawBlock (context, row, column, color, outlinePieces = true) {
   }
 }
 
+/**
+ * Clears then renders the entire board and current piece to the context.
+ */
 function drawGame (context, board, currentPiece) {
   if (!board || !board[0]) {
     throw new Error('"board" is not defined.')

@@ -1,15 +1,19 @@
-import _cloneDeep from 'lodash/fp/cloneDeep'
-
+// React and react components
 import React from 'react'
 import ReactDOM from 'react-dom'
+import App from './containers/App'
 
+// Utils
+import cloneDeep from 'lodash/fp/cloneDeep'
 import createRandomNumberGenerator from 'random-seed'
 import pressed from 'pressed'
-
-import config from './config'
-import pieces from './pieces'
 import { detectCollision as detectMatrixCollision, getFullRows } from './matrixUtil'
 
+// Constants
+import config from './config'
+import pieceLibrary from './pieceLibrary'
+
+// Redux stores
 import store from './store'
 import * as score from './stores/score'
 import * as lines from './stores/lines'
@@ -20,6 +24,8 @@ import * as currentPiece from './stores/currentPiece'
 import * as board from './stores/board'
 import * as gameState from './stores/gameState'
 
+// Shortcuts to getters and dispatching actions
+const dispatch = store.dispatch
 const wrapGetter = getter => getter(store.getState())
 const getCurrentPiece = () => wrapGetter(currentPiece.getCurrentPiece)
 const getBoard = () => wrapGetter(board.getBoard)
@@ -28,8 +34,19 @@ const getLevel = () => wrapGetter(level.getLevel)
 const getFallRate = () => wrapGetter(fallRate.getFallRate)
 const getGameState = () => wrapGetter(gameState.getGameState)
 
-import App from './containers/App'
+const startGame = () => dispatch(gameState.setGameState(gameState.GAME_STATE_RUNNING))
+const pauseGame = () => dispatch(gameState.setGameState(gameState.GAME_STATE_PAUSED))
+const unpauseGame = () => dispatch(gameState.setGameState(gameState.GAME_STATE_RUNNING))
+const endGame = () => dispatch(gameState.setGameState(gameState.GAME_STATE_GAME_OVER))
+const movePieceDown = (piece) => dispatch(currentPiece.movePieceDown())
+const movePieceLeft = (piece) => dispatch(currentPiece.movePieceLeft(getBoard()))
+const movePieceRight = (piece) => dispatch(currentPiece.movePieceRight(getBoard()))
+const rotatePieceRight = (piece) => dispatch(currentPiece.rotateRight(getBoard()))
+const rotatePieceLeft = (piece) => dispatch(currentPiece.rotateLeft(getBoard()))
+const makeNextPieceCurrent = () => dispatch(currentPiece.setCurrentPiece(centerPiece(getNextPiece())))
+const randomizeNextPiece = () => dispatch(nextPiece.setNextPiece(getRandomPiece()))
 
+// Key mappings
 const DOWN_KEYS = ['down', 's']
 const LEFT_KEYS = ['left', 'a']
 const RIGHT_KEYS = ['right', 'd']
@@ -37,115 +54,147 @@ const ROTATE_LEFT_KEYS = ['/', 'z']
 const ROTATE_RIGHT_KEYS = ['shift', 'up']
 const START_KEYS = ['enter']
 
+// Other variables
 let random = null
 let lateralMovementRate = null // Rate of pieces moving by user control in steps per second
 let downMovementRate = null // Rate of pieces moving down by user control in steps per second
-let timeSincePieceLastFell = 0 // time since the piece last moved down automatically
-let lastFrameTime = 0 // previous frame's current time
 let lastRightMove = 0
 let lastLeftMove = 0
 let lastDownMove = 0
 let lastRotate = 0
+let timeSincePieceLastFell = 0 // time since the piece last moved down automatically
+let lastFrameTime = 0 // previous frame's current time
 
 // Main executable code:
-pressed.start()
-reset()
-window.requestAnimationFrame(onFrame)
-ReactDOM.render(<App />, document.getElementById('app'))
-//
+main()
 
-function onFrame (currentTime) {
-  update(currentTime)
+function main () {
+  // Initialize pressed utility for tracking key presses
+  pressed.start(window)
 
+  // Reset values for game
+  resetGame()
+
+  // Initialize react components
+  ReactDOM.render(<App />, document.getElementById('app'))
+
+  // Start update loop
   window.requestAnimationFrame(onFrame)
-}
 
-// Automatically pause when window is out of focus
-window.onblur = (e) => {
-  const currentGameState = getGameState()
-  if (currentGameState === gameState.GAME_STATE_RUNNING) {
-    pauseGame()
+  // Automatically pause when window is out of focus
+  window.onblur = (e) => {
+    if (getGameState() === gameState.GAME_STATE_RUNNING) {
+      pauseGame()
 
-    // Unpause when it comes back to focus (but not if the user manually paused)
-    window.onfocus = (e) => {
-      unpauseGame()
-      window.onfocus = null
+      // Unpause when it comes back to focus (but not if the user manually paused)
+      window.onfocus = (e) => {
+        unpauseGame()
+        window.onfocus = null
+      }
     }
   }
 }
 
-function reset () {
-  // Create RNG
-  if (config.isDeterministic) {
-    random = createRandomNumberGenerator.create(config.randSeed)
-  } else {
-    random = createRandomNumberGenerator.create()
-  }
+function onFrame (currentTime) {
+  update(currentTime)
+  window.requestAnimationFrame(onFrame)
+}
 
+function resetGame () {
+  // Create Random Number Generator.
+  // If running in deterministic mode, the random number generator
+  // will use a random seed that creates a repeatable pattern of blocks
+  let seed
+  if (config.isDeterministic) {
+    seed = config.randomSeed
+  }
+  random = createRandomNumberGenerator.create(seed)
+
+  // reset timers
   timeSincePieceLastFell = 0
   lastFrameTime = 0
   lateralMovementRate = config.lateralMovementRate
   downMovementRate = config.downMovementRate
 
-  store.dispatch(board.resetBoard())
-  store.dispatch(score.resetScore())
-  store.dispatch(nextPiece.clearNextPiece())
-  const {currentPiece: newCurrentPiece, nextPiece: randomNextPiece} = spawnNextAndCurrentPieces()
-  store.dispatch(currentPiece.setCurrentPiece(newCurrentPiece))
-  store.dispatch(nextPiece.setNextPiece(randomNextPiece))
+  // reset game objects
+  dispatch(board.resetBoard())
+  dispatch(score.resetScore())
 
-  store.dispatch(gameState.setGameState(gameState.GAME_STATE_RUNNING))
-}
+  randomizeNextPiece()
+  makeNextPieceCurrent()
+  randomizeNextPiece()
 
-function pauseGame () {
-  store.dispatch(gameState.setGameState(gameState.GAME_STATE_PAUSED))
-}
-function unpauseGame () {
-  store.dispatch(gameState.setGameState(gameState.GAME_STATE_RUNNING))
+  startGame()
 }
 
 function update (currentTime) {
   let deltaTime = currentTime - lastFrameTime
   lastFrameTime = currentTime
-  let currentGameState = getGameState()
 
-  if (pressed.some(...START_KEYS)) {
-    if (currentGameState === gameState.GAME_STATE_GAME_OVER) {
-      reset()
-    } else {
-      currentGameState === gameState.GAME_STATE_PAUSED ? unpauseGame() : pauseGame()
-    }
-    pressed.remove(...START_KEYS)
-  }
+  // Handle pausing and restarting of game.
+  handleStartButton(currentTime)
 
-  currentGameState = getGameState()
-  if (currentGameState !== gameState.GAME_STATE_RUNNING) {
+  // If game isn't running, ignore the rest of the update
+  if (getGameState() !== gameState.GAME_STATE_RUNNING) {
     return
   }
 
-  if (!getCurrentPiece()) {
-    const {currentPiece: newCurrentPiece, nextPiece: newNextPiece} = spawnNextAndCurrentPieces()
-    store.dispatch(currentPiece.setCurrentPiece(newCurrentPiece))
-    store.dispatch(nextPiece.setNextPiece(newNextPiece))
+  // Handle piece movement from user and timer
+  handleUserMovement(currentTime)
+  handleAutomaticFalling(deltaTime)
+
+  if (detectCollision()) {
+    mergeCurrentPieceIntoBoard()
+    clearCompletedLines()
+    makeNextPieceCurrent()
+    randomizeNextPiece()
+
+    // If there is still a collision right after a new piece is spawned, the game ends.
+    if (detectCollision()) {
+      endGame()
+      // console.error('Game over! Press ENTER to restart.')
+    }
   }
+}
 
+function handleStartButton (currentTime) {
+  if (pressed.some(...START_KEYS)) {
+    if (getGameState() === gameState.GAME_STATE_GAME_OVER) {
+      resetGame()
+    } else {
+      getGameState() === gameState.GAME_STATE_PAUSED ? unpauseGame() : pauseGame()
+    }
+    pressed.remove(...START_KEYS)
+  }
+}
+
+/**
+ * Handles user input for movement.
+ * Checks to see if these input keys are currently pressed.
+ * Each movement has a built in timer which allows some fine grain control over
+ * how often each input can be executed.
+ */
+function handleUserMovement (currentTime) {
+  // Calculate whether movement is allowed
   const lateralMovementThreshold = Math.ceil(1000 / lateralMovementRate)
-  const downMovementThreshold = Math.ceil(1000 / downMovementRate)
+  const isLeftMovementAllowed = (currentTime - lastLeftMove) > lateralMovementThreshold
+  const isRightMovementAllowed = (currentTime - lastRightMove) > lateralMovementThreshold
+  const isRotateAllowed = (currentTime - lastRotate) > lateralMovementThreshold
+  const isDownMovementAllowed = (currentTime - lastDownMove) > (Math.ceil(1000 / downMovementRate))
 
-  // Handle user input...
   if (pressed.some(...DOWN_KEYS)) {
-    if (currentTime - lastDownMove > downMovementThreshold) {
+    if (isDownMovementAllowed) {
       lastDownMove = currentTime
 
       if (config.instantDown) {
-        while (!detectCollisionBelow(getBoard(), getCurrentPiece())) {
+        while (!detectCollisionBelow()) {
           timeSincePieceLastFell = 0
-          makePieceFall(getCurrentPiece())
+          movePieceDown(getCurrentPiece())
         }
         pressed.remove(...DOWN_KEYS)
       } else {
         timeSincePieceLastFell = 0
-        makePieceFall(getCurrentPiece())
+        movePieceDown(getCurrentPiece())
       }
     }
   } else {
@@ -153,9 +202,8 @@ function update (currentTime) {
   }
 
   if (pressed.some(...LEFT_KEYS)) {
-    if (currentTime - lastLeftMove > lateralMovementThreshold) {
+    if (isLeftMovementAllowed) {
       lastLeftMove = currentTime
-
       movePieceLeft(getCurrentPiece())
     }
   } else {
@@ -163,7 +211,7 @@ function update (currentTime) {
   }
 
   if (pressed.some(...RIGHT_KEYS)) {
-    if (currentTime - lastRightMove > lateralMovementThreshold) {
+    if (isRightMovementAllowed) {
       lastRightMove = currentTime
       movePieceRight(getCurrentPiece())
     }
@@ -172,7 +220,7 @@ function update (currentTime) {
   }
 
   if (pressed.some(...ROTATE_LEFT_KEYS, ...ROTATE_RIGHT_KEYS)) {
-    if (currentTime - lastRotate > lateralMovementThreshold) {
+    if (isRotateAllowed) {
       lastRotate = currentTime
       if (pressed.some(...ROTATE_LEFT_KEYS)) {
         rotatePieceLeft(getCurrentPiece())
@@ -184,111 +232,89 @@ function update (currentTime) {
   } else {
     lastRotate = 0
   }
+}
 
+/**
+ * Updates position of piece if enough time has elapsed since last downward movement.
+ */
+function handleAutomaticFalling (deltaTime) {
   timeSincePieceLastFell += deltaTime
-
-  const currentFallRate = getFallRate()
-  const stepThreshold = Math.ceil(1000 / currentFallRate)
-  if (timeSincePieceLastFell > stepThreshold) {
-    // console.log('tick')
+  const shouldPieceFall = timeSincePieceLastFell > Math.ceil(1000 / getFallRate())
+  if (shouldPieceFall) {
     timeSincePieceLastFell = 0
-    makePieceFall(getCurrentPiece())
-  }
-
-  if (detectCollision(getBoard(), getCurrentPiece())) {
-    // console.log('Collision detected!')
-
-    // This bit of foo allows you to shift the piece around a bit and only
-    // detects collisions at the end of the step instead of at the beginning.
-    const previousPositionPiece = _cloneDeep(getCurrentPiece())
-    previousPositionPiece.y -= 1
-    store.dispatch(board.mergePieceIntoBoard(previousPositionPiece))
-
-    const {currentPiece: newCurrentPiece, nextPiece: newNextPiece} = spawnNextAndCurrentPieces()
-    store.dispatch(currentPiece.setCurrentPiece(newCurrentPiece))
-    store.dispatch(nextPiece.setNextPiece(newNextPiece))
-
-    const currentLevel = getLevel()
-    store.dispatch(score.addPieceScore(currentLevel))
-
-    const fullRowIndeces = getFullRows(getBoard())
-    const numberOfClearedLines = fullRowIndeces ? fullRowIndeces.length : 0
-    if (numberOfClearedLines > 0) {
-      const currentLevel = getLevel()
-      store.dispatch(score.addClearedLineScore(numberOfClearedLines, currentLevel))
-      store.dispatch(lines.incrementLines(numberOfClearedLines))
-      store.dispatch(board.clearCompletedLines())
-    }
-
-    // If there is still a collision right after a new piece is spawned, the game ends.
-    if (detectCollision(getBoard(), getCurrentPiece())) {
-      console.error('Game over! Press ENTER to restart.')
-      store.dispatch(gameState.setGameState(gameState.GAME_STATE_GAME_OVER))
-    }
+    movePieceDown(getCurrentPiece())
   }
 }
 
-function spawnNextAndCurrentPieces () {
+/**
+ * Affixes the current piece to the board.
+ */
+function mergeCurrentPieceIntoBoard () {
+  // First moves the piece up one space.
+  // This bit of foo allows you to shift the piece around a bit and only
+  // detects collisions at the end of the step instead of at the beginning.
+  const previousPositionPiece = cloneDeep(getCurrentPiece())
+  previousPositionPiece.y -= 1
+  dispatch(board.mergePieceIntoBoard(previousPositionPiece))
+
+  // Add score for piece
+  dispatch(score.addPieceScore(getLevel()))
+}
+
+/**
+ * Removes and scores completed lines in the board.
+ */
+function clearCompletedLines () {
+  const fullRowIndeces = getFullRows(getBoard())
+  const numberOfClearedLines = fullRowIndeces ? fullRowIndeces.length : 0
+  if (numberOfClearedLines > 0) {
+    dispatch(score.addClearedLineScore(numberOfClearedLines, getLevel()))
+    dispatch(lines.incrementLines(numberOfClearedLines))
+    dispatch(board.clearCompletedLines())
+  }
+}
+
+/**
+ * Positions a piece in the center of the board.
+ * @returns a copy of the input piece
+ */
+function centerPiece (piece) {
   const [W] = config.boardSize
-  let newCurrentPiece
-  const nextPieceValue = getNextPiece()
-
-  if (nextPieceValue && nextPieceValue.name) {
-    newCurrentPiece = clonePiece(nextPieceValue)
-  } else {
-    newCurrentPiece = clonePiece(getRandomPiece())
-  }
-  newCurrentPiece.x = Math.floor((W - newCurrentPiece.matrix[0].length) / 2)
-
-  const randomNextPiece = getRandomPiece()
-
-  return {currentPiece: newCurrentPiece, nextPiece: randomNextPiece}
+  piece = cloneDeep(piece)
+  piece.x = Math.floor((W - piece.matrix[0].length) / 2)
+  return piece
 }
 
-function clonePiece (piece) {
-  let clonedPiece = _cloneDeep(piece)
-  clonedPiece.x = clonedPiece.x || 0
-  clonedPiece.y = clonedPiece.y || 0
-  return clonedPiece
-}
-
+/**
+ * Returns a random piece from the piece library.
+ * Note: random function is defined in reset()
+ * Note: the piece is not cloned
+ * @returns Piece
+ */
 function getRandomPiece () {
-  const l = pieces.length
+  const l = pieceLibrary.length
   const i = random(l - 1)
-  return pieces[i]
+  return pieceLibrary[i]
 }
 
-function makePieceFall (piece) {
-  store.dispatch(currentPiece.movePieceDown())
-}
-
-function movePieceLeft (piece) {
-  store.dispatch(currentPiece.movePieceLeft(getBoard()))
-}
-
-function movePieceRight (piece) {
-  store.dispatch(currentPiece.movePieceRight(getBoard()))
-}
-
-function rotatePieceRight (piece) {
-  store.dispatch(currentPiece.rotateRight(getBoard()))
-}
-
-function rotatePieceLeft (piece) {
-  store.dispatch(currentPiece.rotateLeft(getBoard()))
-}
-
-function detectCollision (board, piece) {
-  if (!board) {
-    throw new Error('"board" is not defined.')
-  }
-  if (!piece) {
-    throw new Error('"piece" is not defined.')
-  }
+/**
+ * Shortcut for detecting collisions between the matrix of the board
+ * and the matrix of the piece at the piece's position.
+ * @returns Boolean
+ */
+function detectCollision (board = getBoard(), piece = getCurrentPiece()) {
   const {x, y, matrix} = piece
   return detectMatrixCollision(board, matrix, x, y)
 }
 
-function detectCollisionBelow (board, {x, y, matrix: pieceMatrix}) {
-  return detectMatrixCollision(board, pieceMatrix, x, y + 1)
+/**
+ * Shortcut for detecting collisions between the matrix of the board
+ * and the matrix of the piece one block below the piece's position.
+ * This is used to determine if the piece will be blocked from moving
+ * any further down.
+ * @returns Boolean
+ */
+function detectCollisionBelow (board = getBoard(), piece = getCurrentPiece()) {
+  const {x, y, matrix} = piece
+  return detectMatrixCollision(board, matrix, x, y + 1)
 }
