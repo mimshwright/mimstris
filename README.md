@@ -1,10 +1,10 @@
-# mimstris
+# Mimstris
 
 An arcade puzzle game created in JS using [React](https://facebook.github.io/react/) / [Redux](http://redux.js.org/).
 
 **This game is open-source, free, and just for funsies!**
 
-**[👉 Play it! 🎮 📺](htts://mimstris.surge.sh)**
+## 👉 [Play Now!](https://mimstris.surge.sh)  🎮 📺
 
 [![Screen Shot](screenshot.gif)](htts://mimstris.surge.sh)
 
