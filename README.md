@@ -2,11 +2,11 @@
 
 An arcade puzzle game created in JS using [React](https://facebook.github.io/react/) / [Redux](http://redux.js.org/).
 
-## [Play it! 😅 🎮 📺](htts://mimstris.surge.sh)
-
-![Screen Shot](screenshot.gif)
-
 **This game is open-source, free, and just for funsies!**
+
+**[👉 Play it! 🎮 📺](htts://mimstris.surge.sh)**
+
+[![Screen Shot](screenshot.gif)](htts://mimstris.surge.sh)
 
 ## Motivation
 After watching [Meth Meth Method's video](https://www.youtube.com/watch?v=H2aW5V46khA) I was inspired to create a similar game for the following reasons:
