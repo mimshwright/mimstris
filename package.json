@@ -1,14 +1,27 @@
 {
   "name": "mimstris",
-  "version": "1.0.1-pre",
-  "description": "A challenging puzzle game, just for funsies",
-  "main": "main.js",
-  "repository": {
-    "url": "https://github.com/mimshwright/reductris",
-    "type": "git"
-  },
+  "version": "1.0.0",
+  "description": "A challenging puzzle game, just for funsies. Created with redux and react.",
+  "keywords": ["game", "redux", "react", "ducks", "puzzle"],
   "author": "Mims H. Wright",
   "license": "MIT",
+
+  "main": "main.js",
+  "repository": {
+    "url": "https://github.com/mimshwright/mimstris",
+    "type": "git"
+  },
+
+  "scripts": {
+    "lint": "standard './*.js' './src/**/*.js'",
+    "fix": "standard --fix './*.js' './src/**/*.js'",
+    "test": "ava",
+    "coverage": "nyc npm run test",
+    "build": "webpack --config webpack.config.babel.js --env production",
+    "watch": "webpack-dev-server --open --env development",
+    "start": "npm run lint && npm run test && npm run watch"
+  },
+
   "dependencies": {
     "ava": "^0.18.0",
     "comma-number": "^1.1.0",
@@ -36,15 +49,7 @@
     "nyc": "^10.1.2",
     "yarn": "^0.19.1"
   },
-  "scripts": {
-    "lint": "standard './*.js' './src/**/*.js'",
-    "fix": "standard --fix './*.js' './src/**/*.js'",
-    "test": "ava",
-    "coverage": "nyc npm run test",
-    "build": "webpack --config webpack.config.babel.js --env production",
-    "watch": "webpack-dev-server --open --env development",
-    "start": "npm run lint && npm run test && npm run watch"
-  },
+  
   "ava": {
     "files": [
       "test/**/*.js"
