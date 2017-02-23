@@ -14,7 +14,7 @@ import config from './config'
 import pieceLibrary from './pieceLibrary'
 
 // Redux stores
-import store from './store'
+import store from './stores'
 import * as score from './stores/score'
 import * as lines from './stores/lines'
 import * as level from './stores/level'

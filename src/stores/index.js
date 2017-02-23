@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux'
+import { combineReducers, createStore } from 'redux'
 
 import score from './score'
 import lines from './lines'
@@ -11,6 +11,12 @@ import gameState from './gameState'
 // import fallRate from './fallRate'
 // import level from './level'
 
-export default combineReducers(
+export const reducer = combineReducers(
   {score, lines, nextPiece, currentPiece, board, gameState}
+)
+
+export default createStore(
+  reducer,
+  // To trigger dev tools in browser extension
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 )
