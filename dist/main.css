@@ -1,5 +1,7 @@
 html {
   background: #371B52;
+  /* Stop scrolling issue on short monitors */
+  overflow-y: hidden;
 }
 body {
   color: #FFF;
