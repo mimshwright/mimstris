@@ -31,6 +31,7 @@ const getCurrentPiece = () => wrapGetter(currentPiece.getCurrentPiece)
 const getBoard = () => wrapGetter(board.getBoard)
 const getNextPiece = () => wrapGetter(nextPiece.getNextPiece)
 const getLevel = () => wrapGetter(level.getLevel)
+const getLines = () => wrapGetter(lines.getLines)
 const getFallRate = () => wrapGetter(fallRate.getFallRate)
 const getGameState = () => wrapGetter(gameState.getGameState)
 
@@ -269,7 +270,7 @@ function clearCompletedLines () {
   const numberOfClearedLines = fullRowIndeces ? fullRowIndeces.length : 0
   if (numberOfClearedLines > 0) {
     dispatch(score.addClearedLineScore(numberOfClearedLines, getLevel()))
-    dispatch(lines.incrementLines(numberOfClearedLines))
+    dispatch(lines.setLines(getLines() + numberOfClearedLines))
     dispatch(board.clearCompletedLines())
   }
 }

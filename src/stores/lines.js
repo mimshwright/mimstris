@@ -7,12 +7,6 @@ export const setLines = lines => ({
   lines
 })
 
-export const INCREMENT_LINES = 'Increment lines'
-export const incrementLines = lines => ({
-  type: INCREMENT_LINES,
-  lines
-})
-
 // state
 const initialState = 0
 
@@ -23,8 +17,6 @@ export default function reducer (previousLines = initialState, action) {
       return 0
     case SET_LINES:
       return action.lines
-    case INCREMENT_LINES:
-      return action.lines + previousLines
     default:
       return previousLines
   }
