@@ -23,6 +23,7 @@ import * as nextPiece from './stores/nextPiece'
 import * as currentPiece from './stores/currentPiece'
 import * as board from './stores/board'
 import * as gameState from './stores/gameState'
+import * as configStore from './stores/config'
 
 // Shortcuts to getters and dispatching actions
 const dispatch = store.dispatch
@@ -34,6 +35,7 @@ const getLevel = () => wrapGetter(level.getLevel)
 const getLines = () => wrapGetter(lines.getLines)
 const getFallRate = () => wrapGetter(fallRate.getFallRate)
 const getGameState = () => wrapGetter(gameState.getGameState)
+const getDeterministicMode = () => wrapGetter(configStore.getDeterministicMode)
 
 const startGame = () => dispatch(gameState.setGameState(gameState.GAME_STATE_RUNNING))
 const pauseGame = () => dispatch(gameState.setGameState(gameState.GAME_STATE_PAUSED))
@@ -65,6 +67,7 @@ let lastDownMove = 0
 let lastRotate = 0
 let timeSincePieceLastFell = 0 // time since the piece last moved down automatically
 let lastFrameTime = 0 // previous frame's current time
+let previousDeterministicModeState = null
 
 // Main executable code:
 main()
@@ -82,6 +85,9 @@ function main () {
   // Start update loop
   window.requestAnimationFrame(onFrame)
 
+  // listen for changes on the redux state
+  store.subscribe(onStateChange)
+
   // Automatically pause when window is out of focus
   window.onblur = (e) => {
     if (getGameState() === gameState.GAME_STATE_RUNNING) {
@@ -96,6 +102,14 @@ function main () {
   }
 }
 
+function onStateChange () {
+  if (previousDeterministicModeState !== getDeterministicMode()) {
+    // if deterministicMode has changed, reset the game.
+      previousDeterministicModeState = getDeterministicMode()
+      resetGame()
+  }
+}
+
 function onFrame (currentTime) {
   update(currentTime)
   window.requestAnimationFrame(onFrame)
@@ -106,7 +120,7 @@ function resetGame () {
   // If running in deterministic mode, the random number generator
   // will use a random seed that creates a repeatable pattern of blocks
   let seed
-  if (config.isDeterministic) {
+  if (getDeterministicMode()) {
     seed = config.randomSeed
   }
   random = createRandomNumberGenerator.create(seed)

@@ -25,7 +25,7 @@ export default {
   showNextPiece: true,
 
   // When true, random blocks will be in an identical order every game.
-  isDeterministic: false,
+  deterministicMode: false,
   // Changing this value will change the random blocks generated.
   randomSeed: 'seed',
 

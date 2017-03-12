@@ -13,10 +13,16 @@ export const toggleMidnightMode = () => ({
 })
 export const getMidnightMode = (state) => state.config.midnightMode
 
+export const TOGGLE_DETERMINISTIC_MODE = 'TOGGLE_DETERMINISTIC_MODE'
+export const toggleDeterministicMode = () => ({
+  type: TOGGLE_DETERMINISTIC_MODE
+})
+export const getDeterministicMode = (state) => state.config.deterministicMode
 
 const initialState = {
   showNextPiece: config.showNextPiece,
-  midnightMode: config.midnightMode
+  midnightMode: config.midnightMode,
+  deterministicMode: config.deterministicMode
 }
 
 const toggle = (state, key) => merge(state, {[key]: !state[key]})
@@ -24,9 +30,11 @@ const toggle = (state, key) => merge(state, {[key]: !state[key]})
 export default function reducer (state = initialState, action) {
   switch (action.type) {
     case TOGGLE_SHOW_NEXT_PIECE:
-      return toggle(state, "showNextPiece")
+      return toggle(state, 'showNextPiece')
     case TOGGLE_MIDNIGHT_MODE:
-      return toggle(state, "midnightMode")
+      return toggle(state, 'midnightMode')
+      case TOGGLE_DETERMINISTIC_MODE:
+        return toggle(state, 'deterministicMode')
     default:
       return state
   }
