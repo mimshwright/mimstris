@@ -21,7 +21,7 @@ const App = props => (
     <div className='app'>
       <div className='scoreWrapper'>
         <Scoreboard />
-        {config.showNextPiece ? <NextPiece width={NEXT_WIDTH} height={NEXT_HEIGHT} /> : null}
+        <NextPiece width={NEXT_WIDTH} height={NEXT_HEIGHT} />
         <ConfigPanel />
       </div>
       <div className='gameWrapper' style={{width: CANVAS_WIDTH, height: CANVAS_HEIGHT}} >

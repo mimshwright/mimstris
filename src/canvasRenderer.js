@@ -4,6 +4,10 @@ import memoize from 'lodash/fp/memoize'
 import config from './config.js'
 import pieceLibrary from './pieceLibrary.js'
 
+import store from './stores'
+import {getMidnightMode} from './stores/config'
+const isMidnightMode = () => getMidnightMode(store.getState())
+
 /**
  * Gets the color associated with the piece's id.
  * Memoized for performance (roughly doubles speed of draw!)
@@ -82,7 +86,7 @@ function drawBlock (context, row, column, color, outlinePieces = true) {
   // fill block
   context.fillStyle = color
 
-  if (config.midnightMode) {
+  if (isMidnightMode()) {
     const SIZE = 0.20
     const BORDER = width * ((1.0 - SIZE) / 2)
     const RADIUS = width * SIZE / 2
@@ -124,7 +128,7 @@ function drawGame (context, board, currentPiece) {
 
   clearCanvas(context, config.backgroundColor)
 
-  if (config.showGuideLines && !config.midnightMode) {
+  if (config.showGuideLines && !isMidnightMode()) {
     drawGuideLines(context)
   }
 
