@@ -8,7 +8,7 @@ import Scoreboard from './Scoreboard'
 import StatusMessage from './StatusMessage'
 import NextPiece from './NextPiece'
 import Instructions from '../components/Instructions'
-import ConfigPanel from '../components/ConfigPanel'
+import ConfigPanel from './ConfigPanel'
 
 const [BOARD_WIDTH, BOARD_HEIGHT] = config.boardSize
 const CANVAS_WIDTH = BOARD_WIDTH * config.blockSize
