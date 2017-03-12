@@ -3,17 +3,17 @@ import _cloneDeep from 'lodash/fp/cloneDeep'
 import {createEmptyMatrix, removeRowAndShiftRemaining, combineMatrices, getFullRows} from '../matrixUtil'
 import config from '../config'
 
-export const RESET_BOARD = 'Reset board'
+export const RESET_BOARD = 'RESET_BOARD'
 export const resetBoard = () => ({
   type: RESET_BOARD
 })
 
-export const CLEAR_COMPLETED_LINES = 'Clear completed lines'
+export const CLEAR_COMPLETED_LINES = 'CLEAR_COMPLETED_LINES'
 export const clearCompletedLines = () => ({
   type: CLEAR_COMPLETED_LINES
 })
 
-export const MERGE_PIECE_INTO_BOARD = 'Merge piece into board'
+export const MERGE_PIECE_INTO_BOARD = 'MERGE_PIECE_INTO_BOARD'
 export const mergePieceIntoBoard = (piece) => ({
   type: MERGE_PIECE_INTO_BOARD,
   piece

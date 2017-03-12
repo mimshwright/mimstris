@@ -1,4 +1,4 @@
-export const SET_NEXT_PIECE = 'Set next piece'
+export const SET_NEXT_PIECE = 'SET_NEXT_PIECE'
 export const setNextPiece = (piece) => ({
   type: SET_NEXT_PIECE,
   piece

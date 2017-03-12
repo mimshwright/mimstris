@@ -1,4 +1,4 @@
-export const SET_GAME_STATE = 'Set Game State'
+export const SET_GAME_STATE = 'SET_GAME_STATE'
 export const setGameState = state => ({
   type: SET_GAME_STATE,
   state

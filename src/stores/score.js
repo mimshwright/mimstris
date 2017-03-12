@@ -1,18 +1,18 @@
 // Actions
-export const ADD_PIECE_SCORE = 'Add piece score'
+export const ADD_PIECE_SCORE = 'ADD_PIECE_SCORE'
 export const addPieceScore = (level) => ({
   type: ADD_PIECE_SCORE,
   level
 })
 
-export const ADD_CLEARED_LINE_SCORE = 'Add cleared line score'
+export const ADD_CLEARED_LINE_SCORE = 'ADD_CLEARED_LINE_SCORE'
 export const addClearedLineScore = (lines, level) => ({
   type: ADD_CLEARED_LINE_SCORE,
   lines,
   level
 })
 
-export const RESET_SCORE = 'Reset score'
+export const RESET_SCORE = 'RESET_SCORE'
 export const resetScore = () => ({
   type: RESET_SCORE
 })

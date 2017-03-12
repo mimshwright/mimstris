@@ -1,13 +1,13 @@
 import _cloneDeep from 'lodash/fp/cloneDeep'
 import {rotate, detectCollision, getMatrixWidth} from '../matrixUtil'
 
-export const SET_CURRENT_PIECE = 'Set current piece'
+export const SET_CURRENT_PIECE = 'SET_CURRENT_PIECE'
 export const setCurrentPiece = (piece) => ({
   type: SET_CURRENT_PIECE,
   piece
 })
 
-export const ROTATE_CURRENT_PIECE = 'Rotate Current Piece'
+export const ROTATE_CURRENT_PIECE = 'ROTATE_CURRENT_PIECE'
 export const ROTATION_DIRECTION_RIGHT = 'right'
 export const ROTATION_DIRECTION_LEFT = 'left'
 export const rotateRight = (board) => ({
@@ -26,7 +26,7 @@ export const rotateCurrentPiece = (direction, board) => ({
   board
 })
 
-export const OFFSET_X_AND_CHECK = 'Offset X and Check'
+export const OFFSET_X_AND_CHECK = 'OFFSET_X_AND_CHECK'
 export const movePieceLeft = (board) => ({
   type: OFFSET_X_AND_CHECK,
   distance: -1,
@@ -38,12 +38,12 @@ export const movePieceRight = (board) => ({
   board
 })
 
-export const MOVE_PIECE_DOWN = 'Move Piece Down'
+export const MOVE_PIECE_DOWN = 'MOVE_PIECE_DOWN'
 export const movePieceDown = () => ({
   type: MOVE_PIECE_DOWN
 })
 
-export const SET_X = 'Set x'
+export const SET_X = 'SET_X'
 export const setX = x => ({
   type: SET_X,
   x

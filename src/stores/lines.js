@@ -1,7 +1,7 @@
 import {RESET_SCORE} from './score'
 
 // acitons
-export const SET_LINES = 'Set lines'
+export const SET_LINES = 'SET_LINES'
 export const setLines = lines => ({
   type: SET_LINES,
   lines
