@@ -313,6 +313,8 @@ function getRandomPiece () {
   if (config.usePieces.indexOf(piece.name) > -1) {
     return piece
   }
+  // Just runs the function again if the piece is not one of the ones allowed.
+  // Could be optimized to prevent this from running repeatedly.
   return getRandomPiece()
 }
 
