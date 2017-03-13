@@ -67,7 +67,7 @@ let lastDownMove = 0
 let lastRotate = 0
 let timeSincePieceLastFell = 0 // time since the piece last moved down automatically
 let lastFrameTime = 0 // previous frame's current time
-let previousDeterministicModeState = null
+let previousDeterministicModeState = config.deterministicMode
 
 // Main executable code:
 main()
@@ -105,8 +105,8 @@ function main () {
 function onStateChange () {
   if (previousDeterministicModeState !== getDeterministicMode()) {
     // if deterministicMode has changed, reset the game.
-      previousDeterministicModeState = getDeterministicMode()
-      resetGame()
+    previousDeterministicModeState = getDeterministicMode()
+    resetGame()
   }
 }
 
