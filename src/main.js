@@ -309,7 +309,11 @@ function centerPiece (piece) {
 function getRandomPiece () {
   const l = pieceLibrary.length
   const i = random(l)
-  return pieceLibrary[i]
+  const piece = pieceLibrary[i]
+  if (config.usePieces.indexOf(piece.name) > -1) {
+    return piece
+  }
+  return getRandomPiece()
 }
 
 /**

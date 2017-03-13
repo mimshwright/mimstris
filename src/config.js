@@ -24,6 +24,8 @@ export default {
   outlineThickness: 0.08, // %
   showNextPiece: true,
 
+  usePieces: 'TIJLSZO', // Standard set: 'TIJLSZO', extended set: 'UYHXP|[]'
+
   // When true, random blocks will be in an identical order every game.
   deterministicMode: false,
   // Changing this value will change the random blocks generated.

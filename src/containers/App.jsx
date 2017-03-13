@@ -14,7 +14,7 @@ const [BOARD_WIDTH, BOARD_HEIGHT] = config.boardSize
 const CANVAS_WIDTH = BOARD_WIDTH * config.blockSize
 const CANVAS_HEIGHT = BOARD_HEIGHT * config.blockSize
 const NEXT_WIDTH = 5 * config.blockSize
-const NEXT_HEIGHT = 5 * config.blockSize
+const NEXT_HEIGHT = 7 * config.blockSize
 
 const App = props => (
   <Provider store={store}>
