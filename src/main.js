@@ -294,7 +294,7 @@ function centerPiece (piece) {
  */
 function getRandomPiece () {
   const l = pieceLibrary.length
-  const i = random(l - 1)
+  const i = random(l)
   return pieceLibrary[i]
 }
 
