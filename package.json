@@ -1,6 +1,6 @@
 {
   "name": "mimstris",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A challenging puzzle game, just for funsies. Created with redux and react.",
   "keywords": ["game", "redux", "react", "ducks", "puzzle"],
   "author": "Mims H. Wright",
@@ -49,7 +49,7 @@
     "nyc": "^10.1.2",
     "yarn": "^0.19.1"
   },
-  
+
   "ava": {
     "files": [
       "test/**/*.js"
