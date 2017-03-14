@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import * as config from '../stores/config'
 import {allPieceNames} from '../pieceLibrary'
@@ -20,16 +20,32 @@ const mapDispatchToProps = (dispatch) => ({
   onActivePiecesChange: (activePieces) => { dispatch(config.setActivePieces(activePieces)) }
 })
 
-const ConfigPanel = props => (
-  <div className='configPanel'>
-    <h3>Config</h3>
-    <div className='configOptions'>
-      <ConfigPanelCheckbox label='Show Next Piece' value={props.showNextPiece} onChange={props.onShowNextChange} />
-      <ConfigPanelCheckbox label='Midnight Mode' value={props.midnightMode} onChange={props.onMidnightModeChange} />
-      <ConfigPanelCheckbox label='Deterministic Mode' instructions='(forces reset)' value={props.deterministicMode} onChange={props.onDeterministicModeChange} />
-      <ConfigPanelText label='Active Pieces' instructions={'All pieces: ' + allPieceNames} value={props.activePieces} onChange={props.onActivePiecesChange} />
-    </div>
-  </div>
-)
+class ConfigPanel extends Component {
+  constructor (props) {
+    super(props)
+    this.state = { visible: false }
+
+    this.onClickVisibility = () => this.setState({ visible: !this.state.visible })
+  }
+
+  render () {
+    const props = this.props
+    return (
+      <div className='configPanel'>
+        <button onClick={this.onClickVisibility}>{this.state.visible ? '👇' : '👉'}</button>
+        <h3 onClick={this.onClickVisibility}>Config</h3>
+        { this.state.visible ? (
+          <div className='configOptions'>
+            <ConfigPanelCheckbox label='Show Next Piece' value={props.showNextPiece} onChange={props.onShowNextChange} />
+            <ConfigPanelCheckbox label='Midnight Mode' value={props.midnightMode} onChange={props.onMidnightModeChange} />
+            <ConfigPanelCheckbox label='Deterministic Mode' instructions='(forces reset)' value={props.deterministicMode} onChange={props.onDeterministicModeChange} />
+            <ConfigPanelText label='Active Pieces' instructions={'All pieces: ' + allPieceNames} value={props.activePieces} onChange={props.onActivePiecesChange} />
+          </div>)
+        : null
+        }
+      </div>
+    )
+  }
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigPanel)

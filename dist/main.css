@@ -41,9 +41,29 @@ main {
 }
 
 .configPanel {
+  font-size: 10px;
 }
 .configPanel h3 {
-  margint: 0 0 0.5rem 0;
+  display: inline-block;
+  margin: 0 0 0.5rem 0.5rem;
+  font-size: 12px;
+  font-weight: normal;
+  cursor: pointer;
+}
+.configPanel h3:hover {
+  text-decoration: underline;
+}
+.configPanel button {
+  border: none;
+  background: transparent;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+}
+.configPanel button:focus {
+  outline:0;
 }
 .configPanel ul {
   list-style: none;

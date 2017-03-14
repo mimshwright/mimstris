@@ -24,7 +24,7 @@ export default {
   outlineThickness: 0.08, // %
   showNextPiece: true,
 
-  activePieces: 'TIJLSZO', // Standard set: 'TIJLSZO', extended set: 'UYHXP|[]'
+  activePieces: 'TOJLISZ', // Standard set: 'TOJLISZ', extended set: 'UYHXP|[]'
 
   // When true, random blocks will be in an identical order every game.
   deterministicMode: false,

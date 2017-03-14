@@ -65,16 +65,6 @@ const pieces = [
   ),
 
   // EXTENDED PIECES
-  createPiece('|', '#ec1656',
-    [
-      [0, 1, 0],
-      [0, 1, 0],
-      [0, 1, 0],
-      [0, 1, 0],
-      [0, 1, 0],
-      [0, 1, 0]
-    ]
-  ),
   createPiece('U', '#C0E0B8',
     [
     [1, 0, 1],
@@ -88,6 +78,20 @@ const pieces = [
     [0, 1, 1, 0],
     [0, 1, 1, 0],
     [0, 1, 0, 0]
+    ]
+  ),
+  createPiece('H', '#3adfda',
+    [
+    [1, 0, 1],
+    [1, 1, 1],
+    [1, 0, 1]
+    ]
+  ),
+  createPiece('Y', '#ff44ba',
+    [
+    [1, 0, 1],
+    [1, 1, 1],
+    [0, 1, 0]
     ]
   ),
   createPiece('X', '#A6E22E',
@@ -104,18 +108,14 @@ const pieces = [
     [1, 1, 1]
     ]
   ),
-  createPiece('H', '#3adfda',
+  createPiece('|', '#ec1656',
     [
-    [1, 0, 1],
-    [1, 1, 1],
-    [1, 0, 1]
-    ]
-  ),
-  createPiece('Y', '#ff44ba',
-    [
-    [1, 0, 1],
-    [1, 1, 1],
-    [0, 1, 0]
+      [0, 1, 0],
+      [0, 1, 0],
+      [0, 1, 0],
+      [0, 1, 0],
+      [0, 1, 0],
+      [0, 1, 0]
     ]
   )
 ]
@@ -126,6 +126,5 @@ export default pieces
  * Returns all the piece names as a single string.
  */
 export const allPieceNames = (() => (
-  pieces.map(piece => piece.name)
-        .join(' ')
+  pieces.map(piece => piece.name).join('')
 ))() // <-- Notice, immediately invoked since this value only needs to be calculated once.

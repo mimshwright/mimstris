@@ -7,10 +7,10 @@ class ConfigPanelText extends Component {
     return (
       <div className='configPanelText'>
         <label>{this.props.label}: </label>
-        <div className='instructions'>{this.props.instructions}</div>
         <input ref='input' type='text'
           defaultValue={this.props.value}
           onChange={() => { this.props.onChange(this.getTextValue()) }} />
+        <div className='instructions'>{this.props.instructions}</div>
       </div>
     )
   }
