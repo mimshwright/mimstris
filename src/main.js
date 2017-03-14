@@ -36,6 +36,7 @@ const getLines = () => wrapGetter(lines.getLines)
 const getFallRate = () => wrapGetter(fallRate.getFallRate)
 const getGameState = () => wrapGetter(gameState.getGameState)
 const getDeterministicMode = () => wrapGetter(configStore.getDeterministicMode)
+const getActivePieces = () => wrapGetter(configStore.getActivePieces)
 
 const startGame = () => dispatch(gameState.setGameState(gameState.GAME_STATE_RUNNING))
 const pauseGame = () => dispatch(gameState.setGameState(gameState.GAME_STATE_PAUSED))
@@ -310,7 +311,10 @@ function getRandomPiece () {
   const l = pieceLibrary.length
   const i = random(l)
   const piece = pieceLibrary[i]
-  if (config.usePieces.indexOf(piece.name) > -1) {
+  const activePieces = getActivePieces()
+  // If active pieces is not set or
+  // if the name is contained in the active pieces string
+  if (!activePieces || activePieces.indexOf(piece.name) > -1) {
     return piece
   }
   // Just runs the function again if the piece is not one of the ones allowed.

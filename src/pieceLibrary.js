@@ -14,7 +14,7 @@ const createPiece = (name, color, matrix) => {
   }
 }
 
-export default [
+const pieces = [
   // STANDARD PIECES
   createPiece('T', '#AE81FF',
     [
@@ -23,7 +23,7 @@ export default [
       [0, 1, 0]
     ]
   ),
-  createPiece('O', '#FF445A',
+  createPiece('O', '#f45f70',
     [
     [1, 1],
     [1, 1]
@@ -65,7 +65,7 @@ export default [
   ),
 
   // EXTENDED PIECES
-  createPiece('|', '#e28d1d',
+  createPiece('|', '#ec1656',
     [
       [0, 1, 0],
       [0, 1, 0],
@@ -97,7 +97,7 @@ export default [
     [0, 1, 0]
     ]
   ),
-  createPiece('[]', '#bd44ff',
+  createPiece('#', '#bd44ff',
     [
     [1, 1, 1],
     [1, 0, 1],
@@ -119,3 +119,13 @@ export default [
     ]
   )
 ]
+
+export default pieces
+
+/**
+ * Returns all the piece names as a single string.
+ */
+export const allPieceNames = (() => (
+  pieces.map(piece => piece.name)
+        .join(' ')
+))() // <-- Notice, immediately invoked since this value only needs to be calculated once.

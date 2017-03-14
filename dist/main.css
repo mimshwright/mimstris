@@ -40,10 +40,34 @@ main {
   transform: scale(0.5);
 }
 
+.configPanel {
+}
+.configPanel h3 {
+  margint: 0 0 0.5rem 0;
+}
 .configPanel ul {
   list-style: none;
   margin: 0;
   padding: 0;
+}
+.configPanel div {
+  margin-bottom: 0.5rem;
+}
+.configOptions {
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  padding: 0.5rem;
+}
+.configPanelText {
+
+}
+.configPanelText label {
+  display: block;
+}
+.configPanelText input {
+  background: #00263f;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.25rem;
 }
 
 .modalText {
