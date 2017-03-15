@@ -1,6 +1,7 @@
 # Project-specific
 dist/**/*.js
 dist/**/*.js.map
+notes
 
 CNAME
 
