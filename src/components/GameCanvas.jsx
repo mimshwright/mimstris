@@ -18,7 +18,7 @@ class GameCanvas extends React.Component {
       if (!this.frameRequest) {
         this.frameRequest = window.requestAnimationFrame(() => {
           canvasRenderer.drawGame(context, this.props.board, this.props.currentPiece)
-          this.frameRequest = undefined;
+          this.frameRequest = undefined
         })
       }
     }
