@@ -110,6 +110,20 @@ function drawBlock (context, row, column, color, outlinePieces = true) {
     context.lineTo(x, y)
     context.stroke()
   }
+
+  // highlight blockSize
+  if (config.showBlockHighlight) {
+    context.beginPath()
+    context.globalAlpha = 0.8
+    context.fillStyle = '#FFFFFF'
+    context.moveTo(x + width * 0.1, y + height * 0.1)
+    context.lineTo(x + width * 0.1, y + height * 0.4)
+    context.lineTo(x + width * 0.4, y + height * 0.1)
+    context.lineTo(x + width * 0.1, y + height * 0.1)
+    context.fill()
+
+    context.globalAlpha = 1.0
+  }
 }
 
 /**

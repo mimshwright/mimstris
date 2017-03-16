@@ -23,7 +23,7 @@ const pieces = [
       [0, 1, 0]
     ]
   ),
-  createPiece('O', '#f45f70',
+  createPiece('O', '#e94659',
     [
     [1, 1],
     [1, 1]
@@ -63,7 +63,6 @@ const pieces = [
     [0, 1, 1]
     ]
   ),
-
   // EXTENDED PIECES
   createPiece('U', '#C0E0B8',
     [
@@ -108,7 +107,7 @@ const pieces = [
     [1, 1, 1]
     ]
   ),
-  createPiece('|', '#ec1656',
+  createPiece('|', '#f45f70',
     [
       [0, 1, 0],
       [0, 1, 0],

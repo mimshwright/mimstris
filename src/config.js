@@ -21,6 +21,7 @@ export default {
   instantDown: false,
   showGuideLines: true,
   outlinePieces: true,
+  showBlockHighlight: true,
   outlineThickness: 0.08, // %
   showNextPiece: true,
 
