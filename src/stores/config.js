@@ -1,5 +1,6 @@
 import config from '../config'
 import merge from 'lodash/merge'
+import {REPLACE_STATE} from './index'
 
 export const TOGGLE_SHOW_NEXT_PIECE = 'TOGGLE_SHOW_NEXT_PIECE'
 export const toggleShowNextPiece = () => ({
@@ -37,6 +38,7 @@ const toggle = (state, key) => merge({}, state, {[key]: !state[key]})
 
 export default function reducer (state = initialState, action) {
   switch (action.type) {
+    case REPLACE_STATE: return action.payload.config
     case TOGGLE_SHOW_NEXT_PIECE:
       return toggle(state, 'showNextPiece')
     case TOGGLE_MIDNIGHT_MODE:

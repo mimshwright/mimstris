@@ -2,6 +2,7 @@ import _cloneDeep from 'lodash/fp/cloneDeep'
 
 import {createEmptyMatrix, removeRowAndShiftRemaining, combineMatrices, getFullRows} from '../matrixUtil'
 import config from '../config'
+import {REPLACE_STATE} from './index'
 
 export const RESET_BOARD = 'RESET_BOARD'
 export const resetBoard = () => ({
@@ -23,6 +24,7 @@ const initialState = [[0]]
 
 export default function reducer (previousBoard = initialState, action) {
   switch (action.type) {
+    case REPLACE_STATE: return getBoard(action.payload)
     case RESET_BOARD:
       const emptyBoard = createEmptyMatrix(...config.boardSize)
       return emptyBoard

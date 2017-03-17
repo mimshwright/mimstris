@@ -1,6 +1,7 @@
 // React and react components
 import React from 'react'
 import ReactDOM from 'react-dom'
+import {Provider} from 'react-redux'
 import App from './containers/App'
 
 // Utils
@@ -24,6 +25,7 @@ import * as currentPiece from './stores/currentPiece'
 import * as board from './stores/board'
 import * as gameState from './stores/gameState'
 import * as configStore from './stores/config'
+import * as history from './stores/history'
 
 // Shortcuts to getters and dispatching actions
 const dispatch = store.dispatch
@@ -47,16 +49,24 @@ const movePieceLeft = (piece) => dispatch(currentPiece.movePieceLeft(getBoard())
 const movePieceRight = (piece) => dispatch(currentPiece.movePieceRight(getBoard()))
 const rotatePieceRight = (piece) => dispatch(currentPiece.rotateRight(getBoard()))
 const rotatePieceLeft = (piece) => dispatch(currentPiece.rotateLeft(getBoard()))
-const makeNextPieceCurrent = () => dispatch(currentPiece.setCurrentPiece(centerPiece(getNextPiece())))
 const randomizeNextPiece = () => dispatch(nextPiece.setNextPiece(getRandomPiece()))
+const makeNextPieceCurrent = () => {
+  const nextPiece = centerPiece(getNextPiece())
+  dispatch(currentPiece.setCurrentPiece(nextPiece))
+
+  // Store this state for the undo action
+  history.saveState(store.getState())
+}
+const undo = () => dispatch(history.undoLastPiece())
 
 // Key mappings
 const DOWN_KEYS = ['down', 's']
 const LEFT_KEYS = ['left', 'a']
 const RIGHT_KEYS = ['right', 'd']
-const ROTATE_LEFT_KEYS = ['/', 'z']
+const ROTATE_LEFT_KEYS = ['/']
 const ROTATE_RIGHT_KEYS = ['shift', 'up']
 const START_KEYS = ['enter']
+const UNDO_KEYS = ['z']
 
 // Other variables
 let random = null
@@ -81,7 +91,7 @@ function main () {
   resetGame()
 
   // Initialize react components
-  ReactDOM.render(<App />, document.getElementById('app'))
+  ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('app'))
 
   // Start update loop
   window.requestAnimationFrame(onFrame)
@@ -131,6 +141,8 @@ function resetGame () {
   lastFrameTime = 0
   lateralMovementRate = config.lateralMovementRate
   downMovementRate = config.downMovementRate
+
+  history.resetHistory()
 
   // reset game objects
   dispatch(board.resetBoard())
@@ -247,6 +259,11 @@ function handleUserMovement (currentTime) {
     }
   } else {
     lastRotate = 0
+  }
+
+  if (pressed.every(...UNDO_KEYS)) {
+    undo()
+    pressed.remove(...UNDO_KEYS)
   }
 }
 

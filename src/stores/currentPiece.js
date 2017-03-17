@@ -1,5 +1,6 @@
 import _cloneDeep from 'lodash/fp/cloneDeep'
 import {rotate, detectCollision, getMatrixWidth} from '../matrixUtil'
+import {REPLACE_STATE} from './index'
 
 export const SET_CURRENT_PIECE = 'SET_CURRENT_PIECE'
 export const setCurrentPiece = (piece) => ({
@@ -55,6 +56,7 @@ export default function reducer (previousPiece = initialState, action) {
   let newPiece
 
   switch (action.type) {
+    case REPLACE_STATE: return getCurrentPiece(action.payload)
     case SET_CURRENT_PIECE:
       return action.piece
     case ROTATE_CURRENT_PIECE:

@@ -1,3 +1,5 @@
+import {REPLACE_STATE} from './index'
+
 // Actions
 export const ADD_PIECE_SCORE = 'ADD_PIECE_SCORE'
 export const addPieceScore = (level) => ({
@@ -26,6 +28,7 @@ export default function reducer (previousScore = initialState, action) {
   const {lines, level} = action
 
   switch (action.type) {
+    case REPLACE_STATE: return getScore(action.payload)
     case RESET_SCORE:
       return 0
     case ADD_PIECE_SCORE:

@@ -1,3 +1,5 @@
+import {REPLACE_STATE} from './index'
+
 export const SET_NEXT_PIECE = 'SET_NEXT_PIECE'
 export const setNextPiece = (piece) => ({
   type: SET_NEXT_PIECE,
@@ -15,6 +17,7 @@ const initialState = {
 
 export default function reducer (previousPiece = initialState, action) {
   switch (action.type) {
+    case REPLACE_STATE: return getNextPiece(action.payload)
     case SET_NEXT_PIECE:
       return action.piece
     default:

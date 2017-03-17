@@ -1,7 +1,7 @@
 import React from 'react'
-import { Provider } from 'react-redux'
-import store from '../stores'
+import { connect } from 'react-redux'
 import config from '../config'
+import {undoLastPiece} from '../stores/history'
 
 import Game from './Game'
 import Scoreboard from './Scoreboard'
@@ -16,21 +16,30 @@ const CANVAS_HEIGHT = BOARD_HEIGHT * config.blockSize
 const NEXT_WIDTH = 5 * config.blockSize
 const NEXT_HEIGHT = 7 * config.blockSize
 
+const mapStateToProps = (state) => ({
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  onUndoClick: () => { dispatch(undoLastPiece()) }
+})
+
 const App = props => (
-  <Provider store={store}>
-    <div className='app'>
-      <div className='scoreWrapper'>
-        <Scoreboard />
-        <NextPiece width={NEXT_WIDTH} height={NEXT_HEIGHT} />
-        <ConfigPanel />
-      </div>
-      <div className='gameWrapper' style={{width: CANVAS_WIDTH, height: CANVAS_HEIGHT}} >
-        <Game width={CANVAS_WIDTH} height={CANVAS_HEIGHT} />
-        <StatusMessage />
-        <Instructions />
-      </div>
+  <div className='app'>
+    <div className='scoreWrapper'>
+      <Scoreboard />
+      <NextPiece width={NEXT_WIDTH} height={NEXT_HEIGHT} />
+      {config.allowUndo
+          ? <button className='undoButton' onClick={props.onUndoClick}>Undo</button>
+          : null
+        }
+      <ConfigPanel />
     </div>
-  </Provider>
+    <div className='gameWrapper' style={{width: CANVAS_WIDTH, height: CANVAS_HEIGHT}} >
+      <Game width={CANVAS_WIDTH} height={CANVAS_HEIGHT} />
+      <StatusMessage />
+      <Instructions />
+    </div>
+  </div>
 )
 
-export default App
+export default connect(mapStateToProps, mapDispatchToProps)(App)

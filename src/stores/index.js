@@ -12,6 +12,12 @@ import gameState from './gameState'
 // import fallRate from './fallRate'
 // import level from './level'
 
+export const REPLACE_STATE = 'REPLACE_STATE'
+export const replaceState = (state) => ({
+  type: REPLACE_STATE,
+  payload: state
+})
+
 export const reducer = combineReducers(
   {score, lines, nextPiece, currentPiece, board, gameState, config}
 )

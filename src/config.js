@@ -25,6 +25,8 @@ export default {
   outlineThickness: 0.08, // %
   showNextPiece: true,
 
+  allowUndo: true,
+
   activePieces: 'TOJLISZ', // Standard set: 'TOJLISZ', extended set: 'UYHXP|[]'
 
   // When true, random blocks will be in an identical order every game.

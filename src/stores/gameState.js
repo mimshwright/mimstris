@@ -1,3 +1,5 @@
+import {REPLACE_STATE} from './index'
+
 export const SET_GAME_STATE = 'SET_GAME_STATE'
 export const setGameState = state => ({
   type: SET_GAME_STATE,
@@ -11,6 +13,7 @@ const initialState = GAME_STATE_RUNNING
 
 export default function reducer (previousState = initialState, action) {
   switch (action.type) {
+    case REPLACE_STATE: return getGameState(action.payload)
     case SET_GAME_STATE:
       return action.state
     default:

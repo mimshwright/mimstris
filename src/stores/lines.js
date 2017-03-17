@@ -1,4 +1,5 @@
 import {RESET_SCORE} from './score'
+import {REPLACE_STATE} from './index'
 
 // acitons
 export const SET_LINES = 'SET_LINES'
@@ -13,6 +14,7 @@ const initialState = 0
 // reducer
 export default function reducer (previousLines = initialState, action) {
   switch (action.type) {
+    case REPLACE_STATE: return getLines(action.payload)
     case RESET_SCORE:
       return 0
     case SET_LINES:
