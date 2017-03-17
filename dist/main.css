@@ -21,7 +21,8 @@ button {
   cursor: pointer;
 }
 button:hover {
-  background: rgba(255,255,255,0.2)
+  background: #FFF;
+  color: #371B52;
 }
 button:focus {
   outline:0;
