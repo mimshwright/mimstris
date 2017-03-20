@@ -2,13 +2,16 @@ import React from 'react'
 import { connect } from 'react-redux'
 import config from '../config'
 import {undoLastPiece} from '../stores/history'
+import {getGameState, GAME_STATE_PAUSED} from '../stores/gameState'
 
 import Game from './Game'
 import Scoreboard from './Scoreboard'
 import StatusMessage from './StatusMessage'
 import NextPiece from './NextPiece'
-import Instructions from '../components/Instructions'
 import ConfigPanel from './ConfigPanel'
+import Music from './Music'
+
+import Instructions from '../components/Instructions'
 
 const [BOARD_WIDTH, BOARD_HEIGHT] = config.boardSize
 const CANVAS_WIDTH = BOARD_WIDTH * config.blockSize
@@ -17,6 +20,7 @@ const NEXT_WIDTH = 5 * config.blockSize
 const NEXT_HEIGHT = 7 * config.blockSize
 
 const mapStateToProps = (state) => ({
+  musicPlaying: getGameState(state) !== GAME_STATE_PAUSED
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -39,6 +43,7 @@ const App = props => (
       <StatusMessage />
       <Instructions />
     </div>
+    <Music isPlaying={props.musicPlaying} />
   </div>
 )
 
