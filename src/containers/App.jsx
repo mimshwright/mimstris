@@ -43,8 +43,8 @@ const App = props => (
       <Game width={CANVAS_WIDTH} height={CANVAS_HEIGHT} />
       <StatusMessage />
       <Instructions />
+      <Music isPlaying={props.musicPlaying} />
     </div>
-    <Music isPlaying={props.musicPlaying} />
   </div>
 )
 

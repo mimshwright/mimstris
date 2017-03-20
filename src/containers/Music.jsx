@@ -21,7 +21,10 @@ class Music extends Component {
 
   render (props) {
     return (
-      <audio ref='player' className='Music' src='mimstris.mp3' loop='true' />
+      <div className='Music'>
+        <audio ref='player' src='mimstris.mp3' loop='true' />
+        <p className='credits'>Music by <a href='http://wavecollector.bandcamp.com'>Wave Collector</a> and <a href='http://saroon.bandcamp.com'>Saroon</a></p>
+      </div>
     )
   }
 }

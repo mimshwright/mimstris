@@ -11,6 +11,14 @@ main {
   margin: 4em auto;
 }
 
+a, a:link, a:hover, a:active, a:visited {
+  color: #11c5bf;
+  text-decoration: underline;
+}
+a:link {
+  text-decoration: none;
+}
+
 button {
   background: transparent;
   border: 1px solid #FFF;
@@ -106,6 +114,10 @@ button:focus {
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.3);
   padding: 0.25rem;
+}
+
+.credits {
+  font-size: 10px;
 }
 
 .modalText {
