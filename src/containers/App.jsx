@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import config from '../config'
 import {undoLastPiece} from '../stores/history'
 import {getGameState, GAME_STATE_PAUSED} from '../stores/gameState'
+import {getPlayMusic} from '../stores/config'
 
 import Game from './Game'
 import Scoreboard from './Scoreboard'
@@ -20,7 +21,7 @@ const NEXT_WIDTH = 5 * config.blockSize
 const NEXT_HEIGHT = 7 * config.blockSize
 
 const mapStateToProps = (state) => ({
-  musicPlaying: getGameState(state) !== GAME_STATE_PAUSED
+  musicPlaying: getPlayMusic(state) && getGameState(state) !== GAME_STATE_PAUSED
 })
 
 const mapDispatchToProps = (dispatch) => ({

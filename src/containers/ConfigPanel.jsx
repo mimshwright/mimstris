@@ -7,6 +7,7 @@ import ConfigPanelCheckbox from '../components/ConfigPanelCheckbox'
 import ConfigPanelText from '../components/ConfigPanelText'
 
 const mapStateToProps = (state) => ({
+  playMusic: config.getPlayMusic(state),
   showNextPiece: config.getShowNextPiece(state),
   midnightMode: config.getMidnightMode(state),
   deterministicMode: config.getDeterministicMode(state),
@@ -15,6 +16,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   onShowNextChange: () => { dispatch(config.toggleShowNextPiece()) },
+  onPlayMusicChange: () => { dispatch(config.togglePlayMusic()) },
   onMidnightModeChange: () => { dispatch(config.toggleMidnightMode()) },
   onDeterministicModeChange: () => { dispatch(config.toggleDeterministicMode()) },
   onActivePiecesChange: (activePieces) => { dispatch(config.setActivePieces(activePieces)) }
@@ -36,6 +38,7 @@ class ConfigPanel extends Component {
         <h3 onClick={this.onClickVisibility}>Config</h3>
         { this.state.visible ? (
           <div className='configOptions'>
+            <ConfigPanelCheckbox label='Play Music' value={props.playMusic} onChange={props.onPlayMusicChange} />
             <ConfigPanelCheckbox label='Show Next Piece' value={props.showNextPiece} onChange={props.onShowNextChange} />
             <ConfigPanelCheckbox label='Midnight Mode' value={props.midnightMode} onChange={props.onMidnightModeChange} />
             <ConfigPanelCheckbox label='Deterministic Mode' instructions='(forces reset)' value={props.deterministicMode} onChange={props.onDeterministicModeChange} />

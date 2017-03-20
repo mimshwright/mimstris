@@ -13,6 +13,8 @@ export default {
   lateralMovementRate: 6,
   downMovementRate: 20,
 
+  playMusic: true,
+
   htmlBackgroundColor: '#371B52',
   backgroundColor: '#00263F',
   guideColor: '#021c2d',

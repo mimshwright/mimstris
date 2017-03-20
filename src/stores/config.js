@@ -4,6 +4,12 @@ import {REPLACE_STATE} from './index'
 
 export const getConfig = (state) => state.config
 
+export const TOGGLE_PLAY_MUSIC = 'TOGGLE_PLAY_MUSIC'
+export const togglePlayMusic = () => ({
+  type: TOGGLE_PLAY_MUSIC
+})
+export const getPlayMusic = (state) => getConfig(state).playMusic
+
 export const TOGGLE_SHOW_NEXT_PIECE = 'TOGGLE_SHOW_NEXT_PIECE'
 export const toggleShowNextPiece = () => ({
   type: TOGGLE_SHOW_NEXT_PIECE
@@ -33,7 +39,8 @@ const initialState = {
   showNextPiece: config.showNextPiece,
   midnightMode: config.midnightMode,
   deterministicMode: config.deterministicMode,
-  activePieces: config.activePieces
+  activePieces: config.activePieces,
+  playMusic: config.playMusic
 }
 
 const toggle = (state, key) => merge({}, state, {[key]: !state[key]})
@@ -43,6 +50,8 @@ export default function reducer (state = initialState, action) {
     case REPLACE_STATE: return getConfig(action.payload)
     case TOGGLE_SHOW_NEXT_PIECE:
       return toggle(state, 'showNextPiece')
+    case TOGGLE_PLAY_MUSIC:
+      return toggle(state, 'playMusic')
     case TOGGLE_MIDNIGHT_MODE:
       return toggle(state, 'midnightMode')
     case TOGGLE_DETERMINISTIC_MODE:
