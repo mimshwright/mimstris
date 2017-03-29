@@ -15,5 +15,5 @@ export const undoLastPiece = () => {
     const previousState = previousStates.pop()
     return replaceState(previousState)
   }
-  return { type: "noop" }
+  return { type: 'noop' }
 }
