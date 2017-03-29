@@ -12,6 +12,7 @@ export default {
   // When holding down a key, you will move this many times per second.
   lateralMovementRate: 6,
   downMovementRate: 20,
+  pauseRate: 2,
 
   playMusic: true,
 
