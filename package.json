@@ -25,7 +25,7 @@
   "dependencies": {
     "ava": "^0.18.0",
     "comma-number": "^1.1.0",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.21",
     "pressed": "^1.2.0",
     "random-seed": "^0.3.0",
     "react": "^15.4.2",
