@@ -47,7 +47,7 @@
   },
   "optionalDependencies": {
     "nyc": "^10.1.2",
-    "yarn": "^0.19.1"
+    "yarn": "^1.22.0"
   },
 
   "ava": {
