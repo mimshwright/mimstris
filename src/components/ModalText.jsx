@@ -1,12 +1,12 @@
-import React, {PropTypes} from 'react'
+import React from "react";
 
-const ModalText = ({text}) => {
-  const style = {visibility: (text === '') ? 'hidden' : ''}
-  return <div style={style} className='modalText'>{text}</div>
-}
+const ModalText = ({ text }) => {
+  const style = { visibility: text === "" ? "hidden" : "" };
+  return (
+    <div style={style} className="modalText">
+      {text}
+    </div>
+  );
+};
 
-ModalText.propTypes = {
-  text: PropTypes.string
-}
-
-export default ModalText
+export default ModalText;
