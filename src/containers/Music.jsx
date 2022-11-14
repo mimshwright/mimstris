@@ -16,8 +16,6 @@ class Music extends Component {
   updatePlayingState() {
     const player = this.refs.player;
     player.removeEventListener("canplay", this.updatePlayingState.bind(this));
-    window.removeEventListener("keydown", this.updatePlayingState.bind(this));
-    window.removeEventListener("mousedown", this.updatePlayingState.bind(this));
 
     if (this.state.readyToPlay === false) {
       if (player.readyState >= 2) {
@@ -33,14 +31,6 @@ class Music extends Component {
       player.play().catch((error) => {
         if (error instanceof DOMException) {
           console.warn("Music cannot play until you interact with the DOM.");
-          window.addEventListener(
-            "keydown",
-            this.updatePlayingState.bind(this)
-          );
-          window.addEventListener(
-            "mousedown",
-            this.updatePlayingState.bind(this)
-          );
         }
       });
     } else {

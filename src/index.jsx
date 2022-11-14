@@ -43,6 +43,8 @@ const getGameState = () => wrapGetter(gameState.getGameState);
 const getDeterministicMode = () => wrapGetter(configStore.getDeterministicMode);
 const getActivePieces = () => wrapGetter(configStore.getActivePieces);
 
+const initGame = () =>
+  dispatch(gameState.setGameState(gameState.GAME_STATE_INIT));
 const startGame = () =>
   dispatch(gameState.setGameState(gameState.GAME_STATE_RUNNING));
 const pauseGame = () =>
@@ -70,6 +72,7 @@ const makeNextPieceCurrent = () => {
   history.saveState(store.getState());
 };
 const undo = () => dispatch(history.undoLastPiece());
+const muteUnmute = () => dispatch(configStore.togglePlayMusic());
 
 // Key mappings
 const DOWN_KEYS = ["down", "s"];
@@ -79,6 +82,7 @@ const ROTATE_LEFT_KEYS = ["/"];
 const ROTATE_RIGHT_KEYS = ["shift", "up"];
 const START_KEYS = ["enter"];
 const UNDO_KEYS = ["z"];
+const MUTE_KEYS = ["m"];
 
 // Other variables
 let random = null;
@@ -117,6 +121,7 @@ function main() {
 
   // Reset values for game
   resetGame();
+  initGame();
 
   // Initialize react components
   ReactDOM.render(
@@ -206,6 +211,8 @@ function update(currentTime) {
   let deltaTime = currentTime - lastFrameTime;
   lastFrameTime = currentTime;
 
+  handleMuteUnmute();
+
   // Handle pausing and restarting of game.
   handleStartAndUndoInput(currentTime);
 
@@ -274,6 +281,12 @@ function axisPressed(axisId, direction = 1) {
   return false;
 }
 
+function handleMuteUnmute() {
+  if (pressed.some(...MUTE_KEYS)) {
+    muteUnmute();
+  }
+}
+
 function handleStartAndUndoInput(currentTime) {
   const pauseThreshold = Math.ceil(1000 / pauseRate);
   const isPauseAllowed = currentTime - lastPause > pauseThreshold;
@@ -286,12 +299,13 @@ function handleStartAndUndoInput(currentTime) {
   ) {
     if (isPauseAllowed) {
       if (pressed.some(...START_KEYS) || buttonPresed(START_BUTTONS)) {
-        if (getGameState() === gameState.GAME_STATE_GAME_OVER) {
+        const state = getGameState();
+        if (state === gameState.GAME_STATE_INIT) {
+          unpauseGame();
+        } else if (state === gameState.GAME_STATE_GAME_OVER) {
           resetGame();
         } else {
-          getGameState() === gameState.GAME_STATE_PAUSED
-            ? unpauseGame()
-            : pauseGame();
+          state === gameState.GAME_STATE_PAUSED ? unpauseGame() : pauseGame();
         }
 
         pressed.remove(...START_KEYS);

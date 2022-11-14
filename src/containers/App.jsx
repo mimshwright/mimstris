@@ -2,7 +2,11 @@ import React from "react";
 import { connect } from "react-redux";
 import config from "../config.js";
 import { undoLastPiece } from "../stores/history.js";
-import { getGameState, GAME_STATE_PAUSED } from "../stores/gameState.js";
+import {
+  getGameState,
+  GAME_STATE_PAUSED,
+  GAME_STATE_INIT,
+} from "../stores/gameState.js";
 import { getPlayMusic } from "../stores/config.js";
 
 import Game from "./Game";
@@ -22,7 +26,9 @@ const NEXT_HEIGHT = 7 * config.blockSize;
 
 const mapStateToProps = (state) => ({
   musicPlaying:
-    getPlayMusic(state) && getGameState(state) !== GAME_STATE_PAUSED,
+    getPlayMusic(state) &&
+    getGameState(state) !== GAME_STATE_INIT &&
+    getGameState(state) !== GAME_STATE_PAUSED,
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -7,9 +7,10 @@ export const setGameState = (state) => ({
 });
 
 export const GAME_STATE_PAUSED = "paused";
+export const GAME_STATE_INIT = "init";
 export const GAME_STATE_GAME_OVER = "game over";
 export const GAME_STATE_RUNNING = "running";
-const initialState = GAME_STATE_RUNNING;
+const initialState = GAME_STATE_INIT;
 
 export default function reducer(previousState = initialState, action) {
   switch (action.type) {

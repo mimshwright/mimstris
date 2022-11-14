@@ -5,8 +5,10 @@ import { getMessage } from "../stores/message";
 import ModalText from "../components/ModalText";
 
 const mapStateToProps = (state) => {
+  const { text, subtext } = getMessage(state);
   return {
-    text: getMessage(state),
+    text,
+    subtext,
   };
 };
 
