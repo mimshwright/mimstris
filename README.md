@@ -6,9 +6,9 @@ _Note: This was originally coded in 2016 and there have been a lot of new develo
 
 **This game is open-source, free, and just for funsies!**
 
-## 👉 [Play Now!](https://mimstris.surge.sh) 🎮 📺
+## 👉 [Play Now!](https://mimstris.onrender.com) 🎮 📺
 
-[![Screen Shot](screenshot.gif)](htts://mimstris.surge.sh)
+[![Screen Shot](screenshot.gif)](htts://mimstris.onrender.com)
 
 ## Motivation
 
@@ -41,3 +41,4 @@ Some of the tools I used:
 | Shift, Up | Rotate Right         |
 | Z, /      | Rotate Left          |
 | Enter     | Pause / Restart Game |
+| M         | Mute / Unmute music  |
