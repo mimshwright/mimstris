@@ -1,6 +1,6 @@
 import React from "react";
-import canvasRenderer from "../canvasRenderer";
-import config from "../config";
+import canvasRenderer from "../canvasRenderer.js";
+import config from "../config.js";
 
 class Piece extends React.Component {
   componentDidMount() {

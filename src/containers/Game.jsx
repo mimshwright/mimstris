@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getCurrentPiece } from "../stores/currentPiece";
-import { getBoard } from "../stores/board";
+import { getCurrentPiece } from "../stores/currentPiece.js";
+import { getBoard } from "../stores/board.js";
 
 import GameCanvas from "../components/GameCanvas";
 

@@ -1,6 +1,6 @@
 import React from "react";
-import canvasRenderer from "../canvasRenderer";
-import { combineMatrices } from "../matrixUtil";
+import canvasRenderer from "../canvasRenderer.js";
+import { combineMatrices } from "../matrixUtil.js";
 
 class GameCanvas extends React.Component {
   componentDidMount() {

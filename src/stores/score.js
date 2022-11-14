@@ -1,4 +1,4 @@
-import { REPLACE_STATE } from "./index";
+import { REPLACE_STATE } from "./replaceState.js";
 
 // Actions
 export const ADD_PIECE_SCORE = "ADD_PIECE_SCORE";

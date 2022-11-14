@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getNextPiece } from "../stores/nextPiece";
-import { getShowNextPiece } from "../stores/config";
+import { getNextPiece } from "../stores/nextPiece.js";
+import { getShowNextPiece } from "../stores/config.js";
 
 import Piece from "../components/Piece";
 

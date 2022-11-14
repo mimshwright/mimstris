@@ -11,24 +11,24 @@ import pressed from "pressed";
 import {
   detectCollision as detectMatrixCollision,
   getFullRows,
-} from "./matrixUtil";
+} from "./matrixUtil.js";
 
 // Constants
-import config from "./config";
-import pieceLibrary from "./pieceLibrary";
+import config from "./config.js";
+import pieceLibrary from "./pieceLibrary.js";
 
 // Redux stores
-import store from "./stores";
-import * as score from "./stores/score";
+import store from "./stores/index.js";
+import * as score from "./stores/score.js";
 import * as lines from "./stores/lines";
-import * as level from "./stores/level";
-import * as fallRate from "./stores/fallRate";
-import * as nextPiece from "./stores/nextPiece";
-import * as currentPiece from "./stores/currentPiece";
-import * as board from "./stores/board";
-import * as gameState from "./stores/gameState";
-import * as configStore from "./stores/config";
-import * as history from "./stores/history";
+import * as level from "./stores/level.js";
+import * as fallRate from "./stores/fallRate.js";
+import * as nextPiece from "./stores/nextPiece.js";
+import * as currentPiece from "./stores/currentPiece.js";
+import * as board from "./stores/board.js";
+import * as gameState from "./stores/gameState.js";
+import * as configStore from "./stores/config.js";
+import * as history from "./stores/history.js";
 
 // Shortcuts to getters and dispatching actions
 const dispatch = store.dispatch;

@@ -1,22 +1,16 @@
 import { combineReducers, createStore } from "redux";
 
-import score from "./score";
-import lines from "./lines";
-import nextPiece from "./nextPiece";
-import currentPiece from "./currentPiece";
-import board from "./board";
-import config from "./config";
-import gameState from "./gameState";
+import score from "./score.js";
+import lines from "./lines.js";
+import nextPiece from "./nextPiece.js";
+import currentPiece from "./currentPiece.js";
+import board from "./board.js";
+import config from "./config.js";
+import gameState from "./gameState.js";
 // selector-only modules
 // import message from './message'
 // import fallRate from './fallRate'
 // import level from './level'
-
-export const REPLACE_STATE = "REPLACE_STATE";
-export const replaceState = (state) => ({
-  type: REPLACE_STATE,
-  payload: state,
-});
 
 export const reducer = combineReducers({
   score,

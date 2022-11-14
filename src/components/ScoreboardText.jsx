@@ -1,5 +1,7 @@
-import React from 'react'
+import React from "react";
 
-export default ({label, value}) => (
-  <div className='scoreboardText'>{label}: {value}</div>
-)
+export default ({ label, value }) => (
+  <div className="scoreboardText">
+    {label}: {value}
+  </div>
+);
