@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 
 class Music extends Component {
+  state = {
+    readyToPlay: false,
+  };
+
   componentDidMount() {
     this.updatePlayingState();
   }
@@ -11,18 +15,40 @@ class Music extends Component {
 
   updatePlayingState() {
     const player = this.refs.player;
-    if (this.props.isPlaying && player.readyState !== 0) {
-      try {
-        player.play();
-      } catch (e) {
-        console.warn("Couldn't load music.");
+    player.removeEventListener("canplay", this.updatePlayingState.bind(this));
+    window.removeEventListener("keydown", this.updatePlayingState.bind(this));
+    window.removeEventListener("mousedown", this.updatePlayingState.bind(this));
+
+    if (this.state.readyToPlay === false) {
+      if (player.readyState >= 2) {
+        this.setState({ readyToPlay: true });
+        this.updatePlayingState();
+      } else {
+        player.addEventListener("canplay", this.updatePlayingState.bind(this));
       }
+      return;
+    }
+
+    if (this.props.isPlaying) {
+      player.play().catch((error) => {
+        if (error instanceof DOMException) {
+          console.warn("Music cannot play until you interact with the DOM.");
+          window.addEventListener(
+            "keydown",
+            this.updatePlayingState.bind(this)
+          );
+          window.addEventListener(
+            "mousedown",
+            this.updatePlayingState.bind(this)
+          );
+        }
+      });
     } else {
       player.pause();
     }
   }
 
-  render(props) {
+  render() {
     return (
       <div className="Music">
         <audio ref="player" src="mimstris.mp3" loop={true} />
