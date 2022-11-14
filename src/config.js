@@ -16,9 +16,9 @@ export default {
 
   playMusic: true,
 
-  htmlBackgroundColor: '#371B52',
-  backgroundColor: '#00263F',
-  guideColor: '#021c2d',
+  htmlBackgroundColor: "#371B52",
+  backgroundColor: "#00263F",
+  guideColor: "#021c2d",
 
   // When true, blocks fall all the way down instantly when you press down.
   instantDown: false,
@@ -30,13 +30,13 @@ export default {
 
   allowUndo: true,
 
-  activePieces: 'TOJLISZ', // Standard set: 'TOJLISZ', extended set: 'UYHXP|[]'
+  activePieces: "TOJLISZ", // Standard set: 'TOJLISZ', extended set: 'UYHXP|[]'
 
   // When true, random blocks will be in an identical order every game.
   deterministicMode: false,
   // Changing this value will change the random blocks generated.
-  randomSeed: 'seed',
+  randomSeed: "seed",
 
   // Draws the blocks as teeny lights on dark background
-  midnightMode: false
-}
+  midnightMode: false,
+};

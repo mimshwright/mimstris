@@ -1,27 +1,27 @@
-import React, {Component, PropTypes} from 'react'
+import React, { Component } from "react";
 
 class ConfigPanelCheckbox extends Component {
-  getCheckboxValue () { return this.refs.checkbox.value }
+  getCheckboxValue() {
+    return this.refs.checkbox.value;
+  }
 
-  render () {
+  render() {
     return (
-      <div className='configPanelCheckbox'>
+      <div className="configPanelCheckbox">
         <label htmlFor={this.props.label}>{this.props.label}: </label>
-        <input id={this.props.label} ref='checkbox' type='checkbox'
-          defaultChecked={this.props.value ? 'checked' : ''}
-          onChange={() => { this.props.onChange(this.getCheckboxValue()) }}
+        <input
+          id={this.props.label}
+          ref="checkbox"
+          type="checkbox"
+          defaultChecked={this.props.value ? "checked" : ""}
+          onChange={() => {
+            this.props.onChange(this.getCheckboxValue());
+          }}
         />
-        <div className='instructions'>{this.props.instructions}</div>
+        <div className="instructions">{this.props.instructions}</div>
       </div>
-    )
+    );
   }
 }
 
-ConfigPanelCheckbox.propTypes = {
-  label: PropTypes.string.isRequired,
-  instructions: PropTypes.string,
-  value: PropTypes.bool.isRequired,
-  onChange: PropTypes.func.isRequired
-}
-
-export default ConfigPanelCheckbox
+export default ConfigPanelCheckbox;

@@ -1,17 +1,27 @@
 html {
-  background: #371B52;
+  background: #371b52;
   /* Stop scrolling issue on short monitors */
   overflow-y: hidden;
 }
 body {
-  color: #FFF;
+  color: #fff;
   font-family: montserrat, helvetica, arial, sans-serif;
 }
 main {
   margin: 4em auto;
 }
 
-a, a:link, a:hover, a:active, a:visited {
+h1 {
+  font-weight: normal;
+  font-size: 24px;
+  padding: 1rem;
+}
+
+a,
+a:link,
+a:hover,
+a:active,
+a:visited {
   color: #11c5bf;
   text-decoration: underline;
 }
@@ -21,19 +31,19 @@ a:link {
 
 button {
   background: transparent;
-  border: 1px solid #FFF;
-  color: #FFF;
+  border: 1px solid #fff;
+  color: #fff;
   font-family: montserrat, helvetica, arial, sans-serif;
 
   padding: 0.5rem 1rem;
   cursor: pointer;
 }
 button:hover {
-  background: #FFF;
-  color: #371B52;
+  background: #fff;
+  color: #371b52;
 }
 button:focus {
-  outline:0;
+  outline: 0;
 }
 .undoButton {
   margin-bottom: 1rem;
@@ -61,8 +71,6 @@ button:focus {
   flex: 0 1 auto;
   order: 1;
   position: relative;
-}
-.nextPiece {
 }
 .nextPiece canvas {
   transform-origin: top left;
@@ -103,9 +111,6 @@ button:focus {
   border: 1px solid rgba(255, 255, 255, 0.6);
   padding: 0.5rem;
 }
-.configPanelText {
-
-}
 .configPanelText label {
   display: block;
 }
@@ -128,9 +133,13 @@ button:focus {
   margin: auto 0;
   padding: 1rem 0;
 
-  background: rgba(50, 50, 50, 0.40);
-  color: #FFFFFF;
+  background: rgba(50, 50, 50, 0.4);
+  color: #ffffff;
   font-size: 24px;
   text-align: center;
   vertical-align: middle;
+}
+.modalText .modalSubText {
+  margin-top: 12px;
+  font-size: 12px;
 }
