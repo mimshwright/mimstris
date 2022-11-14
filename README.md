@@ -2,6 +2,8 @@
 
 An arcade puzzle game created in JS using [React](https://facebook.github.io/react/) / [Redux](http://redux.js.org/).
 
+[🎥 Featured in a lighting talk at the 2017 dotJS Conference in Paris.](https://www.dotconferences.com/2017/12/mims-wright-building-a-puzzle-game-in-react-redux)
+
 _Note: This was originally coded in 2016 and there have been a lot of new developments in JavaScript, React, and Redux since then. I gave the project a very basic update in 2022 (since it wasn't compiling for me anymore) but the code remains mostly unchanged._
 
 **This game is open-source, free, and just for funsies!**
